@@ -1,6 +1,6 @@
 
-#ifndef ITERADORARBOLBMAS_H_
-#define ITERADORARBOLBMAS_H_
+#ifndef ITERADORARBOL_H_
+#define ITERADORARBOL_H_
 
 #include "NodoHoja.h"
 #include "../EstructurasEnComun/Registro.h"
@@ -20,4 +20,4 @@ public:
 	Registro* next();
 };
 
-#endif /* ITERADORARBOLBMAS_H_ */
+#endif /* ITERADORARBOL_H_ */
