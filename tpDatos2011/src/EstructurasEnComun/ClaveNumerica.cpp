@@ -17,11 +17,11 @@ int ClaveNumerica::getTipo(){
 	return TIPO_CLAVE_NUMERICA;
 }
 
-void ClaveNumerica::serialize(char * buffer,unsigned int &offset){
+void ClaveNumerica::serialzar(char * buffer,unsigned int &offset){
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->clave);
 }
 
-void ClaveNumerica::unserialize(char * buffer,unsigned int &offset){
+void ClaveNumerica::hidratar(char * buffer,unsigned int &offset){
 	this->clave = Persistencia::getEnteroDesdeBuffer(buffer, offset);
 }
 
