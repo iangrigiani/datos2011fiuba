@@ -6,7 +6,8 @@
 using namespace std;
 
 class NodoHoja : public Nodo {
-
+	friend class ArbolBMas;
+	friend class IteradorArbol;
 private:
 	int hojaSiguiente;
 	list<Elementos*> datos;

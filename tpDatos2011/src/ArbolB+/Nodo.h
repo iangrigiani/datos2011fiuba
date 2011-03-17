@@ -10,10 +10,10 @@
 using namespace std;
 
 class Nodo : public Serializable{
-//	friend class ArbolBMas;
+	friend class ArbolBMas;
 	friend class NodoInterior;
 	friend class NodoHoja;
-//	friend class IteradorArbolBMas;
+	friend class IteradorArbol;
 
 private:
 	int numero;
