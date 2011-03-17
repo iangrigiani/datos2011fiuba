@@ -15,9 +15,9 @@ public:
 	int getValorClave();
 	int getTipo();
 
-	void serialize(char * buffer, unsigned int &offset);
+	void serialzar(char * buffer, unsigned int &offset);
 
-	void unserialize(char * buffer, unsigned int &offset);
+	void hidratar(char * buffer, unsigned int &offset);
 
 	bool igual (ClaveNumerica *a);
 
