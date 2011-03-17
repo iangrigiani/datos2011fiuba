@@ -6,7 +6,8 @@
 using namespace std;
 
 class NodoInterior : public Nodo {
-
+	friend class ArbolBMas;
+	friend class IteradorArbol;
 private:
 	list<int*> hijos;
 
