@@ -5,7 +5,7 @@
 #include "../EstructurasEnComun/Constantes.h"
 #include "../ModuloDePersistencia/Persistencia.h"
 #include "Elementos.h"
-#include <list.h>
+#include <list>
 #include <string.h>
 using namespace std;
 

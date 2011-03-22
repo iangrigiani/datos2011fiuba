@@ -75,7 +75,13 @@ void Bloque::hidratar(char * buffer, unsigned int &offset){
 		contador++;
 	}
 }
-
+void Bloque::toString(){
+	std::list<Registro*>::iterator it = this->registros.begin();
+	while (it != this->registros.end()){
+		(*it)->toString();
+		++it;
+	}
+}
 Bloque::~Bloque() {
 	std::list<Registro*>::iterator it = this->registros.begin();
 	while (it != this->registros.end()){
