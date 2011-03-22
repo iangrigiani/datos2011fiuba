@@ -17,6 +17,7 @@ NodoHoja::~NodoHoja() {
 void NodoHoja::Serializar(char * buffer, unsigned int &offset) {
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->numero);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->nivel);
+	Persistencia::PonerEnteroEnChar(buffer, offset, this->offset);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->espacioOcupado);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->cantidadClaves);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->claves.size());
@@ -35,6 +36,7 @@ void NodoHoja::Serializar(char * buffer, unsigned int &offset) {
 void NodoHoja::Hidratar(char * buffer, unsigned int &offset) {
 	this->numero = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	this->nivel = Persistencia::getEnteroDesdeBuffer(buffer,offset);
+	this->offset = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	this->espacioOcupado = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	this->cantidadClaves = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	int claves = Persistencia::getEnteroDesdeBuffer(buffer,offset);
@@ -56,3 +58,30 @@ void NodoHoja::Hidratar(char * buffer, unsigned int &offset) {
 	}
 }
 
+void NodoHoja::modificarDatos(int posicion, Elementos* dato){
+	bool encontrado = false;
+	int cont = 0;
+	list<Elementos*>::iterator itDatos = this->datos.begin();
+	while ( itDatos != datos.end() && !encontrado){
+		if (cont == posicion){
+			encontrado = true;
+			(*(*itDatos)) = (*dato);
+		}
+		++cont;
+		++itDatos;
+	}
+}
+
+Elementos* NodoHoja::obtenerDato(int posicion){
+	bool encontrado = false;
+	int cont = 0;
+	list<Elementos*>::iterator itDatos = this->datos.begin();
+	while ( itDatos != datos.end()){
+		if (cont == posicion){
+			return (*itDatos);
+		}
+		++cont;
+		++itDatos;
+	}
+	return NULL;
+}
