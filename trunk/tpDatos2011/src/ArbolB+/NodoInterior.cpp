@@ -6,6 +6,10 @@ NodoInterior::NodoInterior(int nivel) : Nodo(nivel) {
 
 }
 
+NodoInterior::NodoInterior() : Nodo(0){
+
+}
+
 NodoInterior::~NodoInterior() {
 	list<int*>::iterator it = this->hijos.begin();
 	while (it != this->hijos.end()){

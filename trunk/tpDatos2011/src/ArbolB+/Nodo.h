@@ -3,7 +3,7 @@
 
 #include "../EstructurasEnComun/ClaveNumerica.h"
 #include "../EstructurasEnComun/Constantes.h"
-#include "../ModuloDePersistencia/Persistencia.h"
+//#include "../ModuloDePersistencia/Persistencia.h"
 #include "Elementos.h"
 #include <list>
 #include <string.h>

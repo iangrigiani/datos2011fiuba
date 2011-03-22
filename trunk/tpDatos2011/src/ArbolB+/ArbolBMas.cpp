@@ -235,12 +235,61 @@ ClaveNumerica* ArbolBMas::obtenerClaveNumerica(Nodo* nodo, int posicion){
 	return NULL;
 }
 
-void ArbolBMas::dividirNodoInterior(NodoInterior* unNodoInterior, ClaveNumerica* clavePromocion, Nodo** nuevoNodoInterior, int nuevaPosicion){
+void ArbolBMas::dividirNodoInterior(NodoInterior* nodoInteriorActual, ClaveNumerica* clavePromocion, Nodo** nuevoNodoInterior, int nuevaPosicion){
 
+	int medio = nodoInteriorActual->cantidadClaves / 2;
+
+	if (nuevaPosicion <= medio && medio > nodoInteriorActual->cantidadClaves - (medio + 1)) {
+		medio--;
+	}
+
+	NodoInterior *auxNuevoNodoInterior = obtenerNodoInterior(nodoInteriorActual->nivel);
+	auxNuevoNodoInterior->numero = obtenerNumeroNodo();
+	auxNuevoNodoInterior->cantidadClaves = nodoInteriorActual->cantidadClaves - (medio + 1);
+	for (int posicion = medio + 1; posicion < nodoInteriorActual->cantidadClaves; ++posicion) {
+		int auxPosicion = posicion - (medio + 1);
+		modificarClave(auxNuevoNodoInterior, auxPosicion, obtenerClaveNumerica(nodoInteriorActual,posicion));
+		modificarHijo(auxNuevoNodoInterior,auxPosicion, nodoInteriorActual->obtenerHijo(posicion));
+		auxNuevoNodoInterior->espacioOcupado += obtenerClaveNumerica(nodoInteriorActual,posicion)->getTamanio() + TAM_CONTROL_REGISTRO;
+	}
+	modificarHijo(auxNuevoNodoInterior,auxNuevoNodoInterior->cantidadClaves,nodoInteriorActual->obtenerHijo(nodoInteriorActual->cantidadClaves));
+	nodoInteriorActual->cantidadClaves = medio;
+	nodoInteriorActual->espacioOcupado -= auxNuevoNodoInterior->espacioOcupado;
+	*clavePromocion = *obtenerClaveNumerica(nodoInteriorActual,medio);
+	*nuevoNodoInterior = auxNuevoNodoInterior;
 }
 
-void ArbolBMas::dividirNodoHoja(NodoHoja* unNodoHoja, ClaveNumerica* clavePromocion, Nodo** nuevoNodoHoja){
+void ArbolBMas::dividirNodoHoja(NodoHoja* nodoHojaActual, ClaveNumerica* clavePromocion, Nodo** nuevoNodoHoja){
+	int espacioMedio = (nodoHojaActual->espacioOcupado) / 2;
+	int espacioNodoIzquierdo = 0;
+	int cantidadClaves = 0;
+	while (cantidadClaves < nodoHojaActual->cantidadClaves && espacioNodoIzquierdo < espacioMedio){
+		espacioNodoIzquierdo += nodoHojaActual->obtenerDato(cantidadClaves)->getTamanio() + obtenerClaveNumerica(nodoHojaActual, cantidadClaves)->getTamanio() + TAM_CONTROL_REGISTRO;
+		cantidadClaves++;
+		if (espacioNodoIzquierdo > TAM_EFECTIVO_NODO) {
+			cantidadClaves--;
+			espacioNodoIzquierdo -= nodoHojaActual->obtenerDato(cantidadClaves)->getTamanio() + obtenerClaveNumerica(nodoHojaActual, cantidadClaves)->getTamanio() + TAM_CONTROL_REGISTRO;
+			break;
+		}
+	}
 
+	NodoHoja *auxNuevoNodoHoja = obtenerNodoHoja();
+	auxNuevoNodoHoja->numero = obtenerNumeroNodo();
+	auxNuevoNodoHoja->cantidadClaves = nodoHojaActual->cantidadClaves - cantidadClaves;
+	auxNuevoNodoHoja->espacioOcupado = nodoHojaActual->espacioOcupado - espacioNodoIzquierdo;
+	auxNuevoNodoHoja->hojaSiguiente = nodoHojaActual->hojaSiguiente;
+
+	for (int posicion = cantidadClaves; posicion < nodoHojaActual->cantidadClaves; ++posicion) {
+		int auxPosicion = posicion - cantidadClaves;
+		modificarClave(auxNuevoNodoHoja, auxPosicion, obtenerClaveNumerica(nodoHojaActual, posicion));
+		auxNuevoNodoHoja->modificarDatos(auxPosicion, nodoHojaActual->obtenerDato(posicion));
+	}
+
+	nodoHojaActual->espacioOcupado -= auxNuevoNodoHoja->espacioOcupado;
+	nodoHojaActual->cantidadClaves = cantidadClaves;
+	nodoHojaActual->hojaSiguiente = auxNuevoNodoHoja->numero;
+	*clavePromocion = *obtenerClaveNumerica(nodoHojaActual, nodoHojaActual->cantidadClaves - 1);
+	*nuevoNodoHoja = auxNuevoNodoHoja;
 }
 
 void ArbolBMas::modificarClave(Nodo* nodo,int posicion, ClaveNumerica* clave){
@@ -269,4 +318,8 @@ void ArbolBMas::modificarHijo(NodoInterior* nodo, int posicion, int valor){
 			++it;
 			++cont;
 	}
+}
+
+void ArbolBMas::toString(){
+
 }

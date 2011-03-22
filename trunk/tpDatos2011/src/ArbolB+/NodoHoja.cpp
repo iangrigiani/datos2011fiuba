@@ -14,7 +14,7 @@ NodoHoja::~NodoHoja() {
 	}
 }
 
-void NodoHoja::Serializar(char * buffer, unsigned int &offset) {
+void NodoHoja::serializar(char * buffer, unsigned int &offset) {
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->numero);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->nivel);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->offset);
@@ -33,7 +33,7 @@ void NodoHoja::Serializar(char * buffer, unsigned int &offset) {
 	}
 }
 
-void NodoHoja::Hidratar(char * buffer, unsigned int &offset) {
+void NodoHoja::hidratar(char * buffer, unsigned int &offset) {
 	this->numero = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	this->nivel = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	this->offset = Persistencia::getEnteroDesdeBuffer(buffer,offset);
@@ -73,7 +73,6 @@ void NodoHoja::modificarDatos(int posicion, Elementos* dato){
 }
 
 Elementos* NodoHoja::obtenerDato(int posicion){
-	bool encontrado = false;
 	int cont = 0;
 	list<Elementos*>::iterator itDatos = this->datos.begin();
 	while ( itDatos != datos.end()){
