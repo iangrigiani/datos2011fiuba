@@ -78,12 +78,13 @@ public:
 	bool borrar(ClaveNumerica clave);
 
 	/*
-	 * Devuelve el nodo con número "numeroDeNodo".
+	 * Devuelve el nodo con nï¿½mero "numeroDeNodo".
 	 * Pos: Devuelve un puntero al Nodo buscado. Si el numero de nodo es invalido
 	 * 		devuelve NULL.
 	 */
 	Nodo* leerNodo(int numeroDeNodo);
 
+	void toString();
 	int getCantidadBloques();
 private:
 	void grabarDatosConfiguracion();

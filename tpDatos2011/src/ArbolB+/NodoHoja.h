@@ -16,8 +16,8 @@ public:
 	NodoHoja();
 	virtual ~NodoHoja();
 
-	void Serializar(char * buffer, unsigned int &offset);
-	void Hidratar(char * buffer, unsigned int &offset);
+	void serializar(char * buffer, unsigned int &offset);
+	void hidratar(char * buffer, unsigned int &offset);
 
 	list<Elementos*> getDatos() const
     {

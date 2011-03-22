@@ -13,6 +13,7 @@ private:
 
 public:
 	NodoInterior(int nivel);
+	NodoInterior();
 	virtual ~NodoInterior();
 
 	void serializar(char * buffer, unsigned int &offset);
