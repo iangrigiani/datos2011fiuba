@@ -10,6 +10,9 @@
 #include "IteradorArbol.h"
 //#include "Resultado.h"
 #include "../EstructurasEnComun/Constantes.h"
+#include "../ModuloDePersistencia/EscritorNodosLibres.h"
+#include "../ModuloDePersistencia/EscritorNodo.h"
+#include "../ModuloDePersistencia/RecuperadorNodos.h"
 //#include "ComparadorClavesContexto.h"
 
 #include <fstream>
@@ -29,7 +32,7 @@ private:
 	int primeraHoja;
 	int cantidadNodos;
 	int maxTamanioClave;
-	vector<int> nodosLibres;
+	list<int> nodosLibres;
 //	Persistor* persistor;
 
 public:
@@ -82,8 +85,21 @@ public:
 	Nodo* leerNodo(int numeroDeNodo);
 
 	int getCantidadBloques();
-
-
+private:
+	void grabarDatosConfiguracion();
+	NodoHoja* obtenerNodoHoja();
+	NodoInterior* obtenerNodoInterior(int nivel);
+	int obtenerNumeroNodo();
+	bool insertarRecursivamente(Nodo* nodoCorriente, ClaveNumerica clave, Elementos* dato, ClaveNumerica* clavePromocion, Nodo** nuevoNodo);
+	void persistirNodo(Nodo* nodo);
+	void liberarMemoriaNodo(Nodo* nodo);
+	int obtenerPosicion(Nodo *unNodo, ClaveNumerica clave);
+	ClaveNumerica* obtenerClaveNumerica(Nodo* nodo, int posicion);
+	Nodo* hidratarNodo(int nroNodo, int tipoNodo);
+	void dividirNodoInterior(NodoInterior* unNodoInterior, ClaveNumerica* clavePromocion, Nodo** nuevoNodoInterior, int nuevaPosicion);
+	void modificarClave(Nodo* nodo,int posicion, ClaveNumerica* clave);
+	void modificarHijo(NodoInterior* nodo, int posicion, int valor);
+	void dividirNodoHoja(NodoHoja* unNodoHoja, ClaveNumerica* clavePromocion, Nodo** nuevoNodoHoja);
 };
 
 #endif // _ARBOLBMAS_H_

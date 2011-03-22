@@ -9,6 +9,9 @@ class Elementos : public Serializable {
 public:
 	Elementos();
 	virtual ~Elementos();
+	int getTamanio() const{
+		return 0;
+	}
 	void serializar(char * buffer, unsigned int &offset);
 	void hidratar(char * buffer, unsigned int &offset);
 

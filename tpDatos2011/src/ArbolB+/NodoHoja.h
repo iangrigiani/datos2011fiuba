@@ -28,6 +28,8 @@ public:
     {
         return hojaSiguiente;
     }
+    void modificarDatos(int posicion, Elementos* dato);
+    Elementos* obtenerDato(int posicion);
 };
 
 #endif /* NODOHOJA_H_ */

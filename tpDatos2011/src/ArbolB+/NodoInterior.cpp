@@ -17,6 +17,7 @@ NodoInterior::~NodoInterior() {
 void NodoInterior::serializar(char * buffer, unsigned int &offset){
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->numero);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->nivel);
+	Persistencia::PonerEnteroEnChar(buffer, offset, this->offset);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->espacioOcupado);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->cantidadClaves);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->claves.size());
@@ -33,6 +34,7 @@ void NodoInterior::serializar(char * buffer, unsigned int &offset){
 void NodoInterior::hidratar(char * buffer, unsigned int &offset){
 	this->numero = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	this->nivel = Persistencia::getEnteroDesdeBuffer(buffer,offset);
+	this->offset = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	this->espacioOcupado = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	this->cantidadClaves = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	int claves = Persistencia::getEnteroDesdeBuffer(buffer,offset);
@@ -50,4 +52,21 @@ void NodoInterior::hidratar(char * buffer, unsigned int &offset){
 		this->hijos.push_back(&hijo);
 		cont++;
 	}
+}
+
+int NodoInterior::obtenerHijo(int Posicion){
+	int nroNodohijo;
+	int cont = 0;
+	bool encontrado = false;
+
+	list<int*>::iterator it = this->hijos.begin();
+	while (it != this->hijos.end() && !encontrado){
+		if (cont == Posicion){
+			nroNodohijo = (*(*it));
+			return nroNodohijo;
+		}
+		++cont;
+		++it;
+	}
+	return NULL;
 }
