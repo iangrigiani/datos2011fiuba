@@ -34,7 +34,7 @@ public:
 	void hidratar(char * buffer, unsigned int &offset);
 
 	void limpiar();
-
+	void toString();
 	virtual ~Bloque();
 };
 

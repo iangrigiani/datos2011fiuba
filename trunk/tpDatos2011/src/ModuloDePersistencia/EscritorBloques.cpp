@@ -15,6 +15,7 @@ EscritorBloques::EscritorBloques(std::string path) {
 int EscritorBloques::GrabarRegistro(Registro * reg){
 
 	if (bloque->agregarRegistro(reg)){
+		std::cout << "Grabe registro" << std::endl;
 		return BLOQUE_NO_LLENO;
 	}
 	else {
