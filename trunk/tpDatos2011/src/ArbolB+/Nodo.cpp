@@ -8,11 +8,7 @@ Nodo::Nodo(int nivel) {
 }
 
 Nodo::~Nodo() {
-	list<ClaveNumerica*>::iterator it = this->claves.begin();
-	while (it != this->claves.end()){
-		delete (*it);
-		it++;
-	}
+ delete[] this->claves;
 }
 
 bool Nodo::isNodoHoja() {

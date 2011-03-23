@@ -10,7 +10,7 @@ class NodoHoja : public Nodo {
 	friend class IteradorArbol;
 private:
 	int hojaSiguiente;
-	list<Elementos*> datos;
+	Elementos* datos;
 
 public:
 	NodoHoja();
@@ -19,17 +19,13 @@ public:
 	void serializar(char * buffer, unsigned int &offset);
 	void hidratar(char * buffer, unsigned int &offset);
 
-	list<Elementos*> getDatos() const
-    {
+	Elementos* getDatos() const{
         return datos;
     }
 
-    int getHojaSiguiente() const
-    {
+    int getHojaSiguiente() const{
         return hojaSiguiente;
     }
-    void modificarDatos(int posicion, Elementos* dato);
-    Elementos* obtenerDato(int posicion);
 };
 
 #endif /* NODOHOJA_H_ */

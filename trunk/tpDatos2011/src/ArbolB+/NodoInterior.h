@@ -9,7 +9,7 @@ class NodoInterior : public Nodo {
 	friend class ArbolBMas;
 
 private:
-	list<int*> hijos;
+	int* hijos;
 
 public:
 	NodoInterior(int nivel);
@@ -18,7 +18,7 @@ public:
 
 	void serializar(char * buffer, unsigned int &offset);
 	void hidratar(char * buffer, unsigned int &offset);
-    list<int*> getHijos() const
+    int* getHijos() const
     {
         return hijos;
     }
