@@ -7,6 +7,7 @@
 #include <fstream>
 #include <list>
 #include <string>
+#include <vector>
 using namespace  std;
 
 class EscritorNodosLibres {
@@ -16,11 +17,11 @@ private:
 	unsigned int fileOffset;
 	std::string path;
 	void serializarPrimeraHoja(int primeraHoja, char * buffer, unsigned int &offset);
-	void serializarNodosLibres(list<int> nodosLibres, char * buffer, unsigned int &offset);
+	void serializarNodosLibres(vector<int> nodosLibres, char * buffer, unsigned int &offset);
 public:
 	EscritorNodosLibres();
 	EscritorNodosLibres (std::string path);
-	void GrabarDatosConfig(int primeraHoja , list<int> nodosLibres);
+	void GrabarDatosConfig(int primeraHoja , vector<int> nodosLibres);
 	int getOffset(){
 		return this->fileOffset;
 	}

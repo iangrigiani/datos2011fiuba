@@ -5,7 +5,7 @@
 #include "../EstructurasEnComun/Constantes.h"
 //#include "../ModuloDePersistencia/Persistencia.h"
 #include "Elementos.h"
-#include <list>
+#include <vector>
 #include <string.h>
 using namespace std;
 
@@ -21,7 +21,7 @@ private:
 	int offset;
 	int espacioOcupado;
 	int cantidadClaves;
-	list<ClaveNumerica*> claves;
+	ClaveNumerica* claves;
 
 public:
 	Nodo(int nivel);
@@ -37,7 +37,7 @@ public:
         return cantidadClaves;
     }
 
-    list<ClaveNumerica*> getClaves() const
+    ClaveNumerica* getClaves() const
     {
         return claves;
     }

@@ -52,5 +52,5 @@ Registro* IteradorArbol::next() {
 //	}
 //	Registro* registro = new Registro(nodoActual->claves[posicionActual].Clonar(), new CadenaBytes(nodoActual->datos[posicionActual]));
 //	posicionActual++;
-//	return registro;
+	return NULL;
 }

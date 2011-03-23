@@ -6,7 +6,8 @@ ClaveNumerica::ClaveNumerica() {
 }
 
 ClaveNumerica::ClaveNumerica(int clave){
-	this->clave = clave;
+	this->clave = 0;
+	setValorClave(clave);
 }
 
 int ClaveNumerica::getValorClave(){
@@ -17,7 +18,7 @@ int ClaveNumerica::getTipo(){
 	return TIPO_CLAVE_NUMERICA;
 }
 
-void ClaveNumerica::serialzar(char * buffer,unsigned int &offset){
+void ClaveNumerica::serializar(char * buffer,unsigned int &offset){
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->clave);
 }
 

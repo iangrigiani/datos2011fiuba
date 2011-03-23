@@ -10,7 +10,7 @@ EscritorNodosLibres::EscritorNodosLibres(std::string path) {
 	this->fileOffset = 0;
 }
 
-void EscritorNodosLibres::GrabarDatosConfig(int primeraHoja , list<int> nodosLibres){
+void EscritorNodosLibres::GrabarDatosConfig(int primeraHoja , vector<int> nodosLibres){
 	this->buffer = (char*)calloc (BUFFER_NODOS_LIBRES, sizeof(int));
 	serializarPrimeraHoja(primeraHoja, this->buffer, this->bufferOffset);
 	serializarNodosLibres(nodosLibres, this->buffer, this->bufferOffset);
@@ -26,12 +26,10 @@ void EscritorNodosLibres::GrabarDatosConfig(int primeraHoja , list<int> nodosLib
 void EscritorNodosLibres::serializarPrimeraHoja(int primeraHoja, char * buffer, unsigned int &offset){
 	Persistencia::PonerEnteroEnChar(buffer, offset, primeraHoja);
 }
-void EscritorNodosLibres::serializarNodosLibres(list<int> nodosLibres, char * buffer, unsigned int &offset){
+void EscritorNodosLibres::serializarNodosLibres(vector<int> nodosLibres, char * buffer, unsigned int &offset){
 	Persistencia::PonerEnteroEnChar(buffer, offset, nodosLibres.size());
-	list<int>::iterator it = nodosLibres.begin();
-	while (it != nodosLibres.end()){
-		Persistencia::PonerEnteroEnChar(buffer,offset,(*it));
-		++it;
+	for (int i = 0;(unsigned int)i < nodosLibres.size(); i++){
+		Persistencia::PonerEnteroEnChar(buffer,offset,nodosLibres[i]);
 	}
 }
 EscritorNodosLibres::~EscritorNodosLibres() {

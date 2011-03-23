@@ -13,11 +13,13 @@
 #include "../ModuloDePersistencia/EscritorNodosLibres.h"
 #include "../ModuloDePersistencia/EscritorNodo.h"
 #include "../ModuloDePersistencia/RecuperadorNodos.h"
+#include "../ModuloDePersistencia/RecuperadorNodosLibres.h"
 //#include "ComparadorClavesContexto.h"
 
 #include <fstream>
 #include <vector>
-
+#include <stdio.h>
+#include <string>
 using namespace std;
 
 
@@ -32,7 +34,7 @@ private:
 	int primeraHoja;
 	int cantidadNodos;
 	int maxTamanioClave;
-	list<int> nodosLibres;
+	vector<int> nodosLibres;
 //	Persistor* persistor;
 
 public:
@@ -49,7 +51,7 @@ public:
 	 * Insertar un registro al arbol
 	 * Pos: Devuelve TRUE si se inserto correctamente y FALSE en caso contrario.
 	 */
-	bool insertar(Registro* registro);
+	bool insertar(Registro* registro, int offset);
 
 	/*
 	 * Devuelve un IteradorArbol al primer nodo hoja del arbol.
@@ -84,23 +86,23 @@ public:
 	 */
 	Nodo* leerNodo(int numeroDeNodo);
 
-	void toString();
+	void MostrarArbol();
+
 	int getCantidadBloques();
 private:
 	void grabarDatosConfiguracion();
 	NodoHoja* obtenerNodoHoja();
 	NodoInterior* obtenerNodoInterior(int nivel);
 	int obtenerNumeroNodo();
-	bool insertarRecursivamente(Nodo* nodoCorriente, ClaveNumerica clave, Elementos* dato, ClaveNumerica* clavePromocion, Nodo** nuevoNodo);
+	bool insertarRecursivamente(Nodo* nodoCorriente, ClaveNumerica& claveNum, Elementos* dato, ClaveNumerica* clavePromocion, Nodo** nuevoNodo);
 	void persistirNodo(Nodo* nodo);
+	void toString(Nodo* nodo, int tab);
 	void liberarMemoriaNodo(Nodo* nodo);
 	int obtenerPosicion(Nodo *unNodo, ClaveNumerica clave);
-	ClaveNumerica* obtenerClaveNumerica(Nodo* nodo, int posicion);
 	Nodo* hidratarNodo(int nroNodo, int tipoNodo);
 	void dividirNodoInterior(NodoInterior* unNodoInterior, ClaveNumerica* clavePromocion, Nodo** nuevoNodoInterior, int nuevaPosicion);
-	void modificarClave(Nodo* nodo,int posicion, ClaveNumerica* clave);
-	void modificarHijo(NodoInterior* nodo, int posicion, int valor);
 	void dividirNodoHoja(NodoHoja* unNodoHoja, ClaveNumerica* clavePromocion, Nodo** nuevoNodoHoja);
+	void hidratarDatosConfiguracion();
 };
 
 #endif // _ARBOLBMAS_H_

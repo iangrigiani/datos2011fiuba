@@ -1,7 +1,8 @@
 #ifndef CLAVENUMERICA_H_
 #define CLAVENUMERICA_H_
 #include "../ModuloDePersistencia/Persistencia.h"
-class ClaveNumerica{
+#include "../ModuloDePersistencia/Serializable.h"
+class ClaveNumerica : public Serializable{
 private:
 	int clave;
 public:
@@ -15,14 +16,16 @@ public:
 	int getValorClave();
 	int getTipo();
 
-	void serialzar(char * buffer, unsigned int &offset);
-
+	void serializar(char * buffer, unsigned int &offset);
 	void hidratar(char * buffer, unsigned int &offset);
 
 	bool igual (ClaveNumerica *a);
 
 	bool esMenor(ClaveNumerica *a);
 
+	void setValorClave (int valor){
+		this->clave = valor;
+	}
 	void toString();
 	int getTamanio()const{
 		return sizeof(this->clave);

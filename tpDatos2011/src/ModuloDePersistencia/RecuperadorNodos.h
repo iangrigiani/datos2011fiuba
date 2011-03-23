@@ -18,6 +18,14 @@ public:
 	RecuperadorNodos (std::string path);
 	Nodo * obtenerNodo(int nroNodo, int tipoNodo);
 	virtual ~RecuperadorNodos();
+	int getTamanioArchivo(){
+		if (!iss.is_open()){
+			iss.open(this->path.c_str());
+		}
+		iss.seekg(0, ios::end);
+		int final = iss.tellg();
+		return final;
+	}
 	void close(){
 		iss.close();
 	}

@@ -3,7 +3,16 @@
 #include <iostream>
 
 ArbolBMas::ArbolBMas(string ruta_archivo, int tamanioMaximoClave){
-
+	this->primeraHoja = 0;
+	this->maxTamanioClave = tamanioMaximoClave;
+//	RecuperadorNodos* recup = new RecuperadorNodos(PATH_NODOS);
+//	this->raiz = hidratarNodo(0,1);
+//	if (this->raiz) {
+//		this->cantidadNodos = recup->getTamanioArchivo() / TAM_TOTAL_NODO;
+//	} else {
+		this->cantidadNodos = 0;
+//	}
+//	hidratarDatosConfiguracion();
 }
 
 ArbolBMas::~ArbolBMas(){
@@ -25,7 +34,8 @@ void ArbolBMas::grabarDatosConfiguracion(){
 	EscritorNodosLibres * escritor = new EscritorNodosLibres(nombreArchivo);
 	escritor->GrabarDatosConfig(primeraHoja, nodosLibres);
 }
-bool ArbolBMas::insertar(Registro* registro){
+bool ArbolBMas::insertar(Registro* registro, int offset){
+	Elementos* elemento = new Elementos(registro->getClave(), offset);
 	/* Si el tamanio del registro que quiero insertar es mayor al porcentaje minimo por nodo, lanzo una excepcion */
 	if ((int)registro->getTamanio() > (TAM_EFECTIVO_NODO * PORCENTAJE_NODO / 100)
 			|| registro->getClave()->getTamanio() > maxTamanioClave)
@@ -41,8 +51,8 @@ bool ArbolBMas::insertar(Registro* registro){
 		this->cantidadNodos = 1;
 	}
 	// TODO: OJO ACA VER EL GETAPELLIDOS SEGUN LO QUE DIGA EL ENUNCIADO.
-
-	bool resultado = insertarRecursivamente(raiz, *(registro->getClave()), new Elementos(), &clavePromocion, &nuevoNodoHijo);
+	ClaveNumerica clave((*(registro->getClave())).getValorClave());
+	bool resultado = insertarRecursivamente(raiz, clave , elemento, &clavePromocion, &nuevoNodoHijo);
 	//////////////////////////////////////////////////////////////////////////
 
 	if (nuevoNodoHijo){
@@ -55,9 +65,9 @@ bool ArbolBMas::insertar(Registro* registro){
 			grabarDatosConfiguracion();
 		}
 		persistirNodo(raiz);
-		nuevaRaiz->claves.push_back(&clavePromocion);
-		nuevaRaiz->hijos.push_back(&(raiz->numero));
-		nuevaRaiz->hijos.push_back(&(nuevoNodoHijo->numero));
+		nuevaRaiz->claves[0] = clavePromocion;
+		nuevaRaiz->hijos[0] = raiz->numero;
+		nuevaRaiz->hijos[1] = nuevoNodoHijo->numero;
 		nuevaRaiz->cantidadClaves = 1;
 		nuevaRaiz->espacioOcupado += clavePromocion.getTamanio() + TAM_CONTROL_REGISTRO;
 		nuevaRaiz->numero = 0;
@@ -71,13 +81,13 @@ bool ArbolBMas::insertar(Registro* registro){
 	return resultado;
 }
 
-bool ArbolBMas::insertarRecursivamente(Nodo* nodoCorriente, ClaveNumerica clave, Elementos* dato, ClaveNumerica* clavePromocion, Nodo** nuevoNodo){
+bool ArbolBMas::insertarRecursivamente(Nodo* nodoCorriente, ClaveNumerica& clave, Elementos* dato, ClaveNumerica* clavePromocion, Nodo** nuevoNodo){
 	if (!nodoCorriente->isNodoHoja()) {
 		NodoInterior *nodoInteriorCorriente = static_cast<NodoInterior*> (nodoCorriente);
 		ClaveNumerica nuevaClave;
 		Nodo* nuevoNodoHijo = NULL;
 		int posicion = obtenerPosicion(nodoInteriorCorriente, clave);
-		Nodo* nodoHijo = hidratarNodo(nodoInteriorCorriente->obtenerHijo(posicion), 2);
+		Nodo* nodoHijo = hidratarNodo(nodoInteriorCorriente->hijos[posicion], 2);
 
 		bool resultado = insertarRecursivamente(nodoHijo, clave, dato, &nuevaClave, &nuevoNodoHijo);
 
@@ -91,11 +101,11 @@ bool ArbolBMas::insertarRecursivamente(Nodo* nodoCorriente, ClaveNumerica clave,
 						&& nodoInteriorCorriente->cantidadClaves < (*nuevoNodo)->cantidadClaves) {
 
 					NodoInterior *nuevoNodoInterior = static_cast<NodoInterior*> (*nuevoNodo);
-					modificarClave(nodoInteriorCorriente,nodoInteriorCorriente->cantidadClaves, clavePromocion);
-					modificarHijo(nodoInteriorCorriente, nodoInteriorCorriente->cantidadClaves + 1,nuevoNodoInterior->obtenerHijo(0));
+					nodoInteriorCorriente->claves[nodoInteriorCorriente->cantidadClaves] = *clavePromocion;
+					nodoInteriorCorriente->hijos[nodoInteriorCorriente->cantidadClaves + 1] = nuevoNodoInterior->hijos[0];
 					nodoInteriorCorriente->cantidadClaves++;
 					nodoInteriorCorriente->espacioOcupado += (*clavePromocion).getTamanio() + TAM_CONTROL_REGISTRO;
-					modificarHijo(nuevoNodoInterior, 0,nuevoNodoHijo->numero);
+					nuevoNodoInterior->hijos[0] = nuevoNodoHijo->numero;
 					*clavePromocion = nuevaClave;
 					persistirNodo(nuevoNodoHijo);
 					liberarMemoriaNodo(nuevoNodoHijo);
@@ -112,12 +122,12 @@ bool ArbolBMas::insertarRecursivamente(Nodo* nodoCorriente, ClaveNumerica clave,
 
 			int i = nodoInteriorCorriente->cantidadClaves;
 			while (i > posicion) {
-				modificarClave(nodoInteriorCorriente, i, obtenerClaveNumerica(nodoInteriorCorriente,i - 1));
-				modificarHijo(nodoInteriorCorriente, i + 1,nodoInteriorCorriente->obtenerHijo(i));
+				nodoInteriorCorriente->claves[i] = nodoInteriorCorriente->claves[i - 1];
+				nodoInteriorCorriente->hijos[i + 1] = nodoInteriorCorriente->hijos[i];
 				i--;
 			}
-			modificarClave(nodoInteriorCorriente,posicion,&nuevaClave);
-			modificarHijo(nodoInteriorCorriente, posicion + 1,nuevoNodoHijo->numero);
+			nodoInteriorCorriente->claves[posicion] = nuevaClave;
+			nodoInteriorCorriente->hijos[posicion + 1] = nuevoNodoHijo->numero;
 			nodoInteriorCorriente->cantidadClaves++;
 			nodoInteriorCorriente->espacioOcupado += nuevaClave.getTamanio() + TAM_CONTROL_REGISTRO;
 			persistirNodo(nuevoNodoHijo);
@@ -131,23 +141,19 @@ bool ArbolBMas::insertarRecursivamente(Nodo* nodoCorriente, ClaveNumerica clave,
 		NodoHoja *nodoHojaCorriente = static_cast<NodoHoja*> (nodoCorriente);
 		int posicion = obtenerPosicion(nodoHojaCorriente, clave);
 		// chequea que no exista la clave
-		ClaveNumerica* claveNodo = obtenerClaveNumerica(nodoHojaCorriente,posicion);
-		if (posicion < nodoHojaCorriente->cantidadClaves && clave.getValorClave() == claveNodo->getValorClave()){
+		if (posicion < nodoHojaCorriente->cantidadClaves && clave.getValorClave() == nodoHojaCorriente->claves[posicion].getValorClave()){
 			return false;
 		}
-		delete claveNodo;
-		int i = nodoHojaCorriente->cantidadClaves - 1;
-		ClaveNumerica* claveAux = obtenerClaveNumerica(nodoHojaCorriente,i);
-		while (i >= 0 && clave.getValorClave() < claveAux->getValorClave()){
-			modificarClave(nodoHojaCorriente, i + 1, claveAux);
-			nodoHojaCorriente->modificarDatos(i + 1, nodoHojaCorriente->obtenerDato(i));
-			i--;
-			claveAux = obtenerClaveNumerica(nodoHojaCorriente,i);
-		}
-		delete claveAux;
-		modificarClave(nodoHojaCorriente, i + 1, &clave);
 
-		nodoHojaCorriente->modificarDatos(i + 1, dato);
+		int i = nodoHojaCorriente->cantidadClaves-1;
+		while (i >= 0 && clave.getValorClave() < nodoHojaCorriente->claves[i].getValorClave()){
+			nodoHojaCorriente->claves[i + 1] = nodoHojaCorriente->claves[i];
+			nodoHojaCorriente->datos[i + 1] = nodoHojaCorriente->datos[i];
+			i--;
+		}
+
+		nodoHojaCorriente->claves[i + 1] = clave;
+		nodoHojaCorriente->datos[i + 1] = *dato;
 		nodoHojaCorriente->cantidadClaves++;
 		nodoHojaCorriente->espacioOcupado += dato->getTamanio() + clave.getTamanio() + TAM_CONTROL_REGISTRO;
 		if (nodoHojaCorriente->isOverflow(maxTamanioClave)) {
@@ -202,37 +208,20 @@ int ArbolBMas::obtenerPosicion(Nodo *unNodo, ClaveNumerica clave) {
 	if (unNodo->cantidadClaves == 0)
 		return 0;
 	int inferior = 0;
-	int superior = (unNodo->cantidadClaves)-1;
+	int superior = (unNodo->cantidadClaves);
 
 	while (inferior < superior) {
 		int medio = (inferior + superior) / 2;
-		ClaveNumerica* claveNodo = obtenerClaveNumerica(unNodo,medio);
-		if (clave.getValorClave() <= claveNodo->getValorClave()) {
+		if (clave.getValorClave() <= unNodo->claves[medio].getValorClave()) {
 			superior = medio - 1;
 		} else {
 			inferior = medio + 1;
 		}
 	}
-	ClaveNumerica* claveNodoSup = obtenerClaveNumerica(unNodo,superior);
-	if (superior < 0 || (claveNodoSup->getValorClave() < clave.getValorClave()))
+	if (superior < 0 || (unNodo->claves[superior].getValorClave() < clave.getValorClave()))
 		superior++;
 
 	return superior;
-}
-
-ClaveNumerica* ArbolBMas::obtenerClaveNumerica(Nodo* nodo, int posicion){
-	int cont = 0;
-	ClaveNumerica* claveRetornada;
-	list<ClaveNumerica*>::iterator it = nodo->getClaves().begin();
-	while ( it != nodo->getClaves().end()){
-		if (cont == posicion){
-			claveRetornada = (*it);
-			return claveRetornada;
-		}
-		++cont;
-		++it;
-	}
-	return NULL;
 }
 
 void ArbolBMas::dividirNodoInterior(NodoInterior* nodoInteriorActual, ClaveNumerica* clavePromocion, Nodo** nuevoNodoInterior, int nuevaPosicion){
@@ -248,14 +237,14 @@ void ArbolBMas::dividirNodoInterior(NodoInterior* nodoInteriorActual, ClaveNumer
 	auxNuevoNodoInterior->cantidadClaves = nodoInteriorActual->cantidadClaves - (medio + 1);
 	for (int posicion = medio + 1; posicion < nodoInteriorActual->cantidadClaves; ++posicion) {
 		int auxPosicion = posicion - (medio + 1);
-		modificarClave(auxNuevoNodoInterior, auxPosicion, obtenerClaveNumerica(nodoInteriorActual,posicion));
-		modificarHijo(auxNuevoNodoInterior,auxPosicion, nodoInteriorActual->obtenerHijo(posicion));
-		auxNuevoNodoInterior->espacioOcupado += obtenerClaveNumerica(nodoInteriorActual,posicion)->getTamanio() + TAM_CONTROL_REGISTRO;
+		auxNuevoNodoInterior->claves[auxPosicion] = nodoInteriorActual->claves[posicion];
+		auxNuevoNodoInterior->hijos[auxPosicion] = nodoInteriorActual->hijos[posicion];
+		auxNuevoNodoInterior->espacioOcupado += nodoInteriorActual->claves[posicion].getTamanio() + TAM_CONTROL_REGISTRO;
 	}
-	modificarHijo(auxNuevoNodoInterior,auxNuevoNodoInterior->cantidadClaves,nodoInteriorActual->obtenerHijo(nodoInteriorActual->cantidadClaves));
+	auxNuevoNodoInterior->hijos[auxNuevoNodoInterior->cantidadClaves] = nodoInteriorActual->hijos[nodoInteriorActual->cantidadClaves];
 	nodoInteriorActual->cantidadClaves = medio;
 	nodoInteriorActual->espacioOcupado -= auxNuevoNodoInterior->espacioOcupado;
-	*clavePromocion = *obtenerClaveNumerica(nodoInteriorActual,medio);
+	*clavePromocion = nodoInteriorActual->claves[medio];
 	*nuevoNodoInterior = auxNuevoNodoInterior;
 }
 
@@ -264,11 +253,11 @@ void ArbolBMas::dividirNodoHoja(NodoHoja* nodoHojaActual, ClaveNumerica* clavePr
 	int espacioNodoIzquierdo = 0;
 	int cantidadClaves = 0;
 	while (cantidadClaves < nodoHojaActual->cantidadClaves && espacioNodoIzquierdo < espacioMedio){
-		espacioNodoIzquierdo += nodoHojaActual->obtenerDato(cantidadClaves)->getTamanio() + obtenerClaveNumerica(nodoHojaActual, cantidadClaves)->getTamanio() + TAM_CONTROL_REGISTRO;
+		espacioNodoIzquierdo += nodoHojaActual->datos[cantidadClaves].getTamanio() + nodoHojaActual->claves[cantidadClaves].getTamanio() + TAM_CONTROL_REGISTRO;
 		cantidadClaves++;
 		if (espacioNodoIzquierdo > TAM_EFECTIVO_NODO) {
 			cantidadClaves--;
-			espacioNodoIzquierdo -= nodoHojaActual->obtenerDato(cantidadClaves)->getTamanio() + obtenerClaveNumerica(nodoHojaActual, cantidadClaves)->getTamanio() + TAM_CONTROL_REGISTRO;
+			espacioNodoIzquierdo -= (nodoHojaActual->datos[cantidadClaves].getTamanio() + nodoHojaActual->claves[cantidadClaves].getTamanio() + TAM_CONTROL_REGISTRO);
 			break;
 		}
 	}
@@ -281,45 +270,74 @@ void ArbolBMas::dividirNodoHoja(NodoHoja* nodoHojaActual, ClaveNumerica* clavePr
 
 	for (int posicion = cantidadClaves; posicion < nodoHojaActual->cantidadClaves; ++posicion) {
 		int auxPosicion = posicion - cantidadClaves;
-		modificarClave(auxNuevoNodoHoja, auxPosicion, obtenerClaveNumerica(nodoHojaActual, posicion));
-		auxNuevoNodoHoja->modificarDatos(auxPosicion, nodoHojaActual->obtenerDato(posicion));
+		auxNuevoNodoHoja->claves[auxPosicion] = nodoHojaActual->claves[posicion];
+		auxNuevoNodoHoja->datos[auxPosicion] = nodoHojaActual->datos[posicion];
 	}
 
 	nodoHojaActual->espacioOcupado -= auxNuevoNodoHoja->espacioOcupado;
 	nodoHojaActual->cantidadClaves = cantidadClaves;
 	nodoHojaActual->hojaSiguiente = auxNuevoNodoHoja->numero;
-	*clavePromocion = *obtenerClaveNumerica(nodoHojaActual, nodoHojaActual->cantidadClaves - 1);
+	*clavePromocion = nodoHojaActual->claves[nodoHojaActual->cantidadClaves - 1];
 	*nuevoNodoHoja = auxNuevoNodoHoja;
 }
 
-void ArbolBMas::modificarClave(Nodo* nodo,int posicion, ClaveNumerica* clave){
-	bool encontrado = false;
-	int cont = 0;
-	list<ClaveNumerica*>::iterator it = nodo->getClaves().begin();
-	while ( it != nodo->getClaves().end() && !encontrado){
-			if (cont == posicion){
-				encontrado = true;
-				(*(*it)) = (*clave);
+void ArbolBMas::MostrarArbol (){
+	if (raiz){
+		toString(raiz,1);
+	}
+}
+void ArbolBMas::toString(Nodo* nodoAmostrar, int tab){
+	if(nodoAmostrar){
+		if (nodoAmostrar->isNodoHoja()) {
+			NodoHoja *nodo = static_cast<NodoHoja*> (nodoAmostrar);
+			for(int i=0 ; i<tab ; i++)
+				cout   << "Numero: " << nodo->numero << "  Nivel: " << nodo->nivel << "  Cant.Elem: " << nodo->cantidadClaves
+				<< " Esp.Libre: " << TAM_EFECTIVO_NODO - nodo->espacioOcupado << "  Hoja.Sig: " << nodo->hojaSiguiente << "    " << endl;
+			for (int posicion = 0; posicion < nodo->cantidadClaves; ++posicion){
+				cout << "(";
+				ClaveNumerica clave = nodo->claves[posicion];
+				clave.toString();
+				cout << ";";
+				Elementos elemento = nodo->datos[posicion];
+				elemento.toString();
+				cout << ")";
 			}
-			++it;
-			++cont;
+			cout << endl;
+		} else {
+
+			NodoInterior *nodoInt= static_cast<NodoInterior*> (nodoAmostrar);
+			cout << endl;
+			for(int i=0; i<tab ; i++)
+				cout << "  ";
+			cout << "Numero: " << nodoInt->numero << "  Nivel: " << nodoInt->nivel << "  Cant.Elem: " << nodoInt->cantidadClaves
+					<< "  Esp.Libre: " << TAM_EFECTIVO_NODO - nodoInt->espacioOcupado << endl;
+
+			for (int posicion = 0; posicion <= nodoInt->cantidadClaves; ++posicion) {
+
+				Nodo *hijo = hidratarNodo(nodoInt->hijos[posicion],2);
+				toString(hijo, tab+2);
+				if (hijo)
+					liberarMemoriaNodo(hijo);
+
+				if (posicion < nodoInt->cantidadClaves) {
+					ClaveNumerica clave = nodoInt->claves[posicion];;
+
+					for(int i=0; i<(tab+1) ; i++)
+						cout << "  ";
+					cout << "(";
+					clave.toString();
+					cout << ")";
+					cout << clave.getTamanio();
+				}
+
+			}
+			cout << endl;
+		}
 	}
 }
 
-void ArbolBMas::modificarHijo(NodoInterior* nodo, int posicion, int valor){
-	bool encontrado = false;
-	int cont = 0;
-	list<int*>::iterator it = nodo->getHijos().begin();
-	while ( it != nodo->getHijos().end() && !encontrado){
-			if (cont == posicion){
-				encontrado = true;
-				(*(*it)) = valor;
-			}
-			++it;
-			++cont;
-	}
-}
-
-void ArbolBMas::toString(){
-
+void ArbolBMas::hidratarDatosConfiguracion(){
+	nodosLibres.clear();
+	RecuperadorNodosLibres* recuperador = new RecuperadorNodosLibres(PATH_CONFIGURACION);
+	recuperador->obtenerDatos(primeraHoja,nodosLibres);
 }

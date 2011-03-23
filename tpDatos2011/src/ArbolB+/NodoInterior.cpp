@@ -11,11 +11,11 @@ NodoInterior::NodoInterior() : Nodo(0){
 }
 
 NodoInterior::~NodoInterior() {
-	list<int*>::iterator it = this->hijos.begin();
-	while (it != this->hijos.end()){
-		delete (*it);
-		it++;
-	}
+//	list<int*>::iterator it = this->hijos.begin();
+//	while (it != this->hijos.end()){
+//		delete (*it);
+//		it++;
+//	}
 }
 
 void NodoInterior::serializar(char * buffer, unsigned int &offset){
@@ -24,15 +24,11 @@ void NodoInterior::serializar(char * buffer, unsigned int &offset){
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->offset);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->espacioOcupado);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->cantidadClaves);
-	Persistencia::PonerEnteroEnChar(buffer, offset, this->claves.size());
-	list<ClaveNumerica*>::iterator itClaves = this->claves.begin();
-	while ( itClaves != claves.end()){
-		(*itClaves)->serialzar(buffer,offset);
+	for (int i = 0; i < cantidadClaves; i++){
+		claves[i].serializar(buffer,offset);
 	}
-	Persistencia::PonerEnteroEnChar(buffer, offset, this->hijos.size());
-	list<int*>::iterator itHijos = this->hijos.begin();
-	while ( itHijos != hijos.end()){
-		Persistencia::PonerEnteroEnChar(buffer, offset, (*(*itHijos)));
+	for (int i = 0; i < cantidadClaves; i++){
+		Persistencia::PonerEnteroEnChar(buffer,offset,hijos[i]);
 	}
 }
 void NodoInterior::hidratar(char * buffer, unsigned int &offset){
@@ -41,36 +37,30 @@ void NodoInterior::hidratar(char * buffer, unsigned int &offset){
 	this->offset = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	this->espacioOcupado = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	this->cantidadClaves = Persistencia::getEnteroDesdeBuffer(buffer,offset);
-	int claves = Persistencia::getEnteroDesdeBuffer(buffer,offset);
-	int cont = 0;
-	while (cont < claves){
-		ClaveNumerica * clave = new ClaveNumerica();
-		clave->hidratar(buffer,offset);
-		this->claves.push_back(clave);
-		cont++;
+	for (int i = 0; i < cantidadClaves ; i++){
+		ClaveNumerica clave;
+		clave.hidratar(buffer,offset);
+		this->claves[i] = clave;
 	}
-	cont = 0;
-	int hijos = Persistencia::getEnteroDesdeBuffer(buffer,offset);
-	while (cont < hijos){
-		int hijo = Persistencia::getEnteroDesdeBuffer(buffer,offset);
-		this->hijos.push_back(&hijo);
-		cont++;
+
+	for (int i = 0; i < cantidadClaves ; i++){
+		this->hijos[i] = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	}
 }
 
-int NodoInterior::obtenerHijo(int Posicion){
-	int nroNodohijo;
-	int cont = 0;
-	bool encontrado = false;
-
-	list<int*>::iterator it = this->hijos.begin();
-	while (it != this->hijos.end() && !encontrado){
-		if (cont == Posicion){
-			nroNodohijo = (*(*it));
-			return nroNodohijo;
-		}
-		++cont;
-		++it;
-	}
-	return NULL;
-}
+//int NodoInterior::obtenerHijo(int Posicion){
+//	int nroNodohijo;
+//	int cont = 0;
+//	bool encontrado = false;
+//
+//	list<int*>::iterator it = this->hijos.begin();
+//	while (it != this->hijos.end() && !encontrado){
+//		if (cont == Posicion){
+//			nroNodohijo = (*(*it));
+//			return nroNodohijo;
+//		}
+//		++cont;
+//		++it;
+//	}
+//	return NULL;
+//}

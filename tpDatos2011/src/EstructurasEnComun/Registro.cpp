@@ -25,7 +25,7 @@ std::string Registro::getApellido(){
 
 void Registro::serializar(char * buffer, unsigned int &offset){
 	Persistencia::PonerStringEnChar(buffer, offset, (char*)this->apellido.c_str());
-	this->Clave->serialzar(buffer, offset);
+	this->Clave->serializar(buffer, offset);
 }
 
 void Registro::hidratar(char * buffer, unsigned int &offset){
