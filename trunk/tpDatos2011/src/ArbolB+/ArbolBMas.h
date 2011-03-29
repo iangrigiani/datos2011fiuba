@@ -59,12 +59,14 @@ public:
 	 */
 	IteradorArbol* obtenerIterador();
 
+
 	/*
 	 * Buscar una clave en el archivo
-	 * Pre: Recibo la clave del registro a buscar.
-	 * Pos: Si lo encontro, devuelve el registro, sino, devuelve NULL.
+	 * Pre: Recibo la clave del elemento a buscar.
+	 * Pos: Si lo encontro, devuelve el elemento, sino, devuelve NULL.
 	 */
-	pair<Registro*, IteradorArbol*> buscar(ClaveNumerica clave);
+	Elemento * buscar(ClaveNumerica clave);
+
 
 	/*
 	 * Modifico un registro
