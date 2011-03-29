@@ -34,11 +34,10 @@ void ArbolBMas::grabarDatosConfiguracion(){
 	EscritorNodosLibres * escritor = new EscritorNodosLibres(nombreArchivo);
 	escritor->GrabarDatosConfig(primeraHoja, nodosLibres);
 }
-bool ArbolBMas::insertar(Registro* registro, int offset){
-	Elementos* elemento = new Elementos(registro->getClave(), offset);
+bool ArbolBMas::insertar(Elementos* elemento, int offset){
 	/* Si el tamanio del registro que quiero insertar es mayor al porcentaje minimo por nodo, lanzo una excepcion */
-	if ((int)registro->getTamanio() > (TAM_EFECTIVO_NODO * PORCENTAJE_NODO / 100)
-			|| registro->getClave()->getTamanio() > maxTamanioClave)
+	if ((int)elemento->getTamanio() > (TAM_EFECTIVO_NODO * PORCENTAJE_NODO / 100)
+			|| elemento->getClave()->getTamanio() > maxTamanioClave)
 		throw new exception;
 
 	Nodo* nuevoNodoHijo = NULL;
@@ -51,7 +50,7 @@ bool ArbolBMas::insertar(Registro* registro, int offset){
 		this->cantidadNodos = 1;
 	}
 	// TODO: OJO ACA VER EL GETAPELLIDOS SEGUN LO QUE DIGA EL ENUNCIADO.
-	ClaveNumerica clave((*(registro->getClave())).getValorClave());
+	ClaveNumerica clave((*(elemento->getClave())).getValorClave());
 	bool resultado = insertarRecursivamente(raiz, clave , elemento, &clavePromocion, &nuevoNodoHijo);
 	//////////////////////////////////////////////////////////////////////////
 

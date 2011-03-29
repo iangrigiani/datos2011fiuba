@@ -15,13 +15,14 @@ using namespace std;
 class Elementos : public Serializable {
 private:
 	ClaveNumerica* clave;
+	string dato;
 	unsigned int offset;
 public:
 	Elementos();
-	Elementos(ClaveNumerica* clave, unsigned int offset);
+	Elementos(ClaveNumerica* clave, string dato, unsigned int offset);
 	virtual ~Elementos();
 	int getTamanio() const{
-		return (sizeof(int) + this->clave->getTamanio());
+		return (sizeof(int) + this->clave->getTamanio() + this->dato.length());
 	}
 	void toString();
 	void serializar(char * buffer, unsigned int &offset);
@@ -30,12 +31,20 @@ public:
         return clave;
     }
 
+    string getDato() const{
+        return dato;
+    }
+
     unsigned int getOffset() const{
         return offset;
     }
 
     void setClave(ClaveNumerica *clave){
         this->clave = clave;
+    }
+
+    void setDato(string dato){
+        this->dato = dato;
     }
 
     void setOffset(unsigned int offset){
