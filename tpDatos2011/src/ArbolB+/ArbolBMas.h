@@ -51,7 +51,7 @@ public:
 	 * Insertar un registro al arbol
 	 * Pos: Devuelve TRUE si se inserto correctamente y FALSE en caso contrario.
 	 */
-	bool insertar(Registro* registro, int offset);
+	bool insertar(Elementos* elemento, int offset);
 
 	/*
 	 * Devuelve un IteradorArbol al primer nodo hoja del arbol.

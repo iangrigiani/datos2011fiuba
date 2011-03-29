@@ -2,7 +2,7 @@
 #define PARSERDELIBROS_H_
 
 #include "../EstructurasEnComun/Registro.h"
-#include <regex.h>
+//#include <regex.h>
 #include <stdlib.h>
 #include <string.h>
 #include "../EstructurasEnComun/Constantes.h"
@@ -20,7 +20,7 @@ private:
 public:
 	ParserDeLibros();
 	virtual ~ParserDeLibros();
-	Registro * obtenerRegistroDeLibro(char * libro, char * msj, int UIkey);
+	Registro * obtenerRegistroDeLibro(char * libro);
 };
 
 #endif /* PARSERDELIBROS_H_ */
