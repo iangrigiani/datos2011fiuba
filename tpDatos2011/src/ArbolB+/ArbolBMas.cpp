@@ -80,6 +80,34 @@ bool ArbolBMas::insertar(Elementos* elemento, int offset){
 	return resultado;
 }
 
+/*TODO chequear bien el funcionamiento*/
+Elemento * ArbolBMas::buscar(ClaveNumerica clave) {
+
+	Nodo *unNodo = raiz;
+
+	if (!unNodo)
+		NULL;
+
+	while (!unNodo->isNodoHoja()) {
+		NodoInterior *unNodoInterior = static_cast<NodoInterior*> (unNodo);
+		int posicion = obtenerPosicion(unNodoInterior, clave);
+		unNodo = hidratarNodo(unNodoInterior->hijos[posicion]);
+		if (unNodoInterior != raiz)
+			liberarMemoriaNodo(unNodoInterior);
+	}
+
+	NodoHoja *unNodoHoja = static_cast<NodoHoja*> (unNodo);
+	Elemento * elemento = NULL;
+	int posicion = obtenerPosicion(unNodoHoja, clave);
+
+	if (posicion < unNodoHoja->cantidadClaves && claveIgual(clave, unNodoHoja->claves[posicion]))
+		elemento = unNodoHoja->datos[posicion];
+	if (unNodoHoja != raiz)
+		liberarMemoriaNodo(unNodoHoja);
+	return elemento;
+}
+
+
 bool ArbolBMas::insertarRecursivamente(Nodo* nodoCorriente, ClaveNumerica& clave, Elementos* dato, ClaveNumerica* clavePromocion, Nodo** nuevoNodo){
 	if (!nodoCorriente->isNodoHoja()) {
 		NodoInterior *nodoInteriorCorriente = static_cast<NodoInterior*> (nodoCorriente);
