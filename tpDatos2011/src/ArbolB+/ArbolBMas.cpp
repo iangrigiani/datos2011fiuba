@@ -106,6 +106,9 @@ Elementos* ArbolBMas::buscar(ClaveNumerica clave) {
 //	if (unNodoHoja != raiz)
 //		liberarMemoriaNodo(unNodoHoja);
 //	return elemento;
+
+	//Devuelvo NULL porque debe devolver un elemento
+	return NULL;
 }
 
 
