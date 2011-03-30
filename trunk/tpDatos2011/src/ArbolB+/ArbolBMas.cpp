@@ -81,30 +81,31 @@ bool ArbolBMas::insertar(Elementos* elemento, int offset){
 }
 
 /*TODO chequear bien el funcionamiento*/
-Elemento * ArbolBMas::buscar(ClaveNumerica clave) {
+Elementos* ArbolBMas::buscar(ClaveNumerica clave) {
 
-	Nodo *unNodo = raiz;
 
-	if (!unNodo)
-		NULL;
-
-	while (!unNodo->isNodoHoja()) {
-		NodoInterior *unNodoInterior = static_cast<NodoInterior*> (unNodo);
-		int posicion = obtenerPosicion(unNodoInterior, clave);
-		unNodo = hidratarNodo(unNodoInterior->hijos[posicion]);
-		if (unNodoInterior != raiz)
-			liberarMemoriaNodo(unNodoInterior);
-	}
-
-	NodoHoja *unNodoHoja = static_cast<NodoHoja*> (unNodo);
-	Elemento * elemento = NULL;
-	int posicion = obtenerPosicion(unNodoHoja, clave);
-
-	if (posicion < unNodoHoja->cantidadClaves && claveIgual(clave, unNodoHoja->claves[posicion]))
-		elemento = unNodoHoja->datos[posicion];
-	if (unNodoHoja != raiz)
-		liberarMemoriaNodo(unNodoHoja);
-	return elemento;
+//	Nodo *unNodo = raiz;
+//
+//	if (!unNodo)
+//		NULL;
+//
+//	while (!unNodo->isNodoHoja()) {
+//		NodoInterior *unNodoInterior = static_cast<NodoInterior*> (unNodo);
+//		int posicion = obtenerPosicion(unNodoInterior, clave);
+//		unNodo = hidratarNodo(unNodoInterior->hijos[posicion]);
+//		if (unNodoInterior != raiz)
+//			liberarMemoriaNodo(unNodoInterior);
+//	}
+//
+//	NodoHoja *unNodoHoja = static_cast<NodoHoja*> (unNodo);
+//	Elementos* elemento = NULL;
+//	int posicion = obtenerPosicion(unNodoHoja, clave);
+//
+//	if (posicion < unNodoHoja->cantidadClaves && claveIgual(clave, unNodoHoja->claves[posicion]))
+//		elemento = unNodoHoja->datos[posicion];
+//	if (unNodoHoja != raiz)
+//		liberarMemoriaNodo(unNodoHoja);
+//	return elemento;
 }
 
 

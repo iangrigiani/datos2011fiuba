@@ -65,7 +65,7 @@ public:
 	 * Pre: Recibo la clave del elemento a buscar.
 	 * Pos: Si lo encontro, devuelve el elemento, sino, devuelve NULL.
 	 */
-	Elemento * buscar(ClaveNumerica clave);
+	Elementos* buscar(ClaveNumerica clave);
 
 
 	/*
