@@ -22,7 +22,6 @@ char * ParserDeLibros::getEditorial(){
 }
 
 char * ParserDeLibros::getPalabras(){
-//        char PalabrasPatron[]= "Palabras:\\s*[^,]*,\\s*(*)";
         char PalabrasPatron[]= "Palabras:\\s*([^\r\t]*)\FINPALABRA";
         return getFirstMatch(this->libroActual, PalabrasPatron);
 }

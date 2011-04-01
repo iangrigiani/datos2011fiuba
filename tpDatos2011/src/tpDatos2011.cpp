@@ -14,10 +14,19 @@ using namespace std;
 
 int main() {
 	HandlerArchivoRLV* handler = new HandlerArchivoRLV();
-//	if (handler->insertarNuevoLibro("Libro.txt") == OK){
+	handler->insertarLibro("Libro.txt");
+	cout << "Grabe libro" << endl;
+//		handler->insertarLibro("Libro.txt");
+//		handler->insertarLibro("Libro.txt");
+//		handler->insertarLibro("Libro.txt");
+//	delete handler;
+
+//	if (handler->insertarLibro("Libro.txt") == OK){
 //			cout << "Grabe Libro" << endl;
 //	}
-
-	char * Libro = handler->obtenerLibro(0);
-	cout << Libro << endl;
+//	delete handler;
+//	HandlerArchivoRLV* handler2 = new HandlerArchivoRLV();
+//	char * Libro = handler2->buscarLibro(0);
+//	cout << Libro;
+//	delete handler2;
 }
