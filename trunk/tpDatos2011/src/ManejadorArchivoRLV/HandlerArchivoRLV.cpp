@@ -1,40 +1,17 @@
-/*
- * HandlerArchivoRLV.cpp
- *
- *  Created on: 30/03/2011
- *      Author: angeles
- */
-
 #include "HandlerArchivoRLV.h"
 
 HandlerArchivoRLV::HandlerArchivoRLV() {
-	string path(PATH_REG_LONG_VARIABLE);
-	this->path = path;
-
-	FILE* arch;
-	if ((arch = fopen(this->path.c_str(), "r")) == NULL) {
-		cout << "Error al intentar abrir el archivo: " << this->path << endl;
-		return;
-	}
-
-	char buffer[sizeof(int)];
-	fread(buffer, 1, sizeof(int), arch);
-	this->ultimo_ID = atoi(buffer);
-
-	fseek(arch, 0, SEEK_END);
-	this->size = ftell(arch);
-
-	fclose(arch);
+	obtenerDatosDeEntrada();
 }
 
-void HandlerArchivoRLV::insertarNuevoLibro(const string& path_nuevo_libro)
+int HandlerArchivoRLV::insertarNuevoLibro(const string& path_nuevo_libro)
 {
 	FILE* f_src;
 	FILE* f_dst;
-
+	obtenerDatosDeEntrada();
 	if ((f_src = fopen(path_nuevo_libro.c_str(), "r")) == NULL) {
-		cout << "Error al intentar abrir el archivo: " << path_nuevo_libro << endl;
-		return;
+		cout << "Error al intentar abrir el archivo : " << path_nuevo_libro << endl;
+		return ERROR;
 	}
 
 	fseek(f_src, 0, SEEK_END);
@@ -45,63 +22,45 @@ void HandlerArchivoRLV::insertarNuevoLibro(const string& path_nuevo_libro)
 	fread(buffer, 1, size, f_src);
 	fclose(f_src);
 
-	cout << buffer << endl;
-
 	int indexado = 0;
 	int procesado = 1;
 	int id_Archivo = this->ultimo_ID + 1;
-
-	if ((f_dst = fopen(this->path.c_str(), "a+")) == NULL) {
-		cout << "Error al intentar abrir el archivo: " << this->path << endl;
-		return;
+	if ((f_dst = fopen(PATH_REG_LONG_VARIABLE, "a+")) == NULL) {
+		cout << "El archivo de Registros variables no está creado"<< endl;
+		return ERROR;
 	}
 
 	stringstream ss;
-	ss << id_Archivo << "|" << size << "|" << procesado << "|" << indexado << "|" << "\n";
+	ss << id_Archivo << "|" << size << "|" << procesado << "|" << indexado << "|" << "\n" << buffer;
 	string str = ss.str();
-	//char* buffer_aux = str.c_str();
-	//fwrite(buffer_aux, 1, str.length(), f_dst);
-	fwrite(buffer, 1, size, f_dst);
-
+	fwrite(str.c_str(), 1,((3* sizeof(int))+size) ,f_dst);
 	fclose(f_dst);
-
 	free(buffer);
+	return OK;
 }
 
 char* HandlerArchivoRLV::obtenerLibro(int offset)
 {
 	std::ifstream archivoRegistros;
 	char * cadenaDeDatos;
-	int espacioOcupado;
-
-	archivoRegistros.open(this->path.c_str());
+	archivoRegistros.open(PATH_REG_LONG_VARIABLE);
 	archivoRegistros.seekg(offset);
-
 	//Obtengo la linea correspondiente al libro en la que se tiene la información de tamanio
 	archivoRegistros.get(cadenaDeDatos,100);
-
-
-	int longitudCadena = strlen(cadenaDeDatos);
+	string cad = cadenaDeDatos;
+	int longitudCadena = cad.length();
 
 	//Obtengo el tamanio del libro a leer
-	espacioOcupado = obtenerTamanioLibro(cadenaDeDatos);
-
-
+	int espacioOcupado = obtenerTamanioLibro(cadenaDeDatos);
 	/*Le sumo a la longitud de la cadena de datos el offset para posicionarme nuevamente
 	 en el archivo*/
 	longitudCadena += offset;
 
 	archivoRegistros.seekg(longitudCadena);
-
 	char * libroLeido = (char*)calloc (espacioOcupado, sizeof(char));
 
 	archivoRegistros.read(libroLeido, espacioOcupado);
-
-	//Prueba para ver si leyo bien después BORRAR!!!!
-	cout.write(libroLeido,espacioOcupado);
-
 	archivoRegistros.close();
-
 	//No olvidar de liberar la memoria!!!!
 	return libroLeido;
 }
@@ -121,3 +80,18 @@ int HandlerArchivoRLV::obtenerTamanioLibro(char * cadenaDeDatos)
 	return tamanioLibro;
 }
 
+void HandlerArchivoRLV::obtenerDatosDeEntrada(){
+	FILE* arch;
+	if ((arch = fopen(PATH_REG_LONG_VARIABLE, "r")) == NULL) {
+		cout << "Error al intentar abrir el archivo : " << PATH_REG_LONG_VARIABLE << endl;
+		return;
+	}else{
+		char buffer[sizeof(int)];
+		fread(buffer, 1, sizeof(int), arch);
+		this->ultimo_ID = atoi(buffer);
+		fseek(arch, 0, SEEK_END);
+		this->size = ftell(arch);
+
+		fclose(arch);
+	}
+}

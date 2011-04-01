@@ -9,11 +9,15 @@
 #include <iostream>
 using namespace std;
 #include "EstructurasEnComun/Registro.h"
-#include "ModuloDePersistencia/EscritorBloques.h"
-#include "ModuloDePersistencia/RecuperadorBloques.h"
+#include "ManejadorArchivoRLV/HandlerArchivoRLV.h"
 #include "ArbolB+/ArbolBMas.h"
 
 int main() {
+	HandlerArchivoRLV* handler = new HandlerArchivoRLV();
+//	if (handler->insertarNuevoLibro("Libro.txt") == OK){
+//			cout << "Grabe Libro" << endl;
+//	}
 
-	cout << "HOLAAA" << endl;
+	char * Libro = handler->obtenerLibro(0);
+	cout << Libro << endl;
 }
