@@ -1,50 +1,46 @@
 #include "HandlerArchivoRLV.h"
 
 HandlerArchivoRLV::HandlerArchivoRLV() {
-	obtenerDatosDeEntrada();
 }
 
-int HandlerArchivoRLV::insertarNuevoLibro(const string& path_nuevo_libro)
+int HandlerArchivoRLV::insertarLibro(const string& path_nuevo_libro)
 {
-	FILE* f_src;
-	FILE* f_dst;
+	std::ifstream f_ent;
+	f_ent.open(path_nuevo_libro.c_str(), std::ios_base::in);
+	f_ent.seekg(0,std::ios_base::end);
+	// Obtengo tamanio de libro
+	int size = f_ent.tellg();
+	f_ent.seekg(0);
+	char* buffer = (char*) calloc (size-1 , sizeof(char));
+
 	obtenerDatosDeEntrada();
-	if ((f_src = fopen(path_nuevo_libro.c_str(), "r")) == NULL) {
-		cout << "Error al intentar abrir el archivo : " << path_nuevo_libro << endl;
-		return ERROR;
-	}
 
-	fseek(f_src, 0, SEEK_END);
-	long int size = ftell(f_src);
-	rewind(f_src);
-
-	char* buffer = (char*) malloc (sizeof(char) * size);
-	fread(buffer, 1, size, f_src);
-	fclose(f_src);
-
+	// Leo Libro
+	f_ent.read(buffer, size);
 	int indexado = 0;
 	int procesado = 1;
 	int id_Archivo = this->ultimo_ID + 1;
-	if ((f_dst = fopen(PATH_REG_LONG_VARIABLE, "a+")) == NULL) {
-		cout << "El archivo de Registros variables no está creado"<< endl;
-		return ERROR;
-	}
-
+	std::ofstream f_dst;
+	f_dst.open(PATH_REG_LONG_VARIABLE, std::ios_base::app);
 	stringstream ss;
-	ss << id_Archivo << "|" << size << "|" << procesado << "|" << indexado << "|" << "\n" << buffer;
+	// Armo los datos de entrada para ese libro
+	ss << id_Archivo << "|" << size << "|" << procesado << "|" << indexado << "|" << "\n" << buffer << "\n";
 	string str = ss.str();
-	fwrite(str.c_str(), 1,((3* sizeof(int))+size) ,f_dst);
-	fclose(f_dst);
+	// Escribo libro en el archivo de RLV
+	f_dst.write(str.c_str(), str.length());
+	f_dst.close();
+	f_ent.close();
 	free(buffer);
 	return OK;
 }
 
-char* HandlerArchivoRLV::obtenerLibro(int offset)
+char* HandlerArchivoRLV::buscarLibro(int offset)
 {
 	std::ifstream archivoRegistros;
-	char * cadenaDeDatos;
-	archivoRegistros.open(PATH_REG_LONG_VARIABLE);
+	char  cadenaDeDatos[100];
+	archivoRegistros.open(PATH_REG_LONG_VARIABLE, std::ios_base::in);
 	archivoRegistros.seekg(offset);
+
 	//Obtengo la linea correspondiente al libro en la que se tiene la información de tamanio
 	archivoRegistros.get(cadenaDeDatos,100);
 	string cad = cadenaDeDatos;
@@ -55,13 +51,10 @@ char* HandlerArchivoRLV::obtenerLibro(int offset)
 	/*Le sumo a la longitud de la cadena de datos el offset para posicionarme nuevamente
 	 en el archivo*/
 	longitudCadena += offset;
-
 	archivoRegistros.seekg(longitudCadena);
 	char * libroLeido = (char*)calloc (espacioOcupado, sizeof(char));
-
 	archivoRegistros.read(libroLeido, espacioOcupado);
 	archivoRegistros.close();
-	//No olvidar de liberar la memoria!!!!
 	return libroLeido;
 }
 
@@ -69,29 +62,48 @@ int HandlerArchivoRLV::obtenerTamanioLibro(char * cadenaDeDatos)
 {
 	char * caracterProcesado;
 	int tamanioLibro;
-
 	strtok(cadenaDeDatos,"|");
 
 	//Busco donde se que se encuentra el campo asociado al tamanio del libro
 	caracterProcesado = strtok(NULL,"|");
-
 	tamanioLibro = atoi(caracterProcesado);
-
 	return tamanioLibro;
 }
 
 void HandlerArchivoRLV::obtenerDatosDeEntrada(){
-	FILE* arch;
-	if ((arch = fopen(PATH_REG_LONG_VARIABLE, "r")) == NULL) {
-		cout << "Error al intentar abrir el archivo : " << PATH_REG_LONG_VARIABLE << endl;
-		return;
-	}else{
-		char buffer[sizeof(int)];
-		fread(buffer, 1, sizeof(int), arch);
-		this->ultimo_ID = atoi(buffer);
-		fseek(arch, 0, SEEK_END);
-		this->size = ftell(arch);
-
-		fclose(arch);
+	std::ifstream archivoRegistros;
+	char  cadenaDeDatos[100];
+	archivoRegistros.open(PATH_REG_LONG_VARIABLE, std::ios_base::in);
+	archivoRegistros.get(cadenaDeDatos,100);
+	string cad = cadenaDeDatos;
+	int cont = 0;
+	int offset = 0;
+	int tamanioLibro = 0;
+	int longitudCadena = cad.length();
+	if (longitudCadena > 0 ){
+		++cont;
+		tamanioLibro = obtenerTamanioLibro(cadenaDeDatos);
+		offset = longitudCadena + tamanioLibro;
 	}
+	cad.clear();
+	free(cadenaDeDatos);
+	archivoRegistros.seekg(offset);
+	archivoRegistros.get(cadenaDeDatos,100);
+	cad = cadenaDeDatos;
+	longitudCadena = cad.length();
+	tamanioLibro = 0;
+	while(longitudCadena > 0){
+		tamanioLibro = obtenerTamanioLibro(cadenaDeDatos);
+		offset = longitudCadena + tamanioLibro;
+		archivoRegistros.seekg(offset);
+		cad.clear();
+		free(cadenaDeDatos);
+		archivoRegistros.get(cadenaDeDatos,100);
+		cad = cadenaDeDatos;
+		longitudCadena = cad.length();
+		tamanioLibro = 0;
+	}
+	this->ultimo_ID = cont;
+	this->size = offset;
+	archivoRegistros.close();
 }

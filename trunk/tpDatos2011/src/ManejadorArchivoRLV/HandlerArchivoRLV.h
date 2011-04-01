@@ -22,8 +22,9 @@ private:
 public:
 		HandlerArchivoRLV();
 		virtual ~HandlerArchivoRLV() {};
-		int insertarNuevoLibro(const string& path_nuevo_libro);
-		char* obtenerLibro(int offset);
+		int insertarLibro(const string& path_nuevo_libro);
+		char* buscarLibro(int offset);
+		void quitarLibro(int offset);
 
 };
 
