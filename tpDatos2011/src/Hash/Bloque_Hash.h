@@ -28,7 +28,8 @@ public:
 	virtual ~Bloque_Hash() {};
 
 	void set_tam_dispersion();
-	int get_tam_dispersion() { return this->tam_dispersion; }
+	int get_tam_dispersion() const { return this->tam_dispersion; }
+	int get_pos_arch() const { return this->pos_arch; }
 
 	bool esta_vacio() const;
 	bool entra_en_bloque(const Registro_Hash& reg) const;

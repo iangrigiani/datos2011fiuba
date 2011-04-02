@@ -30,15 +30,15 @@ public:
 	virtual ~HandlerTabla() {};
 
 	void set_tam_tabla(int tam_tabla);
-	int get_tam_tabla() { return this->tam_tabla; }
+	int get_tam_tabla() const { return this->tam_tabla; }
 
 	void duplicar_tabla();
 	void truncar_tabla();
-	bool es_tabla_simetrica();
+	bool mitades_iguales() const;
 
-	void insertar_nueva_referencia(int bloque_a_reemplazar, const Bloque_Hash& nuevo_bloque);
-	void reemplazar_referencias(int bloque_a_reemplazar, const Bloque_Hash& nuevo_bloque, int pos_inicial);
-	bool puedo_liberar_bloque(const Bloque_Hash& bloque);
+	void insertar_referencia(int bloque_a_reemplazar, const Bloque_Hash& nuevo_bloque);
+	void insertar_referencias(const Bloque_Hash& nuevo_bloque, int pos_inicial);
+	bool puedo_liberar_bloque(int tam_dispersion, int pos_actual) const;
 
 };
 
