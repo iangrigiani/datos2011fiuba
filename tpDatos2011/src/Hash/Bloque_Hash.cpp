@@ -10,6 +10,14 @@
 Bloque_Hash::Bloque_Hash(int pos_arch, int tam_dispersion) :
 	pos_arch(pos_arch), tam_dispersion(tam_dispersion), espacio_libre(TAM_BLOQUE) {}
 
+void Bloque_Hash::duplicar_tam_dispersion() {
+	this->tam_dispersion *= 2;
+}
+
+void Bloque_Hash::truncar_tam_dispersion() {
+	this->tam_dispersion /= 2;
+}
+
 bool Bloque_Hash::esta_vacio() const {
 	if (this->espacio_libre == TAM_BLOQUE)
 		return true;
@@ -42,6 +50,7 @@ bool Bloque_Hash::eliminar_pos(int pos) {
 
 void Bloque_Hash::agregar_nuevo_reg(const Registro_Hash& reg) {
 	this->regs.push_back(reg);
+	this->espacio_libre -= reg.obtener_tam();
 }
 
 bool Bloque_Hash::eliminar_reg(int clave) {
@@ -53,6 +62,7 @@ bool Bloque_Hash::eliminar_reg(int clave) {
 
 	if ((*it).get_clave() == clave) {
 		this->regs.erase(it);
+		this->espacio_libre += (*it).obtener_tam();
 		return true;
 	}
 	return false;
@@ -112,4 +122,9 @@ list < Registro_Hash > Bloque_Hash::actualizar_regs(int tam_tabla) {
 
 void Bloque_Hash::incorporar_regs(list < Registro_Hash > regs) {
 	this->regs = regs;
+}
+
+void Bloque_Hash::vaciar() {
+	this->regs.clear();
+	this->espacio_libre = TAM_BLOQUE;
 }

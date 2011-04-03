@@ -34,11 +34,16 @@ public:
 
 	void duplicar_tabla();
 	void truncar_tabla();
-	bool mitades_iguales() const;
 
-	void insertar_referencia(int bloque_a_reemplazar, const Bloque_Hash& nuevo_bloque);
-	void insertar_referencias(const Bloque_Hash& nuevo_bloque, int pos_inicial);
-	bool puedo_liberar_bloque(int tam_dispersion, int pos_actual) const;
+	bool mitades_iguales() const;
+	int get_num_bloque(int clave) const;
+
+	void reemplazar_referencia(const Bloque_Hash& bloque_a_reemplazar, const Bloque_Hash& nuevo_bloque);
+	void reemplazar_referencias(int pos_inicial, const Bloque_Hash& nuevo_bloque);
+
+	bool puedo_liberar_bloque(const Bloque_Hash& bloque_a_liberar, int pos_actual,
+			int* num_bloque_por_reemplazar) const;
+	void liberar_referencias(int pos_inicial, const Bloque_Hash& bloque_por_reemplazar);
 
 };
 
