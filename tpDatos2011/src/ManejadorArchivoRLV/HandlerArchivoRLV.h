@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "Constantes.h"
+#include "../EstructurasEnComun/Constantes.h"
 
 using namespace std;
 
@@ -18,11 +18,13 @@ private:
 		long int size;
 		int obtenerTamanioLibro(char * cadenaDeDatos);
 		void recuperarUltimoID();
-		int obtenerUltimoIDPersistido(char * cadenaDeDatos);
+//		int obtenerUltimoIDPersistido(char * cadenaDeDatos);
+		void grabarUltimoID();
 
 public:
 		HandlerArchivoRLV();
-		virtual ~HandlerArchivoRLV() {};
+		virtual ~HandlerArchivoRLV() {
+		};
 		int insertarLibro(const string& path_nuevo_libro);
 		char* buscarLibro(int offset);
 		void quitarLibro(int offset);
