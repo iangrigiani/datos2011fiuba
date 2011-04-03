@@ -27,8 +27,10 @@ public:
 	Bloque_Hash(int pos_arch, int tam_dispersion = 1);
 	virtual ~Bloque_Hash() {};
 
-	void set_tam_dispersion();
+	void duplicar_tam_dispersion();
+	void truncar_tam_dispersion();
 	int get_tam_dispersion() const { return this->tam_dispersion; }
+
 	int get_pos_arch() const { return this->pos_arch; }
 
 	bool esta_vacio() const;
@@ -46,6 +48,7 @@ public:
 	list < Registro_Hash > actualizar_regs(int tam_tabla);
 	void incorporar_regs(list < Registro_Hash > regs);
 
+	void vaciar();
 };
 
 #endif /* BLOQUE_HASH_H_ */

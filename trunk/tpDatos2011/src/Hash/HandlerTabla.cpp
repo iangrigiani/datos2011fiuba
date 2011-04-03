@@ -120,7 +120,29 @@ bool HandlerTabla::mitades_iguales() const {
 	return igual;
 }
 
-void HandlerTabla::insertar_referencia(int bloque_a_reemplazar, const Bloque_Hash& nuevo_bloque) {
+int HandlerTabla::get_num_bloque(int clave) const {
+	fstream arch;
+	string s;
+	int num_bloque;
+	int contador = 0;
+
+	arch.open(NOM_ARCH_TABLA, fstream::in | fstream::out);
+
+	getline(arch, s, '|');
+
+	while (contador != clave % this->tam_tabla + 1) {
+		arch >> s;
+		++ contador;
+	}
+
+	stringstream ss;
+	ss << s;
+	ss >> num_bloque;
+
+	return num_bloque;
+}
+
+void HandlerTabla::reemplazar_referencia(const Bloque_Hash& bloque_a_reemplazar, const Bloque_Hash& nuevo_bloque) {
 	ifstream arch;
 	ofstream arch_aux;
 	string s;
@@ -143,7 +165,7 @@ void HandlerTabla::insertar_referencia(int bloque_a_reemplazar, const Bloque_Has
 		ss << s;
 		ss >> num_bloque;
 
-		if (num_bloque == bloque_a_reemplazar) {
+		if (num_bloque == bloque_a_reemplazar.get_pos_arch()) {
 			encontrado = true;
 			arch_aux << ' ' << dec << nuevo_bloque.get_pos_arch();
 		}
@@ -165,7 +187,7 @@ void HandlerTabla::insertar_referencia(int bloque_a_reemplazar, const Bloque_Has
 	rename(NOM_ARCH_TEMP, NOM_ARCH_TABLA);
 }
 
-void HandlerTabla::insertar_referencias(const Bloque_Hash& nuevo_bloque, int pos_inicial) {
+void HandlerTabla::reemplazar_referencias(int pos_inicial, const Bloque_Hash& nuevo_bloque) {
 	ifstream arch;
 	ofstream arch_aux;
 	string s;
@@ -200,7 +222,7 @@ void HandlerTabla::insertar_referencias(const Bloque_Hash& nuevo_bloque, int pos
 	rename(NOM_ARCH_TEMP, NOM_ARCH_TABLA);
 }
 
-bool HandlerTabla::puedo_liberar_bloque(int tam_dispersion, int pos_actual) const {
+bool HandlerTabla::puedo_liberar_bloque(const Bloque_Hash& bloque_a_liberar, int pos_actual, int* bloque_a_reemplazar) const {
 	fstream arch;
 	string s;
 	stringstream ss_1, ss_2;
@@ -211,11 +233,11 @@ bool HandlerTabla::puedo_liberar_bloque(int tam_dispersion, int pos_actual) cons
 
 	getline(arch, s, '|');
 
-	pos_anterior = pos_actual - tam_dispersion / 2 + 1;
+	pos_anterior = pos_actual - bloque_a_liberar.get_tam_dispersion() / 2 + 1;
 	if (pos_anterior <= 0)
 		pos_anterior += this->tam_tabla;
 
-	pos_siguiente = pos_actual + tam_dispersion / 2 + 1;
+	pos_siguiente = pos_actual + bloque_a_liberar.get_tam_dispersion() / 2 + 1;
 	if (pos_siguiente > this->tam_tabla)
 		pos_siguiente -= this->tam_tabla;
 
@@ -250,10 +272,14 @@ bool HandlerTabla::puedo_liberar_bloque(int tam_dispersion, int pos_actual) cons
 		ss_2 >> bloque_anterior;
 	}
 
-	cout << bloque_anterior << endl;
-	cout << bloque_siguiente << endl;
-
-	if (bloque_anterior == bloque_siguiente)
+	if (bloque_anterior == bloque_siguiente) {
+		*bloque_a_reemplazar = bloque_anterior;
 		return true;
+	}
+	bloque_a_reemplazar = NULL;
 	return false;
+}
+
+void HandlerTabla::liberar_referencias(int pos_inicial, const Bloque_Hash& bloque_por_reemplazar) {
+	this->reemplazar_referencias(pos_inicial, bloque_por_reemplazar);
 }
