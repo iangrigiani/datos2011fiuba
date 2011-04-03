@@ -1,0 +1,27 @@
+2 (Este es el ultimo id)
+1(id de este libro)|111(offset)|1(procesado)|0(ni indexado)
+asjdjasdlkjaslkjalskdjasjdkajsd
+Titulo: El libro
+				Autor: Lucas  
+
+	Editorial: lalala saaa
+Palabras: asjknaslkdnmalksd
+	asd sd
+sd as da+sd a+s d+a
+s+d as+d a+sd +a sd+a +
+asd
+
+asdasdasdasdasdas FINPALABRA
+2(id de este libro)|111(offset)|1(procesado)|0(ni indexado)
+asjdjasdlkjaslkjalskdjasjdkajsd
+Titulo: El libro
+				Autor: Lucas  
+
+	Editorial: lalala saaa
+Palabras: asjknaslkdnmalksd
+	asd sd
+sd as da+sd a+s d+a
+s+d as+d a+sd +a sd+a +
+asd
+
+asdasdasdasdasdas FINPALABRA
