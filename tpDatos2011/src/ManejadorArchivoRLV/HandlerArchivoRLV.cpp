@@ -43,22 +43,6 @@ void HandlerArchivoRLV::recuperarUltimoID(){
 	archivoMaestro.close();
 }
 
-
-/*
- *Devuelve el ultimo ID persistido en el archivo maestro en formato int
- */
-//int HandlerArchivoRLV::obtenerUltimoIDPersistido(char * cadenaDeDatos){
-//
-//	char * caracterProcesado;
-//	int UltimoIDPersistido;
-//	strtok(cadenaDeDatos,"|");
-//	//Obtengo el la cadena con el ultimo ID, lo transformo a int y los devuelvo
-//	caracterProcesado = strtok(NULL,"|");
-//	UltimoIDPersistido = atoi(caracterProcesado);
-//	return UltimoIDPersistido;
-//}
-
-
 HandlerArchivoRLV::HandlerArchivoRLV() {
     recuperarUltimoID();
 
@@ -113,6 +97,7 @@ void HandlerArchivoRLV::grabarUltimoID(){
 	string str = ss.str();
 	// Escribo libro en el archivo de RLV
 	f_dst.write(str.c_str(), str.length());
+	f_dst.flush();
 	f_dst.close();
 }
 /*
@@ -125,16 +110,16 @@ char* HandlerArchivoRLV::buscarLibro(int offset)
 	archivoMaestro.open(PATH_REG_LONG_VARIABLE, std::ios_base::in);
 	archivoMaestro.seekg(offset);
 
-	//Obtengo la linea correspondiente al libro en la que se tiene la información de tamanio
 	archivoMaestro.get(cadenaDeDatos,100);
 	string cad = cadenaDeDatos;
 	int longitudCadena = cad.length();
+
+	longitudCadena += offset;
 
 	//Obtengo el tamanio del libro a leer
 	int espacioOcupado = obtenerTamanioLibro(cadenaDeDatos);
 	/*Le sumo a la longitud de la cadena de datos el offset para posicionarme nuevamente
 	 en el archivo*/
-	longitudCadena += offset;
 	archivoMaestro.seekg(longitudCadena);
 	char * libroLeido = (char*)calloc (espacioOcupado, sizeof(char));
 	archivoMaestro.read(libroLeido, espacioOcupado);

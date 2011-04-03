@@ -18,7 +18,6 @@ private:
 		long int size;
 		int obtenerTamanioLibro(char * cadenaDeDatos);
 		void recuperarUltimoID();
-//		int obtenerUltimoIDPersistido(char * cadenaDeDatos);
 		void grabarUltimoID();
 
 public:
