@@ -32,7 +32,7 @@ void HandlerArchivoRLV::recuperarUltimoID(){
 
 	// si tiene datos busco el ultimo ID persistido
 	if (longitudCadena > 0 ){
-		ultimoIDPersistido = obtenerUltimoIDPersistido(cadenaDeDatos);
+		ultimoIDPersistido = atoi(cadenaDeDatos);//obtenerUltimoIDPersistido(cadenaDeDatos);
 	}
 	else{
 		ultimoIDPersistido = 0 ;
@@ -47,16 +47,16 @@ void HandlerArchivoRLV::recuperarUltimoID(){
 /*
  *Devuelve el ultimo ID persistido en el archivo maestro en formato int
  */
-int HandlerArchivoRLV::obtenerUltimoIDPersistido(char * cadenaDeDatos){
-
-	char * caracterProcesado;
-	int UltimoIDPersistido;
-	strtok(cadenaDeDatos,"|");
-	//Obtengo el la cadena con el ultimo ID, lo transformo a int y los devuelvo
-	caracterProcesado = strtok(NULL,"|");
-	UltimoIDPersistido = atoi(caracterProcesado);
-	return UltimoIDPersistido;
-}
+//int HandlerArchivoRLV::obtenerUltimoIDPersistido(char * cadenaDeDatos){
+//
+//	char * caracterProcesado;
+//	int UltimoIDPersistido;
+//	strtok(cadenaDeDatos,"|");
+//	//Obtengo el la cadena con el ultimo ID, lo transformo a int y los devuelvo
+//	caracterProcesado = strtok(NULL,"|");
+//	UltimoIDPersistido = atoi(caracterProcesado);
+//	return UltimoIDPersistido;
+//}
 
 
 HandlerArchivoRLV::HandlerArchivoRLV() {
@@ -78,7 +78,7 @@ int HandlerArchivoRLV::insertarLibro(const string& path_nuevo_libro)
 // Obtengo ID del ultimo libro ingresado
 	int id_Archivo = this->ultimoID + 1;
     this->ultimoID = id_Archivo;
-
+    grabarUltimoID();
 // Manejo sobre el archivo de RLV
 	f_ent.read(buffer, size);
 	int indexado = 0;
@@ -104,7 +104,17 @@ int HandlerArchivoRLV::insertarLibro(const string& path_nuevo_libro)
 	return OK;
 }
 
-
+void HandlerArchivoRLV::grabarUltimoID(){
+	std::ofstream f_dst;
+	f_dst.open(PATH_REG_LONG_VARIABLE, std::ios_base::out);
+	f_dst.seekp(0);
+	stringstream ss;
+	ss << this->ultimoID <<  "\n";
+	string str = ss.str();
+	// Escribo libro en el archivo de RLV
+	f_dst.write(str.c_str(), str.length());
+	f_dst.close();
+}
 /*
  * Devuelve un puntero a una cadena de char que contiene todo el libro
  */

@@ -1,5 +1,3 @@
-1
-1|193|1|0|
 asjdjasdlkjaslkjalskdjasjdkajsd
 Titulo: El libro
 asd
@@ -11,4 +9,3 @@ sad
 Palabras: asjknaslkdnmalksd
 as+d a+sd +a sd+a + asd
 asdasdasdasdasdas FINPALABRA
-

@@ -16,6 +16,11 @@ int main() {
 	HandlerArchivoRLV* handler = new HandlerArchivoRLV();
 	handler->insertarLibro("Libro.txt");
 	cout << "Grabe libro" << endl;
+	delete handler;
+//	HandlerArchivoRLV* handler2 = new HandlerArchivoRLV();
+//	handler2->insertarLibro("Libro.txt");
+//	cout << "Grabe libro" << endl;
+//	delete handler2;
 //		handler->insertarLibro("Libro.txt");
 //		handler->insertarLibro("Libro.txt");
 //		handler->insertarLibro("Libro.txt");
