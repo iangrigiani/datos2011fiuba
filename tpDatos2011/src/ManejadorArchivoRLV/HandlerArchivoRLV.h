@@ -1,5 +1,5 @@
-#ifndef HANDLERARCHIVORLV_H_
-#define HANDLERARCHIVORLV_H_
+#ifndef HandlerArchivoRLV_H_
+#define HandlerArchivoRLV_H_
 
 #include <sstream>
 #include <fstream>
@@ -7,17 +7,18 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "../EstructurasEnComun/Constantes.h"
+#include "Constantes.h"
 
 using namespace std;
 
 class HandlerArchivoRLV{
 
 private:
-		int ultimo_ID;
+		int ultimoID;
 		long int size;
 		int obtenerTamanioLibro(char * cadenaDeDatos);
-		void obtenerDatosDeEntrada();
+		void recuperarUltimoID();
+		int obtenerUltimoIDPersistido(char * cadenaDeDatos);
 
 public:
 		HandlerArchivoRLV();
@@ -25,7 +26,7 @@ public:
 		int insertarLibro(const string& path_nuevo_libro);
 		char* buscarLibro(int offset);
 		void quitarLibro(int offset);
-
+		int obtenerUltimoID(); //TODO Borrar luego de pruebas
 };
 
 #endif /* HANDLERARCHIVORLV_H_ */
