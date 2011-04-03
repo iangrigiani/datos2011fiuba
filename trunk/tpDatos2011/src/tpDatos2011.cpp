@@ -14,7 +14,7 @@ using namespace std;
 
 int main() {
 	HandlerArchivoRLV* handler = new HandlerArchivoRLV();
-	handler->insertarLibro("Libro.txt");
+	handler->insertarLibro("Test1.txt");
 	cout << "Grabe libro" << endl;
 	delete handler;
 //	HandlerArchivoRLV* handler2 = new HandlerArchivoRLV();
