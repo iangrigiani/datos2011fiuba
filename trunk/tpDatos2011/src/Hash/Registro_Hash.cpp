@@ -30,3 +30,33 @@ bool Registro_Hash::eliminar_offset(int offset) {
 int Registro_Hash::obtener_tam() const {
 	return (sizeof(int) + this->offsets.size() * sizeof(int));
 }
+
+void Registro_Hash::serializar(char* buffer, unsigned int& offset) {
+	Persistencia::PonerEnteroEnChar(buffer, offset, this->clave);
+
+	Persistencia::PonerEnteroEnChar(buffer, offset, this->offsets.size());
+	list < int > ::iterator it;
+	for (it = this->offsets.begin(); it != this->offsets.end(); ++ it)
+		Persistencia::PonerEnteroEnChar(buffer, offset, (*it));
+}
+
+void Registro_Hash::hidratar(char* buffer, unsigned int& offset) {
+	this->clave = Persistencia::getEnteroDesdeBuffer(buffer, offset);
+
+	int tam_offsets = Persistencia::getEnteroDesdeBuffer(buffer, offset);
+	for (int i = 0; i < tam_offsets; ++ i)
+		this->offsets.push_back(Persistencia::getEnteroDesdeBuffer(buffer,offset));
+}
+
+void Registro_Hash::toString() {
+	cout << " Registro de Hash --> " << endl;
+	cout << " Clave:   " << this->clave << endl;
+	cout << " Tamaño ocupado:   " << this->obtener_tam() << endl;
+
+	list < int > ::iterator it;
+	int i = 0;
+	for (it = this->offsets.begin(); it != this->offsets.end(); ++ it) {
+		cout << " Offset #" << i << ":   " << *it << endl;
+		++ i;
+	}
+}

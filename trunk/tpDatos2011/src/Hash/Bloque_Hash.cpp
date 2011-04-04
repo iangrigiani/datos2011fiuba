@@ -128,3 +128,51 @@ void Bloque_Hash::vaciar() {
 	this->regs.clear();
 	this->espacio_libre = TAM_BLOQUE;
 }
+
+void Bloque_Hash::serializar(char* buffer, unsigned int& offset) {
+	Persistencia::PonerEnteroEnChar(buffer, offset, this->pos_arch);
+	Persistencia::PonerEnteroEnChar(buffer, offset, this->tam_dispersion);
+
+	Persistencia::PonerEnteroEnChar(buffer, offset, this->pos_tabla.size());
+	list < int > ::iterator it_1;
+	for (it_1 = this->pos_tabla.begin(); it_1 != this->pos_tabla.end(); ++ it_1)
+		Persistencia::PonerEnteroEnChar(buffer, offset, (*it_1));
+
+	Persistencia::PonerEnteroEnChar(buffer, offset, this->regs.size());
+	list < Registro_Hash > ::iterator it_2;
+	for (it_2 = this->regs.begin(); it_2 != this->regs.end(); ++ it_2)
+		(*it_2).serializar(buffer, offset);
+}
+
+void Bloque_Hash::hidratar(char* buffer, unsigned int& offset) {
+	this->pos_arch = Persistencia::getEnteroDesdeBuffer(buffer, offset);
+	this->tam_dispersion = Persistencia::getEnteroDesdeBuffer(buffer, offset);
+
+	int tam_pos_tabla = Persistencia::getEnteroDesdeBuffer(buffer, offset);
+	for (int i = 0; i < tam_pos_tabla; ++ i)
+		this->pos_tabla.push_back(Persistencia::getEnteroDesdeBuffer(buffer,offset));
+
+	int tam_regs = Persistencia::getEnteroDesdeBuffer(buffer, offset);
+	for (int i = 0; i < tam_regs; ++ i) {
+		this->regs.push_back(Persistencia::getEnteroDesdeBuffer(buffer,offset));
+		this->espacio_libre -= this->regs.back().obtener_tam();
+	}
+}
+
+void Bloque_Hash::toString() {
+	cout << " Bloque de Hash --> " << endl;
+	cout << " ID (posición relativa en el archivo):   " << this->pos_arch << endl;
+	cout << " Tamaño de dispersión:   " << this->tam_dispersion << endl;
+	cout << " Cantidad de espacio libre:   " << this->espacio_libre << endl;
+
+	int i = 0;
+	list < int > ::iterator it_1;
+	for (it_1 = this->pos_tabla.begin(); it_1 != this->pos_tabla.end(); ++ it_1) {
+		cout << " Posición en la tabla #" << i << ":   " << *it_1 << endl;
+		++ i;
+	}
+
+	list < Registro_Hash > ::iterator it_2;
+	for (it_2 = this->regs.begin(); it_2 != this->regs.end(); ++ it_2)
+		(*it_2).toString();
+}

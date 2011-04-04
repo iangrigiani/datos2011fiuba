@@ -49,6 +49,10 @@ public:
 	void incorporar_regs(list < Registro_Hash > regs);
 
 	void vaciar();
+
+	void serializar(char* buffer, unsigned int& offset);
+	void hidratar(char* buffer, unsigned int& offset);
+	void toString();
 };
 
 #endif /* BLOQUE_HASH_H_ */

@@ -9,10 +9,12 @@
 #define REGISTRO_HASH_H_
 
 #include <list>
+#include "../ModuloDePersistencia/Serializable.h"
+#include "../ModuloDePersistencia/Persistencia.h"
 
 using namespace std;
 
-class Registro_Hash {
+class Registro_Hash: public Serializable {
 
 private:
 
@@ -31,6 +33,9 @@ public:
 	void agregar_nuevo_offset(int offset);
 	bool eliminar_offset(int offset);
 
+	void serializar(char* buffer, unsigned int& offset);
+	void hidratar(char* buffer, unsigned int& offset);
+	void toString();
 };
 
 #endif /* REGISTRO_HASH_H_ */
