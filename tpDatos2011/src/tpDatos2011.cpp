@@ -14,8 +14,10 @@ using namespace std;
 
 int main() {
 	HandlerArchivoRLV* handler = new HandlerArchivoRLV();
-	handler->insertarRegistro("Test1.txt");
-	cout << "Grabe libro" << endl;
+	handler->quitarRegistro(0);
+	cout << "Borre el libro" << endl;
+//	int offset = handler->insertarRegistro("Test1.txt");
+//	cout << "Grabe libro en offset: " << offset <<  endl;
 	delete handler;
 //	HandlerArchivoRLV* handler2 = new HandlerArchivoRLV();
 //	handler2->insertarLibro("Libro.txt");
