@@ -15,19 +15,17 @@ class HandlerArchivoRLV{
 
 private:
 		int ultimoID;
-		long int size;
+		int ultimoOffset;
 		int obtenerTamanioLibro(char * cadenaDeDatos);
 		void recuperarUltimoID();
 		void grabarUltimoID();
-
+		int obtenerTamanioMaestro();
 public:
 		HandlerArchivoRLV();
-		virtual ~HandlerArchivoRLV() {
-		};
-		int insertarLibro(const string& path_nuevo_libro);
-		char* buscarLibro(int offset);
-		void quitarLibro(int offset);
-		int obtenerUltimoID(); //TODO Borrar luego de pruebas
+		virtual ~HandlerArchivoRLV() {};
+		int insertarRegistro(const string& path_nuevo_libro);
+		char* buscarRegistro(int offset);
+		void quitarRegistro(int offset);
 };
 
 #endif /* HANDLERARCHIVORLV_H_ */
