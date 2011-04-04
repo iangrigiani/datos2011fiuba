@@ -14,33 +14,35 @@ int HandlerArchivoRLV::obtenerTamanioLibro(char * cadenaDeDatos)
 }
 
 
-/*
- *  TODO LEE DESDE EL DISCO EL CAMPO QUE GUARDA EL ULTIMO ID GENERADO
- *	Debe usarse cuando se abre el archivo para insertar un nuevo registro
- */
 void HandlerArchivoRLV::recuperarUltimoID(){
+	FILE* arch;
+	if ((arch = fopen(PATH_CONFIG_RLV, "r")) == NULL) {
+		cout << "Error al intentar abrir el archivo: " << PATH_CONFIG_RLV << endl;
+		return;
+	}
+
+	char buffer[sizeof(int)];
+	fread(buffer, 1, sizeof(int), arch);
+	string cad = buffer;
+	if (cad.length() > 0){
+		this->ultimoID = atoi(buffer);
+	}else{
+		this->ultimoID = 0;
+	}
+	fclose(arch);
 
 	std::ifstream archivoMaestro;
-	char  cadenaDeDatos[100];
-	int ultimoIDPersistido;
-
-	// Abro el archivo y obtengo la primer linea
-	archivoMaestro.open(PATH_REG_LONG_VARIABLE, std::ios_base::in);
-	archivoMaestro.get(cadenaDeDatos,100);
-	string cad = cadenaDeDatos;
-	int longitudCadena = cad.length();
-
-	// si tiene datos busco el ultimo ID persistido
-	if (longitudCadena > 0 ){
-		ultimoIDPersistido = atoi(cadenaDeDatos);//obtenerUltimoIDPersistido(cadenaDeDatos);
+	char  cadena[100];
+	archivoMaestro.open(PATH_CONFIG_RLV, std::ios_base::in);
+	archivoMaestro.seekg(0);
+	archivoMaestro.get(cadena,100);
+	string cad2 = cadena;
+	int longitudCadena = cad2.length();
+	if (longitudCadena > 0){
+		this->ultimoOffset = obtenerTamanioLibro(cadena);
+	}else{
+		this->ultimoOffset = 0;
 	}
-	else{
-		ultimoIDPersistido = 0 ;
-	}
-	cad.clear();
-
-	this->ultimoID = ultimoIDPersistido;
-	archivoMaestro.close();
 }
 
 HandlerArchivoRLV::HandlerArchivoRLV() {
@@ -48,7 +50,7 @@ HandlerArchivoRLV::HandlerArchivoRLV() {
 
 }
 
-int HandlerArchivoRLV::insertarLibro(const string& path_nuevo_libro)
+int HandlerArchivoRLV::insertarRegistro(const string& path_nuevo_libro)
 {
 // Manejo sobre el archivo del libro a ingresar
 	std::ifstream f_ent;
@@ -58,52 +60,51 @@ int HandlerArchivoRLV::insertarLibro(const string& path_nuevo_libro)
 	int size = f_ent.tellg();
 	f_ent.seekg(0);
 	char* buffer = (char*) calloc (size-1 , sizeof(char));
+    f_ent.read(buffer, size);
+	f_ent.close();
+
 
 // Obtengo ID del ultimo libro ingresado
 	int id_Archivo = this->ultimoID + 1;
     this->ultimoID = id_Archivo;
-    grabarUltimoID();
 // Manejo sobre el archivo de RLV
-	f_ent.read(buffer, size);
-	int indexado = 0;
+    this->ultimoOffset = obtenerTamanioMaestro();
+    grabarUltimoID();
+
+    int indexado = 0;
 	int procesado = 1;
+
 	std::ofstream f_dst;
 	f_dst.open(PATH_REG_LONG_VARIABLE, std::ios_base::app);
 	stringstream ss;
 	// Armo los datos de entrada para ese libro
-	ss << id_Archivo << "|" << size << "|" << procesado << "|" << indexado << "|" << "\n" << buffer << "\n";
+	ss << id_Archivo << "|" << size << "|" << procesado << "|" << indexado << "|" << "\n" << buffer;
 	string str = ss.str();
 	// Escribo libro en el archivo de RLV
 	f_dst.write(str.c_str(), str.length());
 	f_dst.close();
-	f_ent.close();
 	free(buffer);
-
-
-/*
- *  TODO ESTE RETURN ESTA MAL, ESTE METODO DEBERIA RETORNAR EL OFFSET EN DONDE
- *  SE GUARDO EL LIBRO, ASI PONGO ESE OFFSET EN EL ARBOL Y EN EL HASING Y LUEGO
- *  PUEDO BUSCAR ESTE LIBRO EN EL ARCHIVO DE RLV
- */
-	return OK;
+// Retorno el offset que se guardara en el arbol.
+	return this->ultimoOffset;
 }
 
 void HandlerArchivoRLV::grabarUltimoID(){
 	std::ofstream f_dst;
-	f_dst.open(PATH_REG_LONG_VARIABLE, std::ios_base::out);
-	f_dst.seekp(0);
+	f_dst.open(PATH_CONFIG_RLV, std::ios_base::out);
 	stringstream ss;
-	ss << this->ultimoID <<  "\n";
+	// Armo los datos de entrada para ese libro
+	ss << this->ultimoID << "|" << this->ultimoOffset;
 	string str = ss.str();
 	// Escribo libro en el archivo de RLV
 	f_dst.write(str.c_str(), str.length());
 	f_dst.flush();
 	f_dst.close();
 }
+
 /*
  * Devuelve un puntero a una cadena de char que contiene todo el libro
  */
-char* HandlerArchivoRLV::buscarLibro(int offset)
+char* HandlerArchivoRLV::buscarRegistro(int offset)
 {
 	std::ifstream archivoMaestro;
 	char  cadenaDeDatos[100];
@@ -127,6 +128,15 @@ char* HandlerArchivoRLV::buscarLibro(int offset)
 	return libroLeido;
 }
 
-int HandlerArchivoRLV::obtenerUltimoID(){
-    return this->ultimoID;
+int HandlerArchivoRLV::obtenerTamanioMaestro(){
+	FILE* fin;
+	if ((fin = fopen(PATH_REG_LONG_VARIABLE, "r")) == NULL){
+		cout << "Error al abrir el archivo de registro de longitud variable" << endl;
+		return -1;
+	}
+	fseek(fin, 0 , SEEK_END);
+	int retorno = ftell(fin);
+	rewind(fin);
+	fclose(fin);
+	return retorno;
 }

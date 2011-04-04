@@ -17,4 +17,5 @@
 #define BUFFER_NODOS_LIBRES 128
 #define TAM_CONTROL_REGISTRO 5
 #define PATH_REG_LONG_VARIABLE "ArchivoDeRLV.txt"
+#define PATH_CONFIG_RLV "datosRLV.txt"
 #endif /* CONSTANTES_H_ */
