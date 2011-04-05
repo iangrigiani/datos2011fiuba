@@ -13,40 +13,7 @@ int HandlerArchivoRLV::obtenerTamanioLibro(char * cadenaDeDatos)
 	return tamanioLibro;
 }
 
-
-void HandlerArchivoRLV::recuperarDatosAnteriores(){
-	FILE* arch;
-	if ((arch = fopen(PATH_CONFIG_RLV, "r")) == NULL) {
-		cout << "Error al intentar abrir el archivo: " << PATH_CONFIG_RLV << endl;
-		return;
-	}
-
-	char buffer[sizeof(int)];
-	fread(buffer, 1, sizeof(int), arch);
-	string cad = buffer;
-	if (cad.length() > 0){
-		this->ultimoID = atoi(buffer);
-	}else{
-		this->ultimoID = 0;
-	}
-	fclose(arch);
-
-	std::ifstream archivoMaestro;
-	char  cadena[100];
-	archivoMaestro.open(PATH_CONFIG_RLV, std::ios_base::in);
-	archivoMaestro.seekg(0);
-	archivoMaestro.get(cadena,100);
-	string cad2 = cadena;
-	int longitudCadena = cad2.length();
-	if (longitudCadena > 0){
-		this->ultimoOffset = obtenerTamanioLibro(cadena);
-	}else{
-		this->ultimoOffset = 0;
-	}
-}
-
 HandlerArchivoRLV::HandlerArchivoRLV() {
-    recuperarDatosAnteriores();
 }
 
 int HandlerArchivoRLV::insertarRegistro(const string& path_nuevo_libro)
@@ -55,21 +22,27 @@ int HandlerArchivoRLV::insertarRegistro(const string& path_nuevo_libro)
 	std::ifstream f_ent;
 	f_ent.open(path_nuevo_libro.c_str(), std::ios_base::in);
 	f_ent.seekg(0,std::ios_base::end);
+
 	// Obtengo tamanio de libro
-	int size = f_ent.tellg();
+	int tamanioRegistro = f_ent.tellg();
 	f_ent.seekg(0);
-	char* buffer = (char*) calloc (size-1 , sizeof(char));
-    f_ent.read(buffer, size);
-	f_ent.close();
+	char* buffer = (char*) calloc (tamanioRegistro-1 , sizeof(char));
+    f_ent.read(buffer, tamanioRegistro);
+
+    f_ent.close();
 
 
 // Obtengo ID del ultimo libro ingresado y seteo todos sus datos
-	int id_Archivo = this->ultimoID + 1;
-    this->ultimoID = id_Archivo;
-    this->ultimoOffset = obtenerTamanioMaestro();
-
-    grabarDatosActuales();
-
+	int id_Archivo = buscarIDArchivoEspaciosLibres(tamanioRegistro);
+	if (id_Archivo == ERROR){
+		id_Archivo = this->obtenerTamanioMaestro();
+	}else{
+/*
+ *  Si lo voy a insertar en un espacio libre debo borrar ese dato
+ *  del archivo de espacios libres
+ */
+		borrarOffsetArchivoDeEspaciosLibres(id_Archivo);
+	}
     int indexado = 0;
 	int procesado = 1;
 
@@ -77,30 +50,19 @@ int HandlerArchivoRLV::insertarRegistro(const string& path_nuevo_libro)
 	std::ofstream f_dst;
 	f_dst.open(PATH_REG_LONG_VARIABLE, std::ios_base::app);
 	stringstream ss;
+
 // Armo las cabecera para el libro
-	ss << id_Archivo << "|" << size << "|" << procesado << "|" << indexado << "|" << "\n" << buffer << "\n" ;
+	ss << id_Archivo << "|" << tamanioRegistro << "|" << procesado << "|" << indexado << "|" << "\n" << buffer << "\n" ;
 	string str = ss.str();
 	// Escribo libro en el archivo de RLV
 	f_dst.write(str.c_str(), str.length());
+
 	f_dst.close();
+
 	free(buffer);
 
 // Retorno el offset que se guardara en el arbol.
-	return this->ultimoOffset;
-}
-
-void HandlerArchivoRLV::grabarDatosActuales(){
-
-	std::ofstream f_dst;
-	f_dst.open(PATH_CONFIG_RLV, std::ios_base::out);
-	stringstream ss;
-	ss << this->ultimoID << "|" << this->ultimoOffset;
-	string str = ss.str();
-
-	// Escribo libro en el archivo de control el ultimo offset y ID.
-	f_dst.write(str.c_str(), str.length());
-	f_dst.flush();
-	f_dst.close();
+	return id_Archivo;
 }
 
 char* HandlerArchivoRLV::buscarRegistro(int offset)
@@ -154,11 +116,31 @@ void HandlerArchivoRLV::quitarRegistro(int offset){
 	int espacioOcupado = obtenerTamanioLibro(cadenaDeDatos);
 	espacioOcupado += longitudCadena;
 	fh.seekg(offset);
-	cout << "Estoy parado en : " << fh.tellg() << endl;
-	cout << "Y debo leer una cadena de :" << espacioOcupado << endl;
 	char * libroLeido = (char*)calloc (espacioOcupado, sizeof(char));
 	free(libroLeido);
 	fh.write(libroLeido, espacioOcupado);
 	fh.flush();
+
 	fh.close();
+
+// Agrego los datos en el archivo de espacios libres.
+	actualizarEspaciosLibres(offset,espacioOcupado);
+}
+
+int HandlerArchivoRLV::buscarIDArchivoEspaciosLibres(int tamanioRegistro){
+	return ERROR;
+}
+
+void HandlerArchivoRLV::actualizarEspaciosLibres(int offset,int espacioLibre){
+	std::fstream fh;
+	fh.open(PATH_REG_LONG_VARIABLE, std::ios_base::app);
+	stringstream ss;
+	ss << offset << "|" << espacioLibre << "\n" ;
+	string str = ss.str();
+	fh.write(str.c_str(), str.length());
+	fh.flush();
+	fh.close();
+}
+void HandlerArchivoRLV::borrarOffsetArchivoDeEspaciosLibres(int offsetABorrar){
+	// borrar del archivo de espacios libres
 }
