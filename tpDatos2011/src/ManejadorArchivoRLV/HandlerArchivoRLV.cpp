@@ -128,6 +128,7 @@ void HandlerArchivoRLV::quitarRegistro(int offset){
 }
 
 int HandlerArchivoRLV::buscarIDArchivoEspaciosLibres(int tamanioRegistro){
+	//TODO FALTA IMPLEMENTAR
 	return ERROR;
 }
 
@@ -142,5 +143,5 @@ void HandlerArchivoRLV::actualizarEspaciosLibres(int offset,int espacioLibre){
 	fh.close();
 }
 void HandlerArchivoRLV::borrarOffsetArchivoDeEspaciosLibres(int offsetABorrar){
-	// borrar del archivo de espacios libres
+	//TODO FALTA IMPLEMENTAR
 }
