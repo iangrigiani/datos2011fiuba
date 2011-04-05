@@ -8,17 +8,29 @@
 
 #include <iostream>
 using namespace std;
-#include "EstructurasEnComun/Registro.h"
 #include "ManejadorArchivoRLV/HandlerArchivoRLV.h"
+#include "EstructurasEnComun/Registro.h"
+#include "ParserLibros/ParserDeLibros.h"
 #include "ArbolB+/ArbolBMas.h"
 
 int main() {
-	HandlerArchivoRLV* handler = new HandlerArchivoRLV();
-	handler->quitarRegistro(0);
-	cout << "Borre el libro" << endl;
+	ParserDeLibros* p = new ParserDeLibros();
+	ifstream fd;
+	fd.open("Test1.txt", ios_base::in);
+	fd.seekg(0, ios_base::end);
+	int tamanio = fd.tellg();
+	fd.seekg(0, ios_base::beg);
+	char* libro = (char*)calloc(tamanio, sizeof(char));
+	fd.read(libro, tamanio);
+	fd.close();
+	cout << "El libro es: " << endl;
+	cout << libro << endl;
+	Registro* reg = p->obtenerRegistroDeLibro(libro);
+	reg->toString();
+	p->mostrarLista();
 //	int offset = handler->insertarRegistro("Test1.txt");
 //	cout << "Grabe libro en offset: " << offset <<  endl;
-	delete handler;
+	delete p;
 //	HandlerArchivoRLV* handler2 = new HandlerArchivoRLV();
 //	handler2->insertarLibro("Libro.txt");
 //	cout << "Grabe libro" << endl;

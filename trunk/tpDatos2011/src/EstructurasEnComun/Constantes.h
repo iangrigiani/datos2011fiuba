@@ -18,4 +18,5 @@
 #define TAM_CONTROL_REGISTRO 5
 #define PATH_REG_LONG_VARIABLE "ArchivoDeRLV.txt"
 #define PATH_CONFIG_RLV "datosRLV.txt"
+#define PATH_STOPWORDS "stopWords.txt"
 #endif /* CONSTANTES_H_ */
