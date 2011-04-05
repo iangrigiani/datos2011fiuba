@@ -14,8 +14,14 @@ using namespace std;
 class HandlerArchivoRLV{
 
 private:
-		int ultimoID;
-		int ultimoOffset;
+		/*
+		 * Metodo que verifica si el registro a insertar entra o no en alguno
+		 * de los espacios libres del archivo de espacios libres y offsets
+		 * Pre: Pasarle el tamanio del registro a insertar
+		 * Post: Retorna ERROR en caso de que no se encuentro un lugar o
+		 * 		 retorna el offset en donde se va a insertar el registro.
+		 */
+		int buscarIDArchivoEspaciosLibres(int tamanioRegistro);
 		/*
 		 * Retorna el tamanio del libro
 		 * Pre: Se le pasa en un char* la cabecera del Libro separada por pipes
@@ -23,26 +29,26 @@ private:
 		 */
 		int obtenerTamanioLibro(char * cadenaDeDatos);
 		/*
-		 * Setea en el atributo UltimoId y UltimoOffset, obteniendo los datos del
-		 * archivo de datos para control del archivo de RLV
-		 * Pre: Debe existir el archivo
-		 * Post: Se actualizan el ultimoID y Offset del objeto
-		 */
-		void recuperarDatosAnteriores();
-		/*
-		 * Graba los atributos UltimoId y UltimoOffset, en el archivo de datos del
-		 * archivo para control del archivo de RLV
-		 * Pre: -
-		 * Post: Se actualizan el ultimoID y Offset del archivo de control
-		 */
-		void grabarDatosActuales();
-		/*
 		 * Obtiene el tamanio actual del archivo de registros de longitud
 		 * variable.
 		 * Pre: -
 		 * Post: Retorna el tamanio del archivo.
 		 */
 		int obtenerTamanioMaestro();
+		/*
+		 * Metodo que agrega en el archivo de espacio libre
+		 * la cantidad de espacio libre para el offset correspondiente
+		 * Pre: -
+		 * Post: Datos almacenados.
+		 */
+		void actualizarEspaciosLibres(int offset, int tamanioLibre);
+		/*
+		 * Metodo que borra el offset y espacio libre que acabo de completar.
+		 * Pre: insertar en el archivo de RLV en un lugar que era espacio libre
+		 * Post: Borra del archivo de espacios libres los datos del registro
+		 * 		 del archivo de RLV que acaba de completar
+		 */
+		void borrarOffsetArchivoDeEspaciosLibres(int offsetABorrar);
 public:
 
 		HandlerArchivoRLV();
