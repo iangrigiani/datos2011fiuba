@@ -142,6 +142,50 @@ void HandlerArchivoRLV::actualizarEspaciosLibres(int offset,int espacioLibre){
 	fh.flush();
 	fh.close();
 }
+
+/* Busca el offset y si lo encuentra, reemplaza el espacio que ocupaba con espacios
+ * vacios y un caracter de salto de linea al final
+ */
 void HandlerArchivoRLV::borrarOffsetArchivoDeEspaciosLibres(int offsetABorrar){
-	//TODO FALTA IMPLEMENTAR
+	//TODO PROBARLO
+/*	std::fstream el;
+	el.open(PATH_ESPACIO_LIBRE_RLV, std::ios_base::in | std::ios_base::out);
+
+	int cur = 0;
+	el.seekg(cur);
+	char  cadenaDeDatos[100];
+	char * offset;
+	string cad , espacioLibre;
+	int offsetEncontrado = 0, longCadenaDeDatos =0 , auxOffset=0, posPipe = 0;
+
+	while (not (offsetEncontrado) and not (el.eof() ) ){
+		el.get(cadenaDeDatos,100);
+		cadAux = cadenaDeDatos;
+		cad = cadAux.substr(cadAux, "\n");
+		longCadenaDeDatos= cad.length();
+		posPipe = cad.find("|");
+		offset= cad.substr(cur, posPipe);
+		auxOffset = atoi(offset);
+
+		if (auxOffset == offsetABorrar) {
+			offsetEncontrado = 1 ;
+		}
+		else {
+			cur = longCadenaDeDatos + 1;
+			el.seekg(cur);
+		}
+	}
+
+	if (offsetEncontrado == 1){
+		el.seekp(cur);
+		int contCadena = longCadenaDeDatos;
+		while (contCadena > 1 ){
+			el.put(" ");
+			contCadena = contCadena - 1 ;
+		}
+		el.put("\n");
+	}
+
+
+*/
 }
