@@ -35,6 +35,42 @@ bool Bloque_Hash::eliminar_pos(int pos) {
 	return false;
 }
 
+bool Bloque_Hash::agregar_nuevo_offset_a_reg(int clave, int offset) {
+	int esp_libre;
+	list < Reg > ::iterator it;
+
+	it = this->get_regs().begin();
+	while (it != this->get_regs().end() && (*it).get_clave() != clave)
+		++ it;
+
+	if ((*it).get_clave() == clave) {
+		(*it).agregar_nuevo_offset(offset);
+		esp_libre = this->get_esp_libre();
+		esp_libre -= (*it).get_tam();
+		return true;
+	}
+	return false;
+}
+
+int Bloque_Hash::eliminar_offset_de_reg(int clave, int offset) {
+	int esp_libre;
+	list < Reg > ::iterator it;
+
+	it = this->get_regs().begin();
+	while (it != this->get_regs().end() && (*it).get_clave() != clave)
+		++ it;
+
+	if ((*it).get_clave() == clave) {
+		if ((*it).eliminar_offset(offset) == true) {
+			esp_libre = this->get_esp_libre();
+			esp_libre += (*it).get_tam();
+			return 0;
+		}
+		return 1;
+	}
+	return 2;
+}
+
 list < Reg > Bloque_Hash::actualizar_regs(int tam_tabla) {
 	list < Reg > ::iterator it_1;
 	list < int > ::iterator it_2;

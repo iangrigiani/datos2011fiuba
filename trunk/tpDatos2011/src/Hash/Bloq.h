@@ -17,7 +17,7 @@ class Bloq : public Serializable {
 private:
 
 	int pos_bloque_aux;
-	int espacio_libre;
+	int esp_libre;
 	list < Reg > regs;
 
 public:
@@ -25,19 +25,17 @@ public:
 	Bloq();
 	virtual ~Bloq() {};
 
-	void set_pos_bloque_aux(int pos_bloque_aux);
-	int get_pos_bloque_aux() const { return this->pos_bloque_aux; }
-
 	bool esta_vacio() const;
 	bool entra_en_bloque(const Reg& reg) const;
 
+	void set_pos_bloque_aux(int pos_bloque_aux);
+
+	int get_pos_bloque_aux() const { return this->pos_bloque_aux; }
+	int get_esp_libre() const { return this->esp_libre; }
 	list < Reg >& get_regs() { return this->regs; }
 
 	void agregar_nuevo_reg(const Reg& reg);
 	bool eliminar_reg(int clave);
-
-	bool agregar_nuevo_offset_a_reg(int clave, int offset);
-	int eliminar_offset_de_reg(int clave, int offset);
 
 	void vaciar();
 
