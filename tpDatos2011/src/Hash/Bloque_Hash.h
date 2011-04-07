@@ -32,11 +32,15 @@ public:
 	void agregar_nueva_pos(int pos);
 	bool eliminar_pos(int pos);
 
+	bool agregar_nuevo_offset_a_reg(int clave, int offset);
+	int eliminar_offset_de_reg(int clave, int offset);
+
 	list < Reg > actualizar_regs(int tam_tabla);
 	void incorporar_regs(list < Reg > regs);
 
 	void serializar(char* buffer, unsigned int& offset);
 	void hidratar(char* buffer, unsigned int& offset);
+
 	void toString();
 };
 
