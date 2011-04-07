@@ -49,7 +49,7 @@ private:
 		 * Post: Borra del archivo de espacios libres los datos del registro
 		 * 		 del archivo de RLV que acaba de completar
 		 */
-		void borrarOffsetArchivoDeEspaciosLibres(int offsetABorrar);
+		void borrarOffsetArchivoDeEspaciosLibres(int offsetLineaABorrar);
 public:
 
 		HandlerArchivoRLV();
