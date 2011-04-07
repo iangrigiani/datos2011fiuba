@@ -33,7 +33,7 @@ int HandlerArchivoRLV::insertarRegistro(const string& path_nuevo_libro)
 
 
 // Obtengo ID del ultimo libro ingresado y seteo todos sus datos
-	int id_Archivo = buscarIDArchivoEspaciosLibres(tamanioRegistro);
+	int id_Archivo = buscarOffsetArchivoEspaciosLibres(tamanioRegistro);
 	if (id_Archivo == ERROR){
 		id_Archivo = this->obtenerTamanioMaestro();
 	}else{
@@ -127,9 +127,52 @@ void HandlerArchivoRLV::quitarRegistro(int offset){
 	actualizarEspaciosLibres(offset,espacioOcupado);
 }
 
-int HandlerArchivoRLV::buscarIDArchivoEspaciosLibres(int tamanioRegistro){
-	//TODO FALTA IMPLEMENTAR
-	return ERROR;
+/*
+ * Busca el offset en el archivo de espacios libre de acuerdo al tamanio de registro
+ * que recibe por parámetro. Si lo encuentra devuelve ese offset asociado al tamanio de registro.
+ * Si no existe ninguno devuelve ERROR.
+ */
+int HandlerArchivoRLV::buscarOffsetArchivoEspaciosLibres(int tamanioRegistro){
+
+	std::fstream archEspaciosLibres;
+	char  cadenaDeDatos[100];
+	bool encontrado = false;
+	int offsetProcesado = 0;
+	int tamanioProcesado = 0;
+	int longCadenaDeDatos = 0;
+	string cadena;
+	char * caracterProcesado;
+
+	archEspaciosLibres.open(PATH_ESPACIO_LIBRE_RLV, std::ios_base::in | std::ios_base::out);
+
+	while (!encontrado and !archEspaciosLibres.eof())
+	{
+		archEspaciosLibres.get(cadenaDeDatos,100);
+		cadena = cadenaDeDatos;
+
+		strtok(cadenaDeDatos,"|");
+		caracterProcesado = strtok(NULL,"|");
+		tamanioProcesado = atoi(caracterProcesado);
+
+		//Si el tamanio del registro es el que se proceso
+		//entonces se borra el offset del archivo de espacios libres.
+		if(tamanioRegistro == tamanioProcesado)
+		{
+			encontrado = true;
+			offsetProcesado = atoi(cadenaDeDatos);
+			this->borrarOffsetArchivoDeEspaciosLibres(offsetProcesado);
+		}
+
+		longCadenaDeDatos+= cadena.length();
+		longCadenaDeDatos++;
+
+		archEspaciosLibres.seekg(longCadenaDeDatos);
+	}
+
+	if(encontrado)
+		return offsetProcesado;
+	else
+		return ERROR;
 }
 
 void HandlerArchivoRLV::actualizarEspaciosLibres(int offset,int espacioLibre){

@@ -21,11 +21,12 @@ private:
 		 * Post: Retorna ERROR en caso de que no se encuentro un lugar o
 		 * 		 retorna el offset en donde se va a insertar el registro.
 		 */
-		int buscarIDArchivoEspaciosLibres(int tamanioRegistro);
+		int buscarOffsetArchivoEspaciosLibres(int tamanioRegistro);
+
 		/*
 		 * Retorna el tamanio del libro
 		 * Pre: Se le pasa en un char* la cabecera del Libro separada por pipes
-		 * Post: Retorna el tamanio (segundo parámetro)
+		 * Post: Retorna el tamanio (segundo parï¿½metro)
 		 */
 		int obtenerTamanioLibro(char * cadenaDeDatos);
 		/*
@@ -54,23 +55,23 @@ public:
 		HandlerArchivoRLV();
 		virtual ~HandlerArchivoRLV() {};
 		/*
-		 * Método que inserta un registro (libro ) en el
+		 * Mï¿½todo que inserta un registro (libro ) en el
 		 * archivo de registros de longitud variable.
 		 * Pre: ingresar path del registro a insertar
 		 * Post: devuelve el offset donde inserto el registro
 		 */
 		int insertarRegistro(const string& path_nuevo_libro);
 		/*
-		 * Método que busca un registro (libro ) en el
+		 * Mï¿½todo que busca un registro (libro ) en el
 		 * archivo de registros d elongitud variable
-		 * Pre: Pasa el offset donde está el registro en el archivo
+		 * Pre: Pasa el offset donde estï¿½ el registro en el archivo
 		 * Post: Devuelve en una variable char* el libro completo sin la cabecera
 		 */
 		char* buscarRegistro(int offset);
 		/*
-		 * Método que elimina un registro (libro ) del
+		 * Mï¿½todo que elimina un registro (libro ) del
 		 * archivo de registros d elongitud variable
-		 * Pre: Pasa el offset donde está el registro en el archivo
+		 * Pre: Pasa el offset donde estï¿½ el registro en el archivo
 		 * Post: Queda un espacio del tamanio del registro en blanco en el archivo.
 		 */
 		void quitarRegistro(int offset);
