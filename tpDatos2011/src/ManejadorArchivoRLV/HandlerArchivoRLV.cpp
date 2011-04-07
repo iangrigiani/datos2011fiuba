@@ -128,8 +128,9 @@ void HandlerArchivoRLV::quitarRegistro(int offset){
 }
 
 /*
- * Busca el offset en el archivo de espacios libre de acuerdo al tamanio de registro
- * que recibe por parámetro. Si lo encuentra devuelve ese offset asociado al tamanio de registro.
+ * Busca un offset en el archivo de espacios libres de acuerdo al tamaño de registro
+ * que recibe por parámetro. Si lo encuentra devuelve ese offset asociado al tamanio
+ * de registro.
  * Si no existe ninguno devuelve ERROR.
  */
 int HandlerArchivoRLV::buscarOffsetArchivoEspaciosLibres(int tamanioRegistro){
@@ -156,7 +157,7 @@ int HandlerArchivoRLV::buscarOffsetArchivoEspaciosLibres(int tamanioRegistro){
 
 		//Si el tamanio del registro es el que se proceso
 		//entonces se borra el offset del archivo de espacios libres.
-		if(tamanioRegistro == tamanioProcesado)
+		if(tamanioRegistro == tamanioProcesado) //TODO No debería ser mayor o igual?
 		{
 			encontrado = true;
 			offsetProcesado = atoi(cadenaDeDatos);
@@ -186,49 +187,27 @@ void HandlerArchivoRLV::actualizarEspaciosLibres(int offset,int espacioLibre){
 	fh.close();
 }
 
-/* Busca el offset y si lo encuentra, reemplaza el espacio que ocupaba con espacios
- * vacios y un caracter de salto de linea al final
+/* Borra del Archivo de Espacios Libres la linea del offset que se va ocupar
+ * Recibe el offset dentro del archivo de Espacios Libre
  */
-void HandlerArchivoRLV::borrarOffsetArchivoDeEspaciosLibres(int offsetABorrar){
-	//TODO PROBARLO
-/*	std::fstream el;
-	el.open(PATH_ESPACIO_LIBRE_RLV, std::ios_base::in | std::ios_base::out);
+void HandlerArchivoRLV::borrarOffsetArchivoDeEspaciosLibres(int offsetLineaABorrar){
 
-	int cur = 0;
-	el.seekg(cur);
 	char  cadenaDeDatos[100];
-	char * offset;
-	string cad , espacioLibre;
-	int offsetEncontrado = 0, longCadenaDeDatos =0 , auxOffset=0, posPipe = 0;
+	string cadena;
+    int longCadena = 0;
 
-	while (not (offsetEncontrado) and not (el.eof() ) ){
-		el.get(cadenaDeDatos,100);
-		cadAux = cadenaDeDatos;
-		cad = cadAux.substr(cadAux, "\n");
-		longCadenaDeDatos= cad.length();
-		posPipe = cad.find("|");
-		offset= cad.substr(cur, posPipe);
-		auxOffset = atoi(offset);
+	std::fstream el;
+	el.open(PATH_ESPACIO_LIBRE_RLV, std::ios_base::in | std::ios_base::out);
+	el.seekg(offsetLineaABorrar);
 
-		if (auxOffset == offsetABorrar) {
-			offsetEncontrado = 1 ;
-		}
-		else {
-			cur = longCadenaDeDatos + 1;
-			el.seekg(cur);
-		}
-	}
+	archEspaciosLibres.get(cadenaDeDatos,100);
+    strtok(cadenaDeDatos,"/n");
+	cadena = cadenaDeDatos;
 
-	if (offsetEncontrado == 1){
-		el.seekp(cur);
-		int contCadena = longCadenaDeDatos;
-		while (contCadena > 1 ){
-			el.put(" ");
-			contCadena = contCadena - 1 ;
-		}
-		el.put("\n");
-	}
-
-
-*/
+    longCadena = cadena.length();
+    while (longCadena){
+        el.put(offsetLineaABorrar, "0");
+        offsetLineaABorrar++;
+        longCadena--;
+    }
 }
