@@ -5,15 +5,17 @@
  *      Author: angeles
  */
 
-#include "Registro_Hash.h"
+#include "Reg.h"
 
-Registro_Hash::Registro_Hash(int clave) : clave(clave) {}
+Reg::Reg() : clave(0) {}
 
-void Registro_Hash::agregar_nuevo_offset(int offset) {
+Reg::Reg(int clave) : clave(clave) {}
+
+void Reg::agregar_nuevo_offset(int offset) {
 	this->offsets.push_back(offset);
 }
 
-bool Registro_Hash::eliminar_offset(int offset) {
+bool Reg::eliminar_offset(int offset) {
 	list < int > ::iterator it;
 
 	it = this->offsets.begin();
@@ -27,11 +29,11 @@ bool Registro_Hash::eliminar_offset(int offset) {
 	return false;
 }
 
-int Registro_Hash::obtener_tam() const {
+int Reg::get_tam() const {
 	return (sizeof(int) + this->offsets.size() * sizeof(int));
 }
 
-void Registro_Hash::serializar(char* buffer, unsigned int& offset) {
+void Reg::serializar(char* buffer, unsigned int& offset) {
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->clave);
 
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->offsets.size());
@@ -40,7 +42,7 @@ void Registro_Hash::serializar(char* buffer, unsigned int& offset) {
 		Persistencia::PonerEnteroEnChar(buffer, offset, (*it));
 }
 
-void Registro_Hash::hidratar(char* buffer, unsigned int& offset) {
+void Reg::hidratar(char* buffer, unsigned int& offset) {
 	this->clave = Persistencia::getEnteroDesdeBuffer(buffer, offset);
 
 	int tam_offsets = Persistencia::getEnteroDesdeBuffer(buffer, offset);
@@ -48,10 +50,10 @@ void Registro_Hash::hidratar(char* buffer, unsigned int& offset) {
 		this->offsets.push_back(Persistencia::getEnteroDesdeBuffer(buffer,offset));
 }
 
-void Registro_Hash::toString() {
-	cout << " Registro de Hash --> " << endl;
+void Reg::toString() {
+	cout << " Registro --> " << endl;
 	cout << " Clave:   " << this->clave << endl;
-	cout << " Tamaño ocupado:   " << this->obtener_tam() << endl;
+	cout << " Tamaño ocupado:   " << this->get_tam() << " Bytes" << endl;
 
 	list < int > ::iterator it;
 	int i = 0;

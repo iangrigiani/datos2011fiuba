@@ -5,8 +5,8 @@
  *      Author: angeles
  */
 
-#ifndef REGISTRO_HASH_H_
-#define REGISTRO_HASH_H_
+#ifndef REG_H_
+#define REG_H_
 
 #include <list>
 #include "../ModuloDePersistencia/Serializable.h"
@@ -14,7 +14,7 @@
 
 using namespace std;
 
-class Registro_Hash: public Serializable {
+class Reg: public Serializable {
 
 private:
 
@@ -23,19 +23,21 @@ private:
 
 public:
 
-	Registro_Hash(int clave);
-	virtual ~Registro_Hash() {};
+	Reg();
+	Reg(int clave);
+	virtual ~Reg() {};
 
 	int get_clave() const { return this->clave; }
 
-	int obtener_tam() const;
+	int get_tam() const;
 
 	void agregar_nuevo_offset(int offset);
 	bool eliminar_offset(int offset);
 
 	void serializar(char* buffer, unsigned int& offset);
 	void hidratar(char* buffer, unsigned int& offset);
+
 	void toString();
 };
 
-#endif /* REGISTRO_HASH_H_ */
+#endif /* REG_H_ */
