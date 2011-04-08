@@ -115,7 +115,7 @@ void HandlerArchivoRLV::quitarRegistro(int offset){
 	int longitudCadena = cad.length();
 	int espacioOcupado = obtenerTamanioLibro(cadenaDeDatos);
 	espacioOcupado += longitudCadena;
-	fh.seekg(offset);
+	fh.seekg(offset); //No tendría que ser un seekp?
 	char * libroLeido = (char*)calloc (espacioOcupado, sizeof(char));
 	free(libroLeido);
 	fh.write(libroLeido, espacioOcupado);
@@ -127,7 +127,9 @@ void HandlerArchivoRLV::quitarRegistro(int offset){
 	actualizarEspaciosLibres(offset,espacioOcupado);
 }
 
-/*
+
+/* PRE: Recibe tamanioRegistro que indica la cant. de espacio que hay que buscar
+ *
  * Busca un offset en el archivo de espacios libres de acuerdo al tamaño de registro
  * que recibe por parámetro. Si lo encuentra devuelve ese offset asociado al tamanio
  * de registro.
@@ -187,8 +189,10 @@ void HandlerArchivoRLV::actualizarEspaciosLibres(int offset,int espacioLibre){
 	fh.close();
 }
 
-/* Borra del Archivo de Espacios Libres la linea del offset que se va ocupar
- * Recibe el offset dentro del archivo de Espacios Libre
+
+/*
+ * PRE: Recibe el offset dentro del archivo de Espacios Libre
+ * POS: Borra del Archivo de Espacios Libres la linea del offset que se va ocupar
  */
 void HandlerArchivoRLV::borrarOffsetArchivoDeEspaciosLibres(int offsetLineaABorrar){
 
@@ -198,16 +202,17 @@ void HandlerArchivoRLV::borrarOffsetArchivoDeEspaciosLibres(int offsetLineaABorr
 
 	std::fstream el;
 	el.open(PATH_ESPACIO_LIBRE_RLV, std::ios_base::in | std::ios_base::out);
-	el.seekg(offsetLineaABorrar);
+	el.seekp(offsetLineaABorrar);
 
-	archEspaciosLibres.get(cadenaDeDatos,100);
+	el.get(cadenaDeDatos,100);
     strtok(cadenaDeDatos,"/n");
 	cadena = cadenaDeDatos;
 
     longCadena = cadena.length();
-    while (longCadena){
-        el.put(offsetLineaABorrar, "0");
-        offsetLineaABorrar++;
-        longCadena--;
-    }
+
+	char * buffer = (char*)calloc (longCadena, sizeof(char));
+	free(buffer);
+	el.write(buffer, longCadena);
+	el.flush();
+	el.close();
 }
