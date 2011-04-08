@@ -14,6 +14,8 @@ using namespace std;
 class HandlerArchivoRLV{
 
 private:
+
+		int offsetAAEL; // Offset al archivo de espacios libres
 		/*
 		 * Metodo que verifica si el registro a insertar entra o no en alguno
 		 * de los espacios libres del archivo de espacios libres y offsets
@@ -50,7 +52,8 @@ private:
 		 * Post: Borra del archivo de espacios libres los datos del registro
 		 * 		 del archivo de RLV que acaba de completar
 		 */
-		void borrarOffsetArchivoDeEspaciosLibres(int offsetLineaABorrar);
+		void borrarOffsetArchivoDeEspaciosLibres();
+
 public:
 
 		HandlerArchivoRLV();
