@@ -14,6 +14,7 @@ int HandlerArchivoRLV::obtenerTamanioLibro(char * cadenaDeDatos)
 }
 
 HandlerArchivoRLV::HandlerArchivoRLV() {
+	this->offsetAAEL = 0;
 }
 
 int HandlerArchivoRLV::insertarRegistro(const string& path_nuevo_libro)
@@ -41,7 +42,7 @@ int HandlerArchivoRLV::insertarRegistro(const string& path_nuevo_libro)
  *  Si lo voy a insertar en un espacio libre debo borrar ese dato
  *  del archivo de espacios libres
  */
-		borrarOffsetArchivoDeEspaciosLibres(id_Archivo);
+		borrarOffsetArchivoDeEspaciosLibres();
 	}
     int indexado = 0;
 	int procesado = 1;
@@ -144,6 +145,7 @@ int HandlerArchivoRLV::buscarOffsetArchivoEspaciosLibres(int tamanioRegistro){
 	int tamanioProcesado = 0;
 	int longCadenaDeDatos = 0;
 	string cadena;
+	int offsetAEL = 0;
 	char * caracterProcesado;
 
 	archEspaciosLibres.open(PATH_ESPACIO_LIBRE_RLV, std::ios_base::in | std::ios_base::out);
@@ -152,31 +154,35 @@ int HandlerArchivoRLV::buscarOffsetArchivoEspaciosLibres(int tamanioRegistro){
 	{
 		archEspaciosLibres.get(cadenaDeDatos,100);
 		cadena = cadenaDeDatos;
+		if (cadena.length() > 0){
+			strtok(cadenaDeDatos,"|");
+			caracterProcesado = strtok(NULL,"\n");
+			tamanioProcesado = atoi(caracterProcesado);
 
-		strtok(cadenaDeDatos,"|");
-		caracterProcesado = strtok(NULL,"|");
-		tamanioProcesado = atoi(caracterProcesado);
-
-		//Si el tamanio del registro es el que se proceso
-		//entonces se borra el offset del archivo de espacios libres.
-		if(tamanioRegistro == tamanioProcesado) //TODO No debería ser mayor o igual?
-		{
-			encontrado = true;
-			offsetProcesado = atoi(cadenaDeDatos);
-			this->borrarOffsetArchivoDeEspaciosLibres(offsetProcesado);
+			//Si el tamanio del registro es el que se proceso
+			//entonces se borra el offset del archivo de espacios libres.
+			if(tamanioRegistro <= tamanioProcesado){
+				encontrado = true;
+				offsetProcesado = atoi(cadenaDeDatos);
+				this->offsetAAEL = offsetAEL;
+			}else{
+				longCadenaDeDatos+= cadena.length() + 1;
+				offsetAEL += longCadenaDeDatos;
+				archEspaciosLibres.seekg(offsetAEL);
+			}
+		}else{
+			offsetAEL += cadena.length();
+			archEspaciosLibres.seekg(offsetAEL);
+			offsetProcesado = ERROR;
 		}
-
-		longCadenaDeDatos+= cadena.length();
-		longCadenaDeDatos++;
-		archEspaciosLibres.seekg(longCadenaDeDatos);
 	}
 	return offsetProcesado;
 
 }
 
 void HandlerArchivoRLV::actualizarEspaciosLibres(int offset,int espacioLibre){
-	std::fstream fh;
-	fh.open(PATH_REG_LONG_VARIABLE, std::ios_base::app);
+	std::ofstream fh;
+	fh.open(PATH_ESPACIO_LIBRE_RLV, std::ios_base::app);
 	stringstream ss;
 	ss << offset << "|" << espacioLibre << "\n" ;
 	string str = ss.str();
@@ -186,17 +192,16 @@ void HandlerArchivoRLV::actualizarEspaciosLibres(int offset,int espacioLibre){
 }
 
 
-void HandlerArchivoRLV::borrarOffsetArchivoDeEspaciosLibres(int offsetLineaABorrar){
+void HandlerArchivoRLV::borrarOffsetArchivoDeEspaciosLibres(){
 
 	char  cadenaDeDatos[100];
 	string cadena;
     int longCadena = 0;
+    std::fstream el;
+   	el.open(PATH_ESPACIO_LIBRE_RLV, std::ios_base::in | std::ios_base::out | std::ios_base::app);
+   	el.seekg(this->offsetAAEL);
+   	el.get(cadenaDeDatos,100);
 
-	std::fstream el;
-	el.open(PATH_ESPACIO_LIBRE_RLV, std::ios_base::in | std::ios_base::out);
-	el.seekp(offsetLineaABorrar);
-
-	el.get(cadenaDeDatos,100);
     strtok(cadenaDeDatos,"\n");
 	cadena = cadenaDeDatos;
     longCadena = cadena.length();
