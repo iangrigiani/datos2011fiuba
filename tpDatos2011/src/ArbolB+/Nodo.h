@@ -1,7 +1,7 @@
 #ifndef NODO_H_
 #define NODO_H_
 
-#include "../EstructurasEnComun/ClaveNumerica.h"
+#include "../EstructurasEnComun/Clave.h"
 #include "../EstructurasEnComun/Constantes.h"
 //#include "../ModuloDePersistencia/Persistencia.h"
 #include "Elementos.h"
@@ -21,7 +21,7 @@ private:
 	int offset;
 	int espacioOcupado;
 	int cantidadClaves;
-	ClaveNumerica* claves;
+	Clave* claves;
 
 public:
 	Nodo(int nivel);
@@ -37,7 +37,7 @@ public:
         return cantidadClaves;
     }
 
-    ClaveNumerica* getClaves() const
+    Clave* getClaves() const
     {
         return claves;
     }

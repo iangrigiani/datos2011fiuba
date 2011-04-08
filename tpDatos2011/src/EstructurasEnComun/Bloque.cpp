@@ -21,7 +21,7 @@ bool Bloque::tieneEspacio(int size){
 	return false;
 }
 
-Registro * Bloque::getRegistro(ClaveNumerica * clave){
+Registro * Bloque::getRegistro(Clave * clave){
 	std::list<Registro*>::iterator it = this->registros.begin();
 	bool encontrado = false;
 	Registro * regRetornado = NULL;
@@ -35,7 +35,7 @@ Registro * Bloque::getRegistro(ClaveNumerica * clave){
 	return regRetornado;
 }
 
-Registro* Bloque::getSiguienteRegistro(ClaveNumerica * clave, ClaveNumerica * claveNumerica){
+Registro* Bloque::getSiguienteRegistro(Clave * clave, Clave * claveNumerica){
 	std::list<Registro*>::iterator it = this->registros.begin();
 	bool encontrado = false;
 	Registro * regRetornado = NULL;
