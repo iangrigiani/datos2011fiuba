@@ -48,14 +48,15 @@ int HandlerArchivoRLV::insertarRegistro(const string& path_nuevo_libro)
 	int procesado = 1;
 
 // Manejo sobre el archivo de RLV
-	std::ofstream f_dst;
-	f_dst.open(PATH_REG_LONG_VARIABLE, std::ios_base::app);
+	std::fstream f_dst;
+	f_dst.open(PATH_REG_LONG_VARIABLE, std::ios_base::in | std::ios_base::out);
 	stringstream ss;
 
 // Armo las cabecera para el libro
 	ss << id_Archivo << "|" << tamanioRegistro << "|" << procesado << "|" << indexado << "|" << "\n" << buffer << "\n" ;
 	string str = ss.str();
 	// Escribo libro en el archivo de RLV
+	f_dst.seekg(id_Archivo);
 	f_dst.write(str.c_str(), str.length());
 
 	f_dst.close();
@@ -193,22 +194,17 @@ void HandlerArchivoRLV::actualizarEspaciosLibres(int offset,int espacioLibre){
 
 
 void HandlerArchivoRLV::borrarOffsetArchivoDeEspaciosLibres(){
-
+	std::fstream fh;
 	char  cadenaDeDatos[100];
-	string cadena;
-    int longCadena = 0;
-    std::fstream el;
-   	el.open(PATH_ESPACIO_LIBRE_RLV, std::ios_base::in | std::ios_base::out | std::ios_base::app);
-   	el.seekg(this->offsetAAEL);
-   	el.get(cadenaDeDatos,100);
-
-    strtok(cadenaDeDatos,"\n");
-	cadena = cadenaDeDatos;
-    longCadena = cadena.length();
-
-	char * buffer = (char*)calloc (longCadena, sizeof(char));
-	free(buffer);
-	el.write(buffer, longCadena);
-	el.flush();
-	el.close();
+	fh.open(PATH_ESPACIO_LIBRE_RLV, std::ios_base::in | std::ios_base::out);
+	fh.seekg(this->offsetAAEL);
+	fh.get(cadenaDeDatos,100);
+	string cad = cadenaDeDatos;
+	int longitudCadena = cad.length();
+	fh.seekg(this->offsetAAEL); //No tendría que ser un seekp?
+	char * libroLeido = (char*)calloc (longitudCadena, sizeof(char));
+	free(libroLeido);
+	fh.write(libroLeido, longitudCadena);
+	fh.flush();
+	fh.close();
 }
