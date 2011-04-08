@@ -111,16 +111,17 @@ void HandlerArchivoRLV::quitarRegistro(int offset){
 	fh.open(PATH_REG_LONG_VARIABLE, std::ios_base::in | std::ios_base::out);
 	fh.seekg(offset);
 	fh.get(cadenaDeDatos,100);
+
 	string cad = cadenaDeDatos;
 	int longitudCadena = cad.length();
 	int espacioOcupado = obtenerTamanioLibro(cadenaDeDatos);
 	espacioOcupado += longitudCadena;
 	fh.seekg(offset); //No tendría que ser un seekp?
+
 	char * libroLeido = (char*)calloc (espacioOcupado, sizeof(char));
 	free(libroLeido);
 	fh.write(libroLeido, espacioOcupado);
 	fh.flush();
-
 	fh.close();
 
 // Agrego los datos en el archivo de espacios libres.
@@ -129,7 +130,6 @@ void HandlerArchivoRLV::quitarRegistro(int offset){
 
 
 /* PRE: Recibe tamanioRegistro que indica la cant. de espacio que hay que buscar
- *
  * Busca un offset en el archivo de espacios libres de acuerdo al tamaño de registro
  * que recibe por parámetro. Si lo encuentra devuelve ese offset asociado al tamanio
  * de registro.
@@ -168,14 +168,10 @@ int HandlerArchivoRLV::buscarOffsetArchivoEspaciosLibres(int tamanioRegistro){
 
 		longCadenaDeDatos+= cadena.length();
 		longCadenaDeDatos++;
-
 		archEspaciosLibres.seekg(longCadenaDeDatos);
 	}
+	return offsetProcesado;
 
-	if(encontrado)
-		return offsetProcesado;
-	else
-		return ERROR;
 }
 
 void HandlerArchivoRLV::actualizarEspaciosLibres(int offset,int espacioLibre){
@@ -207,7 +203,6 @@ void HandlerArchivoRLV::borrarOffsetArchivoDeEspaciosLibres(int offsetLineaABorr
 	el.get(cadenaDeDatos,100);
     strtok(cadenaDeDatos,"/n");
 	cadena = cadenaDeDatos;
-
     longCadena = cadena.length();
 
 	char * buffer = (char*)calloc (longCadena, sizeof(char));

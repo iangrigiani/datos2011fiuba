@@ -45,7 +45,8 @@ private:
 		void actualizarEspaciosLibres(int offset, int tamanioLibre);
 		/*
 		 * Metodo que borra el offset y espacio libre que acabo de completar.
-		 * Pre: insertar en el archivo de RLV en un lugar que era espacio libre
+		 * Pre: offsetLineaABorrar es el offset en el Archivo de Espacio Libre
+		 *      de la linea a borrar
 		 * Post: Borra del archivo de espacios libres los datos del registro
 		 * 		 del archivo de RLV que acaba de completar
 		 */
