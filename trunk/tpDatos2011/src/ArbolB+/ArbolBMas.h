@@ -2,7 +2,7 @@
 #ifndef _ARBOLBMAS_H_
 #define _ARBOLBMAS_H_
 
-#include "../EstructurasEnComun/ClaveNumerica.h"
+#include "../EstructurasEnComun/Clave.h"
 #include "../EstructurasEnComun/Registro.h"
 #include "../ModuloDePersistencia/Persistencia.h"
 #include "NodoInterior.h"
@@ -51,7 +51,7 @@ public:
 	 * Insertar un registro al arbol
 	 * Pos: Devuelve TRUE si se inserto correctamente y FALSE en caso contrario.
 	 */
-	bool insertar(Elementos* elemento, int offset);
+	bool insertar(Elementos* elemento);
 
 	/*
 	 * Devuelve un IteradorArbol al primer nodo hoja del arbol.
@@ -65,7 +65,7 @@ public:
 	 * Pre: Recibo la clave del elemento a buscar.
 	 * Pos: Si lo encontro, devuelve el elemento, sino, devuelve NULL.
 	 */
-	Elementos* buscar(ClaveNumerica clave);
+	Elementos* buscar(Clave clave);
 
 
 	/*
@@ -79,7 +79,7 @@ public:
 	 * Primitiva que elimina un registro de la estructura.
 	 * Pos: Devuelve TRUE si se pudo borrar correctamente y FALSE en caso contrario.
 	 */
-	bool borrar(ClaveNumerica clave);
+	bool borrar(Clave clave);
 
 	/*
 	 * Devuelve el nodo con n�mero "numeroDeNodo".
@@ -96,14 +96,14 @@ private:
 	NodoHoja* obtenerNodoHoja();
 	NodoInterior* obtenerNodoInterior(int nivel);
 	int obtenerNumeroNodo();
-	bool insertarRecursivamente(Nodo* nodoCorriente, ClaveNumerica& claveNum, Elementos* dato, ClaveNumerica* clavePromocion, Nodo** nuevoNodo);
+	bool insertarRecursivamente(Nodo* nodoCorriente, Clave& claveNum, Elementos* dato, Clave* clavePromocion, Nodo** nuevoNodo);
 	void persistirNodo(Nodo* nodo);
 	void toString(Nodo* nodo, int tab);
 	void liberarMemoriaNodo(Nodo* nodo);
-	int obtenerPosicion(Nodo *unNodo, ClaveNumerica clave);
+	int obtenerPosicion(Nodo *unNodo, Clave clave);
 	Nodo* hidratarNodo(int nroNodo, int tipoNodo);
-	void dividirNodoInterior(NodoInterior* unNodoInterior, ClaveNumerica* clavePromocion, Nodo** nuevoNodoInterior, int nuevaPosicion);
-	void dividirNodoHoja(NodoHoja* unNodoHoja, ClaveNumerica* clavePromocion, Nodo** nuevoNodoHoja);
+	void dividirNodoInterior(NodoInterior* unNodoInterior, Clave* clavePromocion, Nodo** nuevoNodoInterior, int nuevaPosicion);
+	void dividirNodoHoja(NodoHoja* unNodoHoja, Clave* clavePromocion, Nodo** nuevoNodoHoja);
 	void hidratarDatosConfiguracion();
 };
 

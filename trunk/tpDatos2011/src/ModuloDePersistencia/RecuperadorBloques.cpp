@@ -9,7 +9,7 @@ RecuperadorBloques::RecuperadorBloques (std::string path){
 	offset = 0;
 }
 
-Registro * RecuperadorBloques::getRegistro(ClaveNumerica * key, int offset){
+Registro * RecuperadorBloques::getRegistro(Clave * key, int offset){
 	std::ifstream archivoEntrada;
 	archivoEntrada.open(this->path.c_str());
 	archivoEntrada.seekg(offset);
@@ -29,7 +29,7 @@ Registro * RecuperadorBloques::getRegistro(ClaveNumerica * key, int offset){
 }
 
 
-Registro * RecuperadorBloques::getSiguienteRegistro(ClaveNumerica * key,ClaveNumerica * prevKey, int offset){
+Registro * RecuperadorBloques::getSiguienteRegistro(Clave * key,Clave * prevKey, int offset){
 	std::ifstream archivoEntrada;
 	archivoEntrada.open(this->path.c_str());
 	archivoEntrada.seekg(offset);

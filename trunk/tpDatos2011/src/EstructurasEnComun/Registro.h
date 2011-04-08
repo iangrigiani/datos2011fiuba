@@ -2,7 +2,7 @@
 #define REGISTRO_H_
 
 #include <string>
-#include "ClaveNumerica.h"
+#include "Clave.h"
 #include <iostream>
 #include <string.h>
 #include <list>
@@ -16,12 +16,12 @@ private:
 	string editorial;
 	string autor;
 	list<string> palabras;
-	ClaveNumerica * Clave;
+	Clave * clave;
 
 public:
 	Registro();
-	Registro(string titulo,string autor,string editorial,list<string> palabras, int uiKey);
-	Registro (ClaveNumerica * uiKey);
+	Registro(string titulo,string autor,string editorial,list<string> palabras, string uiKey);
+	Registro (Clave* uiKey);
 	Registro (const Registro &a);
 
 	void toString();
@@ -50,8 +50,8 @@ public:
     string getAutor() const{
         return autor;
     }
-    ClaveNumerica *getClave() const{
-        return Clave;
+    Clave* getClave() const{
+        return clave;
     }
     string getEditorial() const{
         return editorial;
@@ -65,8 +65,8 @@ public:
     void setAutor(string autor){
         this->autor = autor;
     }
-    void setClave(ClaveNumerica *Clave){
-        this->Clave = Clave;
+    void setClave(Clave * clave){
+        this->clave = clave;
     }
     void setEditorial(string editorial){
         this->editorial = editorial;

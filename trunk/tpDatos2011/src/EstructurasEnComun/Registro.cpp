@@ -2,19 +2,19 @@
 
 
 Registro::Registro() {
-	this->Clave = new ClaveNumerica(0);
+	this->clave = new Clave("0");
 }
 
-Registro::Registro(string titulo,string autor,string editorial,list<string> palabras, int uiKey){
+Registro::Registro(string titulo,string autor,string editorial,list<string> palabras, string uiKey){
 	this->titulo = titulo;
 	this->autor = autor;
 	this->editorial = editorial;
 	this->palabras = palabras;
-	this->Clave = new ClaveNumerica(uiKey);
+	this->clave = new Clave(uiKey);
 }
 
-Registro::Registro(ClaveNumerica * uiKey){
-	this->Clave = uiKey;
+Registro::Registro(Clave * uiKey){
+	this->clave = uiKey;
 }
 
 Registro::Registro(const Registro &a){
@@ -22,7 +22,7 @@ Registro::Registro(const Registro &a){
 	this->autor = a.autor;
 	this->editorial = a.editorial;
 	this->palabras = a.palabras;
-	this->Clave = new ClaveNumerica(*(a.Clave));
+	this->clave = new Clave(*(a.clave));
 }
 
 void Registro::serializar(char * buffer, unsigned int &offset){
@@ -35,7 +35,7 @@ void Registro::serializar(char * buffer, unsigned int &offset){
 		Persistencia::PonerStringEnChar(buffer, offset, (char*)(*it).c_str());
 		++it;
 	}
-	this->Clave->serializar(buffer, offset);
+	this->clave->serializar(buffer, offset);
 }
 
 void Registro::hidratar(char * buffer, unsigned int &offset){
@@ -48,7 +48,7 @@ void Registro::hidratar(char * buffer, unsigned int &offset){
 		this->palabras.push_back(Persistencia::getStringDesdeBuffer(buffer,offset));
 		++cont;
 	}
-	this->Clave->hidratar(buffer, offset);
+	this->clave->hidratar(buffer, offset);
 }
 
 void Registro::toString(){
@@ -57,8 +57,8 @@ void Registro::toString(){
 	std::cout << "		 	 Autor 	  : " << this->autor << std::endl;
 	std::cout << "		 	 Editorial: " << this->editorial << std::endl;
 	std::cout << "Cantidad de Palabras: " << this->palabras.size() << std::endl;
-	this->Clave->toString();
+	this->clave->toString();
 }
 Registro::~Registro() {
-	delete this->Clave;
+	delete this->clave;
 }

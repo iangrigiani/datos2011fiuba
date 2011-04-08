@@ -38,7 +38,7 @@ void NodoInterior::hidratar(char * buffer, unsigned int &offset){
 	this->espacioOcupado = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	this->cantidadClaves = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	for (int i = 0; i < cantidadClaves ; i++){
-		ClaveNumerica clave;
+		Clave clave;
 		clave.hidratar(buffer,offset);
 		this->claves[i] = clave;
 	}

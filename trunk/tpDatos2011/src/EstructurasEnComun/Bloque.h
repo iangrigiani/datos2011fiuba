@@ -15,9 +15,9 @@ public:
 	bool agregarRegistro(Registro * reg);
 	bool tieneEspacio(int size);
 
-	Registro *getRegistro(ClaveNumerica * clave);
+	Registro *getRegistro(Clave * clave);
 
-	Registro *getSiguienteRegistro(ClaveNumerica * clave, ClaveNumerica * previousKey);
+	Registro *getSiguienteRegistro(Clave * clave, Clave * previousKey);
 
 	int getCantidadRegistros(){
 		return this->registros.size();

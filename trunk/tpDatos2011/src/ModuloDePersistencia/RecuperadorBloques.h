@@ -4,7 +4,7 @@
 #include "../EstructurasEnComun/Bloque.h"
 #include <iostream>
 #include <fstream>
-#include "../EstructurasEnComun/ClaveNumerica.h"
+#include "../EstructurasEnComun/Clave.h"
 #include "../EstructurasEnComun/Registro.h"
 
 class RecuperadorBloques {
@@ -15,8 +15,8 @@ public:
 	RecuperadorBloques();
 	RecuperadorBloques (std::string path);
 	Bloque * getSiguienteBloque();
-	Registro * getRegistro(ClaveNumerica * key,  int offset);
-	Registro * getSiguienteRegistro(ClaveNumerica * key,ClaveNumerica * prevKey,  int offset);
+	Registro * getRegistro(Clave * key,  int offset);
+	Registro * getSiguienteRegistro(Clave * key,Clave * prevKey,  int offset);
 	unsigned int getOffset(){
 		return offset;
 	}
