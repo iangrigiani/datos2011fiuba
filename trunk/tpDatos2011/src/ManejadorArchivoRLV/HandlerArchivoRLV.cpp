@@ -186,10 +186,6 @@ void HandlerArchivoRLV::actualizarEspaciosLibres(int offset,int espacioLibre){
 }
 
 
-/*
- * PRE: Recibe el offset dentro del archivo de Espacios Libre
- * POS: Borra del Archivo de Espacios Libres la linea del offset que se va ocupar
- */
 void HandlerArchivoRLV::borrarOffsetArchivoDeEspaciosLibres(int offsetLineaABorrar){
 
 	char  cadenaDeDatos[100];
@@ -201,7 +197,7 @@ void HandlerArchivoRLV::borrarOffsetArchivoDeEspaciosLibres(int offsetLineaABorr
 	el.seekp(offsetLineaABorrar);
 
 	el.get(cadenaDeDatos,100);
-    strtok(cadenaDeDatos,"/n");
+    strtok(cadenaDeDatos,"\n");
 	cadena = cadenaDeDatos;
     longCadena = cadena.length();
 
