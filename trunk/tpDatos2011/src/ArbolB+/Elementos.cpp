@@ -6,7 +6,6 @@ Elementos::Elementos() {
 
 Elementos::Elementos(Clave* clave, unsigned int offset){
 	this->clave = clave;
-	this->dato = this->clave->getClave();
 	this->offset = offset;
 }
 Elementos::~Elementos() {
@@ -23,6 +22,6 @@ void Elementos::hidratar(char * buffer, unsigned int &offset){
 
 void Elementos::toString(){
 	cout << "Elemento de Nodo --->" << endl;
-	cout<< "	Dato del elemento: " << this->dato << endl;
+	cout<< "	Dato del elemento: " << this->clave->getClave() << endl;
 	cout<< "	offset : " << this->offset << endl;
 }

@@ -4,7 +4,7 @@ Nodo::Nodo(int nivel) {
 	this->nivel = nivel;
 	this->espacioOcupado = 0;
 	this->cantidadClaves = 0;
-
+	this->claves = new Clave[(TAM_EFECTIVO_NODO/(TAM_CONTROL_REGISTRO)) + 2];
 }
 
 Nodo::~Nodo() {
