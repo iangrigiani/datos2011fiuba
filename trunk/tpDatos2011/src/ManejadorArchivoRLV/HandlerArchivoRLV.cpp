@@ -139,46 +139,36 @@ void HandlerArchivoRLV::quitarRegistro(int offset){
  */
 int HandlerArchivoRLV::buscarOffsetArchivoEspaciosLibres(int tamanioRegistro){
 
-	std::fstream archEspaciosLibres;
-	char  cadenaDeDatos[100];
-	bool encontrado = false;
-	int offsetProcesado = 0;
-	int tamanioProcesado = 0;
-	int longCadenaDeDatos = 0;
-	string cadena;
-	int offsetAEL = 0;
+	std:: fstream ifs;
+	ifs.open(PATH_ESPACIO_LIBRE_RLV, std::ios_base::in | std::ios_base::out);
+	char* cadena = (char*)calloc(100, sizeof(char));
+	bool encontrado  = false;
+	int tamanioLibro = 0;
+	int offsetAEl = 0;
 	char * caracterProcesado;
-
-	archEspaciosLibres.open(PATH_ESPACIO_LIBRE_RLV, std::ios_base::in | std::ios_base::out);
-
-	while (!encontrado and !archEspaciosLibres.eof())
-	{
-		archEspaciosLibres.get(cadenaDeDatos,100);
-		cadena = cadenaDeDatos;
-		if (cadena.length() > 0){
-			strtok(cadenaDeDatos,"|");
+	int retorno = ERROR;
+	string cad;
+	while (!encontrado && !ifs.eof()){
+		this->offsetAAEL = ifs.tellg();
+		ifs.getline(cadena, 100);
+		cad = cadena;
+		if (cad.length() > 0){
+			retorno = atoi(strtok(cadena,"|"));
+			//Busco donde se que se encuentra el campo asociado al tamanio del libro
 			caracterProcesado = strtok(NULL,"\n");
-			tamanioProcesado = atoi(caracterProcesado);
-
-			//Si el tamanio del registro es el que se proceso
-			//entonces se borra el offset del archivo de espacios libres.
-			if(tamanioRegistro <= tamanioProcesado){
+			tamanioLibro = atoi(caracterProcesado);
+			if (tamanioLibro >= tamanioRegistro){
 				encontrado = true;
-				offsetProcesado = atoi(cadenaDeDatos);
-				this->offsetAAEL = offsetAEL;
 			}else{
-				longCadenaDeDatos+= cadena.length() + 1;
-				offsetAEL += longCadenaDeDatos;
-				archEspaciosLibres.seekg(offsetAEL);
+				retorno = ERROR;
+				tamanioLibro = 0;
 			}
 		}else{
-			offsetAEL += cadena.length();
-			archEspaciosLibres.seekg(offsetAEL);
-			offsetProcesado = ERROR;
+			retorno = ERROR;
 		}
 	}
-	return offsetProcesado;
-
+ifs.close();
+return retorno;
 }
 
 void HandlerArchivoRLV::actualizarEspaciosLibres(int offset,int espacioLibre){
@@ -200,6 +190,7 @@ void HandlerArchivoRLV::borrarOffsetArchivoDeEspaciosLibres(){
 	fh.seekg(this->offsetAAEL);
 	fh.get(cadenaDeDatos,100);
 	string cad = cadenaDeDatos;
+	cad = cadenaDeDatos;
 	int longitudCadena = cad.length();
 	fh.seekg(this->offsetAAEL); //No tendría que ser un seekp?
 	char * libroLeido = (char*)calloc (longitudCadena, sizeof(char));
