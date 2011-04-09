@@ -9,7 +9,7 @@ Elementos::Elementos(Clave* clave, unsigned int offset){
 	this->offset = offset;
 }
 Elementos::~Elementos() {
-	delete this->clave;
+//	delete this->clave;
 }
 void Elementos::serializar(char * buffer, unsigned int &offset){
 	this->clave->serializar(buffer, offset);
