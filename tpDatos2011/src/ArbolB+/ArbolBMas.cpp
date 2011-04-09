@@ -49,8 +49,7 @@ bool ArbolBMas::insertar(Elementos* elemento){
 		(static_cast <NodoHoja*> (raiz))->hojaSiguiente = 0;
 		this->cantidadNodos = 1;
 	}
-	Clave clave(elemento->getDato());
-	bool resultado = insertarRecursivamente(raiz, clave , elemento, &clavePromocion, &nuevoNodoHijo);
+	bool resultado = insertarRecursivamente(raiz,*(elemento->getClave()) , elemento, &clavePromocion, &nuevoNodoHijo);
 
 	if (nuevoNodoHijo){
 		persistirNodo(nuevoNodoHijo);
@@ -180,8 +179,8 @@ bool ArbolBMas::insertarRecursivamente(Nodo* nodoCorriente, Clave& clave, Elemen
 			i--;
 		}
 
-		nodoHojaCorriente->claves[i + 1] = clave;
 		nodoHojaCorriente->datos[i + 1] = *dato;
+		nodoHojaCorriente->claves[i + 1] = clave;
 		nodoHojaCorriente->cantidadClaves++;
 		nodoHojaCorriente->espacioOcupado += dato->getTamanio() + clave.getTamanio() + TAM_CONTROL_REGISTRO;
 		if (nodoHojaCorriente->isOverflow(maxTamanioClave)) {
@@ -324,10 +323,12 @@ void ArbolBMas::toString(Nodo* nodoAmostrar, int tab){
 			for (int posicion = 0; posicion < nodo->cantidadClaves; ++posicion){
 				cout << "(";
 				Clave clave = nodo->claves[posicion];
-				clave.toString();
+				cout << clave.getClave() ;
+//				clave.toString();
 				cout << ";";
 				Elementos elemento = nodo->datos[posicion];
-				elemento.toString();
+//				elemento.toString();
+				cout << "Titulo: " << elemento.getClave()->getClave() << "/ Offset: " << elemento.getOffset()  ;
 				cout << ")";
 			}
 			cout << endl;
@@ -353,7 +354,8 @@ void ArbolBMas::toString(Nodo* nodoAmostrar, int tab){
 					for(int i=0; i<(tab+1) ; i++)
 						cout << "  ";
 					cout << "(";
-					clave.toString();
+					cout << clave.getClave();
+//					clave.toString();
 					cout << ")";
 					cout << clave.getTamanio();
 				}

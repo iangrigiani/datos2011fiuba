@@ -15,7 +15,6 @@ using namespace std;
 class Elementos : public Serializable {
 private:
 	Clave* clave;
-	string dato;
 	unsigned int offset;
 public:
 	Elementos();
@@ -30,11 +29,6 @@ public:
     Clave *getClave() const{
         return clave;
     }
-
-    string getDato() const{
-        return dato;
-    }
-
     unsigned int getOffset() const{
         return offset;
     }
