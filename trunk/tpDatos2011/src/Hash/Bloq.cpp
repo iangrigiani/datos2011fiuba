@@ -61,15 +61,14 @@ void Bloq::serializar(char* buffer, unsigned int& offset) {
 }
 
 void Bloq::hidratar(char* buffer, unsigned int& offset) {
+	this->vaciar();
 	this->pos_bloque_aux = Persistencia::getEnteroDesdeBuffer(buffer, offset);
 
-	this->esp_libre = TAM_BLOQUE;
 	int tam_regs = Persistencia::getEnteroDesdeBuffer(buffer, offset);
 	for (int i = 0; i < tam_regs; ++ i) {
 		Reg reg;
 		reg.hidratar(buffer, offset);
-		this->regs.push_back(reg);
-		this->esp_libre -= this->regs.back().get_tam();
+		this->agregar_nuevo_reg(reg);
 	}
 }
 
