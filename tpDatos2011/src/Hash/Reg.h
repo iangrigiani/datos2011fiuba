@@ -38,6 +38,7 @@ public:
 	void hidratar(char* buffer, unsigned int& offset);
 
 	void toString();
+
 };
 
 #endif /* REG_H_ */

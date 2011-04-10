@@ -14,9 +14,7 @@ class Bloque_Hash : public Bloq {
 
 private:
 
-	int pos_arch;
 	int tam_dispersion;
-	list < int > pos_tabla;
 
 public:
 
@@ -25,17 +23,12 @@ public:
 
 	void duplicar_tam_dispersion();
 	void truncar_tam_dispersion();
+
 	int get_tam_dispersion() const { return this->tam_dispersion; }
-
-	int get_pos_arch() const { return this->pos_arch; }
-
-	void agregar_nueva_pos(int pos);
-	bool eliminar_pos(int pos);
 
 	bool agregar_nuevo_offset_a_reg(int clave, int offset);
 	int eliminar_offset_de_reg(int clave, int offset);
 
-	list < Reg > actualizar_regs(int tam_tabla);
 	void incorporar_regs(list < Reg > regs);
 
 	void serializar(char* buffer, unsigned int& offset);

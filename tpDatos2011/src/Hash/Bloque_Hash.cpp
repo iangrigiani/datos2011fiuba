@@ -17,24 +17,6 @@ void Bloque_Hash::truncar_tam_dispersion() {
 	this->tam_dispersion /= 2;
 }
 
-void Bloque_Hash::agregar_nueva_pos(int pos) {
-	this->pos_tabla.push_back(pos);
-}
-
-bool Bloque_Hash::eliminar_pos(int pos) {
-	list < int > ::iterator it;
-
-	it = this->pos_tabla.begin();
-	while (it != this->pos_tabla.end() && *it != pos)
-		++ it;
-
-	if (*it == pos) {
-		this->pos_tabla.erase(it);
-		return true;
-	}
-	return false;
-}
-
 bool Bloque_Hash::agregar_nuevo_offset_a_reg(int clave, int offset) {
 	int esp_libre;
 	list < Reg > ::iterator it;
@@ -71,63 +53,40 @@ int Bloque_Hash::eliminar_offset_de_reg(int clave, int offset) {
 	return 2;
 }
 
-list < Reg > Bloque_Hash::actualizar_regs(int tam_tabla) {
-	list < Reg > ::iterator it_1;
-	list < int > ::iterator it_2;
-	list < Reg > list_aux;
-	Reg reg_aux(0);
-	int resto;
-
-	for (it_1 = this->get_regs().begin(); it_1 != this->get_regs().end(); ++ it_1) {
-		resto = (*it_1).get_clave() % tam_tabla;
-
-		it_2 = this->pos_tabla.begin();
-		while (it_2 != this->pos_tabla.end() && *it_2 != resto)
-			++ it_2;
-
-		if (*it_2 != resto && it_2 == this->pos_tabla.end()) {
-			reg_aux = *it_1;
-			this->get_regs().erase(it_1);
-			list_aux.push_back(reg_aux);
-		}
-	}
-	return list_aux;
-}
-
 void Bloque_Hash::incorporar_regs(list < Reg > regs) {
 	this->get_regs() = regs;
 }
 
 void Bloque_Hash::serializar(char* buffer, unsigned int& offset) {
-	this->serializar(buffer, offset);
-	Persistencia::PonerEnteroEnChar(buffer, offset, this->pos_arch);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->tam_dispersion);
+	Persistencia::PonerEnteroEnChar(buffer, offset, this->get_pos_bloque_aux());
 
-	Persistencia::PonerEnteroEnChar(buffer, offset, this->pos_tabla.size());
-	list < int > ::iterator it;
-	for (it = this->pos_tabla.begin(); it != this->pos_tabla.end(); ++ it)
-		Persistencia::PonerEnteroEnChar(buffer, offset, (*it));
+	Persistencia::PonerEnteroEnChar(buffer, offset, this->get_regs().size());
+	list < Reg > ::iterator it;
+	for (it = this->get_regs().begin(); it != this->get_regs().end(); ++ it)
+		(*it).serializar(buffer, offset);
 }
 
 void Bloque_Hash::hidratar(char* buffer, unsigned int& offset) {
-	this->hidratar(buffer, offset);
-	this->pos_arch = Persistencia::getEnteroDesdeBuffer(buffer, offset);
+	this->vaciar();
 	this->tam_dispersion = Persistencia::getEnteroDesdeBuffer(buffer, offset);
+	this->set_pos_bloque_aux(Persistencia::getEnteroDesdeBuffer(buffer, offset));
 
-	int tam_pos_tabla = Persistencia::getEnteroDesdeBuffer(buffer, offset);
-	for (int i = 0; i < tam_pos_tabla; ++ i)
-		this->pos_tabla.push_back(Persistencia::getEnteroDesdeBuffer(buffer,offset));
+	int tam_regs = Persistencia::getEnteroDesdeBuffer(buffer, offset);
+	for (int i = 0; i < tam_regs; ++ i) {
+		Reg reg;
+		reg.hidratar(buffer, offset);
+		this->agregar_nuevo_reg(reg);
+	}
 }
 
 void Bloque_Hash::toString() {
-	this->toString();
-	cout << " ID (posición relativa en el archivo):   " << this->pos_arch << endl;
+	cout << " Bloque --> " << endl;
 	cout << " Tamaño de dispersión:   " << this->tam_dispersion << endl;
+	cout << " Cantidad de espacio libre:   " << this->get_esp_libre() << endl;
+	cout << " Apunta al bloque N°:   " << this->get_pos_bloque_aux() << endl;
 
-	int i = 0;
-	list < int > ::iterator it;
-	for (it = this->pos_tabla.begin(); it != this->pos_tabla.end(); ++ it) {
-		cout << " Posición en la tabla #" << i << ":   " << *it << endl;
-		++ i;
-	}
+	list < Reg > ::iterator it;
+	for (it = this->get_regs().begin(); it != this->get_regs().end(); ++ it)
+		(*it).toString();
 }
