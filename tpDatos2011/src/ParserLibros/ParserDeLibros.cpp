@@ -66,10 +66,34 @@ Registro * ParserDeLibros::obtenerRegistroDeLibro (char * libro){
         return nuevoRegistro;
 }
 
-bool ParserDeLibros::esStopWords(char* pch){
-	// TODO verificar si es stopWords con busqueda en la lista
+bool ParserDeLibros::esStopWords(char* palabra){
+
+	// @Nacho: IMPLEMENTACION CON BUSQUEDA BINARIA
+	int totalElem = this->listaStopWords.size();
+	int medio, pivotDer, pivotIzq;
+	pivotIzq=0;
+	pivotDer=totalElem-1;
+
+	stringstream ss;
+	ss << palabra;
+
+	string palabraStr = ss.str();
+
+	while ( pivotIzq <= pivotDer) { // el elemento que esta ala izquierda debe de ser menor que el de la derecha
+		medio = ( pivotIzq + pivotDer )/2; // calculo el elemento central
+		if ( palabraStr > this->listaStopWords[medio] ) // si el elemento buscado es mayor que el centro entonces busco en la segunda mitad del vector
+			pivotIzq = medio + 1; // el primer valor del vector pasa hacer la mitad mas 1
+		else if ( palabraStr < this->listaStopWords[medio] ) // si el elemento buscado buscado es menor que la mitad entonces buscamos en la primera mitad del vector
+			pivotDer = medio - 1;
+		else return true; // si encontro la palabra, devuelvo true
+	}
+
 	return false;
+
 }
+
+
+
 
 string ParserDeLibros::caseFolding(char* pch){
 	// TODO Aplicar el case folding a la palabra antes de almacenarla

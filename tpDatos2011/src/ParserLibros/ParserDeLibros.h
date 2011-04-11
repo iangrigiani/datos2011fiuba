@@ -6,12 +6,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <fstream>
+#include <sstream>
 #include "../EstructurasEnComun/Constantes.h"
+#include <vector>
 
 class ParserDeLibros {
 public:
 private:
-	list<string> listaStopWords;
+	vector<string> listaStopWords;
 	char * libroActual;
 	/*
 	 * Arma la cadena de match para el autor
@@ -76,7 +78,7 @@ public:
 	Registro * obtenerRegistroDeLibro(char * libro);
 
 	void mostrarLista(){
-		list<string>::iterator it = this->listaStopWords.begin();
+		vector<string>::iterator it = this->listaStopWords.begin();
 		while ( it != this->listaStopWords.end()){
 			cout << (*it) << endl;
 			++it;
