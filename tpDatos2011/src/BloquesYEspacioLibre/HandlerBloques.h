@@ -5,21 +5,21 @@
  *      Author: angeles
  */
 
-#ifndef HANDLERARCHIVOBLOQUES_H_
-#define HANDLERARCHIVOBLOQUES_H_
+#ifndef HANDLERBLOQUES_H_
+#define HANDLERBLOQUES_H_
 
 #define TAM_BUFFER 4096
 
 #include "../Hash/Bloq.h"
-#include "HandlerArchivoEspLibre.h"
+#include "HandlerEspLibre.h"
 
-class HandlerArchivoBloques {
+class HandlerBloques {
 
 private:
 
 	string ruta_arch_bloques;
 
-	HandlerArchivoEspLibre handler_esp_libre;
+	HandlerEspLibre handler_esp_libre;
 
 	/*
 	 * Obtiene el tamanio del archivo de bloques.
@@ -30,19 +30,19 @@ private:
 
 public:
 
-	HandlerArchivoBloques() {};
+	HandlerBloques() {};
 
-	HandlerArchivoBloques(const string& ruta_arch_bloques, const string& ruta_arch_esp_Libre);
+	HandlerBloques(const string& ruta_arch_bloques, const HandlerEspLibre& handler_esp_libre);
 
-	virtual ~HandlerArchivoBloques() {};
+	virtual ~HandlerBloques() {};
 
 	void set_ruta_arch_bloques(const string& ruta_arch_bloques);
 
-	void set_ruta_arch_esp_libre(const string& ruta_arch_esp_libre);
+	void set_handler_esp_libre(const HandlerEspLibre& handler_esp_libre);
 
 	const string& get_ruta_arch_bloques() const { return this->ruta_arch_bloques; }
 
-	const HandlerArchivoEspLibre& get_handler_esp_libre() const { return this->handler_esp_libre; }
+	const HandlerEspLibre& get_handler_esp_libre() const { return this->handler_esp_libre; }
 
 	/*
 	 * Obtiene la posicion en la que sera insertado el bloque en caso de que la operacion a llevar
@@ -97,4 +97,4 @@ public:
 
 };
 
-#endif /* HANDLERARCHIVOBLOQUES_H_ */
+#endif /* HANDLERBLOQUES_H_ */

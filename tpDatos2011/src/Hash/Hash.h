@@ -8,15 +8,18 @@
 #ifndef HASH_H_
 #define HASH_H_
 
+#define NOM_ARCH_BLOQUES "BloquesHash"
+#define NOM_ARCH_ESP_LIBRE "EspLibreHash"
+
 #include "HandlerTabla.h"
-#include "../HandlerArchivoBloques/HandlerArchivoBloques.h"
+#include "../BloquesYEspLibre/HandlerBloques.h"
 
 class Hash {
 
 private:
 
 	HandlerTabla handler_tabla;
-	HandlerArchivoBloques handler_bloques;
+	HandlerBloques handler_bloques;
 
 public:
 
@@ -25,7 +28,7 @@ public:
 
 	const HandlerTabla& get_handler_tabla() const { return this->handler_tabla; }
 
-	HandlerArchivoBloques& get_handler_bloques() { return this->handler_bloques; }
+	HandlerBloques& get_handler_bloques() { return this->handler_bloques; }
 
 	void crear_condiciones_iniciales();
 

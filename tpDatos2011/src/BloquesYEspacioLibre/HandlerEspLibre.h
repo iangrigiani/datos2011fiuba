@@ -5,8 +5,8 @@
  *      Author: angeles
  */
 
-#ifndef HANDLERARCHIVOESPLIBRE_H_
-#define HANDLERARCHIVOESPLIBRE_H_
+#ifndef HANDLERESPLIBRE_H_
+#define HANDLERESPLIBRE_H_
 
 #define NOM_ARCH_TEMP "Temp"
 
@@ -15,7 +15,7 @@
 
 using namespace std;
 
-class HandlerArchivoEspLibre {
+class HandlerEspLibre {
 
 private:
 
@@ -39,11 +39,11 @@ private:
 
 public:
 
-	HandlerArchivoEspLibre() {};
+	HandlerEspLibre() {};
 
-	HandlerArchivoEspLibre(const string& ruta_arch_esp_libre);
+	HandlerEspLibre(const string& ruta_arch_esp_libre);
 
-	virtual ~HandlerArchivoEspLibre() {};
+	virtual ~HandlerEspLibre() {};
 
 	void set_ruta_arch_esp_libre(const string& ruta_arch_esp_libre);
 
@@ -105,4 +105,4 @@ public:
 
 };
 
-#endif /* HANDLERARCHIVOESPLIBRE_H_ */
+#endif /* HANDLERESPLIBRE_H_ */
