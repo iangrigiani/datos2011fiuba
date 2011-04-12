@@ -5,16 +5,16 @@
  *      Author: angeles
  */
 
-#include "HandlerArchivoEspLibre.h"
+#include "HandlerEspLibre.h"
 
-HandlerArchivoEspLibre::HandlerArchivoEspLibre(const string& ruta_arch_esp_libre) :
+HandlerEspLibre::HandlerEspLibre(const string& ruta_arch_esp_libre) :
 		ruta_arch_esp_libre(ruta_arch_esp_libre) {}
 
-void HandlerArchivoEspLibre::set_ruta_arch_esp_libre(const string& ruta_arch_esp_libre) {
+void HandlerEspLibre::set_ruta_arch_esp_libre(const string& ruta_arch_esp_libre) {
 	this->ruta_arch_esp_libre = ruta_arch_esp_libre;
 }
 
-int HandlerArchivoEspLibre::get_pos_bloque_libre() const {
+int HandlerEspLibre::get_pos_bloque_libre() const {
 	ifstream arch;
 	int pos_bloque_libre;
 
@@ -25,13 +25,13 @@ int HandlerArchivoEspLibre::get_pos_bloque_libre() const {
 	return pos_bloque_libre;
 }
 
-bool HandlerArchivoEspLibre::hay_bloque_libre() const {
+bool HandlerEspLibre::hay_bloque_libre() const {
 	if (this->get_pos_bloque_libre() != -1)
 		return true;
 	return false;
 }
 
-bool HandlerArchivoEspLibre::ya_existe(int pos_bloque_libre) const {
+bool HandlerEspLibre::ya_existe(int pos_bloque_libre) const {
 	ifstream arch;
 	int pos_bloque_libre_aux;
 
@@ -48,7 +48,7 @@ bool HandlerArchivoEspLibre::ya_existe(int pos_bloque_libre) const {
 	return false;
 }
 
-void HandlerArchivoEspLibre::actualizar_baja_bloque_libre() {
+void HandlerEspLibre::actualizar_baja_bloque_libre() {
 	ifstream arch;
 	ofstream arch_aux;
 	int pos_bloque_libre;
@@ -71,7 +71,7 @@ void HandlerArchivoEspLibre::actualizar_baja_bloque_libre() {
 	rename(NOM_ARCH_TEMP, this->ruta_arch_esp_libre.c_str());
 }
 
-void HandlerArchivoEspLibre::actualizar_alta_bloque_libre(int pos_nuevo_bloque_libre) {
+void HandlerEspLibre::actualizar_alta_bloque_libre(int pos_nuevo_bloque_libre) {
 	fstream arch;
 	long pos;
 	int pos_bloque_libre;

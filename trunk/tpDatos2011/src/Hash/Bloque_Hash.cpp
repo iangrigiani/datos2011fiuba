@@ -54,7 +54,9 @@ int Bloque_Hash::eliminar_offset_de_reg(int clave, int offset) {
 }
 
 void Bloque_Hash::incorporar_regs(list < Reg > regs) {
-	this->get_regs() = regs;
+	list < Reg > ::iterator it;
+	for (it = regs.begin(); it != regs.end(); ++ it)
+		this->agregar_nuevo_reg(*it);
 }
 
 void Bloque_Hash::serializar(char* buffer, unsigned int& offset) {
@@ -85,8 +87,11 @@ void Bloque_Hash::toString() {
 	cout << " Tamaño de dispersión:   " << this->tam_dispersion << endl;
 	cout << " Cantidad de espacio libre:   " << this->get_esp_libre() << endl;
 	cout << " Apunta al bloque N°:   " << this->get_pos_bloque_aux() << endl;
+	cout << " Cantidad de registros:   " << this->get_regs().size() << endl;
 
+/*
 	list < Reg > ::iterator it;
 	for (it = this->get_regs().begin(); it != this->get_regs().end(); ++ it)
 		(*it).toString();
+		*/
 }

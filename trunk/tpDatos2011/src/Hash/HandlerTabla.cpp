@@ -165,24 +165,26 @@ int HandlerTabla::get_num_bloque(int clave, int& pos_tabla) const {
 
 	getline(arch, s, '|');
 
-	while (contador != clave % this->tam_tabla + 1) {
+	while (contador != clave % this->tam_tabla) {
 		arch >> num_bloque;
 		++ contador;
 	}
 
+	arch >> num_bloque;
 	pos_tabla = contador;
+
 	return num_bloque;
 }
 
 list < Reg > HandlerTabla::actualizar_regs(int num_bloque, Bloque_Hash& bloque) {
-	list < Reg > ::iterator it_1;
+	list < Reg > ::iterator it;
 	list < Reg > list_aux;
 	int pos_tabla;
 
-	for (it_1 = bloque.get_regs().begin(); it_1 != bloque.get_regs().end(); ++ it_1) {
-		if (num_bloque != this->get_num_bloque((*it_1).get_clave(), pos_tabla)) {
-			bloque.get_regs().erase(it_1);
-			list_aux.push_back(*it_1);
+	for (it = bloque.get_regs().begin(); it != bloque.get_regs().end(); ++ it) {
+		if (num_bloque != this->get_num_bloque((*it).get_clave(), pos_tabla)) {
+			bloque.eliminar_reg((*it).get_clave());
+			list_aux.push_back(*it);
 		}
 	}
 
@@ -218,8 +220,8 @@ void HandlerTabla::reemplazar_referencia(int num_bloque_a_reemplazar, int num_nu
 	}
 
 	while (contador != this->tam_tabla) {
-		arch >> s;
-		arch_aux << ' ' << s;
+		arch >> num_bloque;
+		arch_aux << ' ' << dec << num_bloque;
 		++ contador;
 	}
 
