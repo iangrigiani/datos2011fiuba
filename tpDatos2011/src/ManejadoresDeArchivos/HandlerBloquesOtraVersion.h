@@ -1,25 +1,21 @@
-/*
- * HandlerArchivoBloques.h
- *
- *  Created on: 04/04/2011
- *      Author: angeles
- */
-
-#ifndef HANDLERBLOQUES_H_
-#define HANDLERBLOQUES_H_
+#ifndef HANDLERARCHIVOBLOQUES_H_
+#define HANDLERARCHIVOBLOQUES_H_
 
 #define TAM_BUFFER 4096
 
-#include "../Hash/Bloq.h"
+#include "../EstructurasEnComun/Bloque.h"
 #include "HandlerEspLibre.h"
 
-class HandlerBloques {
+class HandlerBloquesOtraVersion {
 
 private:
 
 	string ruta_arch_bloques;
 
 	HandlerEspLibre handler_esp_libre;
+
+
+public:
 
 	/*
 	 * Obtiene el tamanio del archivo de bloques.
@@ -28,17 +24,15 @@ private:
 	 */
 	int get_tam_arch_bloques() const;
 
-public:
+	HandlerBloquesOtraVersion() {};
 
-	HandlerBloques() {};
+	HandlerBloquesOtraVersion(const string& ruta_arch_bloques, const string& ruta_arch_esp_Libre);
 
-	HandlerBloques(const string& ruta_arch_bloques, const HandlerEspLibre& handler_esp_libre);
-
-	virtual ~HandlerBloques() {};
+	virtual ~HandlerBloquesOtraVersion() {};
 
 	void set_ruta_arch_bloques(const string& ruta_arch_bloques);
 
-	void set_handler_esp_libre(const HandlerEspLibre& handler_esp_libre);
+	void set_ruta_arch_esp_libre(const string& ruta_arch_esp_libre);
 
 	const string& get_ruta_arch_bloques() const { return this->ruta_arch_bloques; }
 
@@ -61,7 +55,7 @@ public:
 	 * atributos inicializados segun la información cargada desde el archivo de bloques(que
 	 * permanece intacto).
 	 */
-	void recuperar_bloque(Bloq& bloque, int pos_arch_bloques);
+		char* recuperar_bloque(int pos_arch_bloques);
 
 	/*
 	 * Guarda el bloque pasado por referencia en el archivo de bloques. Si hay algun espacio libre,
@@ -73,7 +67,7 @@ public:
 	 * Pos: devuelve la posicion del archivo de bloques en donde se realizo la insercion del bloque
 	 * en cuestion.
 	 */
-	int guardar_bloque(Bloq& bloque);
+	int guardar_bloque(char* bloque);
 
 	/*
 	 * Guarda el bloque pasado por referencia en la posicion pasada por parametro en el archivo de
@@ -83,7 +77,7 @@ public:
 	 * Pre: -
 	 * Pos: -
 	 */
-	void guardar_bloque(Bloq& bloque, int pos_arch_bloques);
+	void guardar_bloque(char* bloque, int pos_arch_bloques);
 
 	/*
 	 * Elimina el bloque que se encuentra almacenado en la posicion pasada por parametro del archivo de
@@ -97,4 +91,4 @@ public:
 
 };
 
-#endif /* HANDLERBLOQUES_H_ */
+#endif /* HANDLERARCHIVOBLOQUES_H_ */

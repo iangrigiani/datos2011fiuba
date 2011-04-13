@@ -1,10 +1,3 @@
-/*
- * Hash.cpp
- *
- *  Created on: 08/04/2011
- *      Author: angeles
- */
-
 #include "Hash.h"
 
 Hash::Hash(const string& ruta_arch_bloques, const string& ruta_arch_esp_libre) {

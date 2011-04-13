@@ -18,7 +18,7 @@ void Clave::serializar(char * buffer,unsigned int &offset){
 }
 
 void Clave::hidratar(char * buffer,unsigned int &offset){
-	this->clave = Persistencia::getEnteroDesdeBuffer(buffer, offset);
+	this->clave = Persistencia::getStringDesdeBuffer(buffer, offset);
 }
 
 bool Clave::igual (Clave *a){

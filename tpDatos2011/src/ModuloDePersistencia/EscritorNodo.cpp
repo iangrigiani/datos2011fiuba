@@ -1,46 +1,31 @@
 #include "EscritorNodo.h"
 
 EscritorNodo::EscritorNodo() {
-
+	this->handler = new HandlerBloquesOtraVersion();
 }
 
-EscritorNodo::EscritorNodo(std::string path){
+EscritorNodo::EscritorNodo(std::string path, std::string pathEspacioLibre){
+
 	this->path  = path;
-	this->bufferOffset = 0;
-	this->fileOffset = 0;
+	this->pathEspacioLibre = pathEspacioLibre;
+	this->handler = new HandlerBloquesOtraVersion(this->path, this->pathEspacioLibre);
 }
 
-void EscritorNodo::GrabarEnArchivo(Nodo * nodo){
-	if (!oss.is_open()){
-		oss.open(path.c_str());
+void EscritorNodo::ActualizarArchivoNodo(Nodo * nodo, int nivel){
+	this->buffer = (char*)calloc(TAMANIO_BUFFER, sizeof(char));
+	unsigned int offset = 0;
+	if (nivel > 0){
+		NodoInterior *nodoIntAGuardar = static_cast<NodoInterior*> (nodo);
+		nodoIntAGuardar->serializar(buffer, offset);
+	}else{
+		NodoHoja *nodoHojaAGuardar = static_cast<NodoHoja*> (nodo);
+		nodoHojaAGuardar->serializar(buffer, offset);
 	}
-	int offsetSum;
-	offsetSum = nodo->getNumero()* TAM_TOTAL_NODO;
-	this->buffer = (char*)calloc (TAM_TOTAL_NODO, sizeof(char));
-	nodo->serializar(this->buffer, this->bufferOffset);
-	this->oss.seekp(fileOffset);
-	oss.write(this->buffer, offsetSum);
-	oss.flush();
-	free (this->buffer);
-	this->bufferOffset = 0;
-	this->fileOffset += offsetSum;
-}
+	this->handler->guardar_bloque(buffer, nivel);
 
-void EscritorNodo::ActualizarArchivoNodo(Nodo * nodo){
-	if (!oss.is_open()){
-		oss.open(path.c_str());
-	}
-	int offsetSum;
-	offsetSum = nodo->getNumero()* TAM_TOTAL_NODO;
-	this->buffer = (char*)calloc (TAM_TOTAL_NODO, sizeof(char));
-	nodo->serializar(this->buffer, this->bufferOffset);
-	oss.seekp(offsetSum);
-	oss.write(this->buffer, offsetSum);
-	oss.flush();
-	free (this->buffer);
-	this->bufferOffset = 0;
 }
 
 EscritorNodo::~EscritorNodo() {
-	close();
+	free(this->buffer);
+	delete this->handler;
 }

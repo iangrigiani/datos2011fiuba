@@ -5,24 +5,18 @@ RecuperadorNodosLibres::RecuperadorNodosLibres() {
 
 }
 
-RecuperadorNodosLibres::RecuperadorNodosLibres (std::string path){
+RecuperadorNodosLibres::RecuperadorNodosLibres (std::string path, std::string path_EL){
 	this->path = path;
+	this->pathEL = path_EL;
+	this->handler = new HandlerBloquesOtraVersion(this->path, this->pathEL);
 }
 
 void RecuperadorNodosLibres::obtenerDatos(int &primeraHoja, vector<int>& nodosLibres){
-	if (!iss.is_open()){
-		iss.open(this->path.c_str());
-	}
-	iss.seekg(0, std::ios_base::end);
-	int tamanio = iss.tellg();
-	if (tamanio > 0){
-		unsigned int offset = 0;
-		iss.seekg(offset);
-		char readData[BUFFER_NODOS_LIBRES];
-		iss.read(readData, BUFFER_NODOS_LIBRES);
-		hidratarPrimeraHoja(readData,offset,primeraHoja);
-		hidratarNodosLibres(readData,offset,nodosLibres);
-	}
+	this->buffer = (char*)calloc(TAMANIO_BUFFER, sizeof(char));
+	this->handler->recuperar_bloque(0);
+	unsigned int offset = 0;
+	hidratarPrimeraHoja(this->buffer,offset,primeraHoja);
+	hidratarNodosLibres(this->buffer,offset,nodosLibres);
 }
 
 void RecuperadorNodosLibres::hidratarPrimeraHoja(char* readData, unsigned int &offset, int& primeraHoja){
@@ -35,5 +29,7 @@ void RecuperadorNodosLibres::hidratarNodosLibres(char* readData, unsigned int &o
    }
 }
 RecuperadorNodosLibres::~RecuperadorNodosLibres(){
-	close();
+	free(this->buffer);
+	delete this->handler;
+
 }

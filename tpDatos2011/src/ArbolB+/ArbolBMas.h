@@ -88,7 +88,9 @@ public:
 	 */
 	Nodo* leerNodo(int numeroDeNodo);
 
-	void MostrarArbol();
+	void MostrarArbol(Nodo* nodo);
+
+	void MostrarArbol ();
 
 	int getCantidadBloques();
 private:

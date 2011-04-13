@@ -1,16 +1,9 @@
-/*
- * Bloque_Hash.h
- *
- *  Created on: 31/03/2011
- *      Author: angeles
- */
-
 #ifndef BLOQUE_HASH_H_
 #define BLOQUE_HASH_H_
 
-#include "Bloq.h"
+#include "../EstructurasEnComun/Bloque.h"
 
-class Bloque_Hash : public Bloq {
+class Bloque_Hash : public Bloque {
 
 private:
 

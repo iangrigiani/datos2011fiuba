@@ -1,10 +1,3 @@
-/*
- * HandlerArchivoBloques.cpp
- *
- *  Created on: 04/04/2011
- *      Author: angeles
- */
-
 #include "HandlerBloques.h"
 
 HandlerBloques::HandlerBloques(const string& ruta_arch_bloques, const HandlerEspLibre& handler_esp_libre) :
@@ -36,7 +29,7 @@ int HandlerArchivoBloques::get_pos_insercion() const {
 	else return (this->get_tam_arch_bloques() / TAM_BLOQUE);
 }
 */
-void HandlerBloques::recuperar_bloque(Bloq& bloque, int pos_arch_bloques) {
+void HandlerBloques::recuperar_bloque(Bloque& bloque, int pos_arch_bloques) {
 	fstream arch;
 	unsigned int offset = 0;
 	char buffer[TAM_BUFFER];
@@ -49,7 +42,7 @@ void HandlerBloques::recuperar_bloque(Bloq& bloque, int pos_arch_bloques) {
 	bloque.hidratar(buffer, offset);
 }
 
-int HandlerBloques::guardar_bloque(Bloq& bloque) {
+int HandlerBloques::guardar_bloque(Bloque& bloque) {
 	fstream arch;
 	int pos_insercion;
 	unsigned int offset = 0;
@@ -74,7 +67,7 @@ int HandlerBloques::guardar_bloque(Bloq& bloque) {
 	return pos_insercion;
 }
 
-void HandlerBloques::guardar_bloque(Bloq& bloque, int pos_arch_bloques) {
+void HandlerBloques::guardar_bloque(Bloque& bloque, int pos_arch_bloques) {
 	fstream arch;
 	unsigned int offset = 0;
 	char buffer[TAM_BUFFER];
