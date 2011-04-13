@@ -1,41 +1,41 @@
 #ifndef BLOQUE_H_
 #define BLOQUE_H_
 
-#include <list>
-#include "Registro.h"
+#include "Reg.h"
 #include "Constantes.h"
-#include "../ModuloDePersistencia/Serializable.h"
-#include "../ModuloDePersistencia/Persistencia.h"
-class Bloque: public Serializable {
+
+class Bloque : public Serializable {
+
 private:
-	int espacioLibre;
-	std::list <Registro*> registros;
+
+	int pos_bloque_aux;
+	int esp_libre;
+	list < Reg > regs;
+
 public:
+
 	Bloque();
-	bool agregarRegistro(Registro * reg);
-	bool tieneEspacio(int size);
+	virtual ~Bloque() {};
 
-	Registro *getRegistro(Clave * clave);
+	bool esta_vacio() const;
+	bool entra_en_bloque(const Reg& reg) const;
 
-	Registro *getSiguienteRegistro(Clave * clave, Clave * previousKey);
+	void set_pos_bloque_aux(int pos_bloque_aux);
 
-	int getCantidadRegistros(){
-		return this->registros.size();
-	}
-	int getEspacioLibre(){
-		return this->espacioLibre;
-	}
-	std::list<Registro*> getListaRegistros(){
-		return this->registros;
-	}
+	void agregar_nuevo_reg(const Reg& reg);
+	bool eliminar_reg(int clave);
 
-	void serializar(char * buffer, unsigned int &offset);
+	int get_pos_bloque_aux() const { return this->pos_bloque_aux; }
+	int get_esp_libre() const { return this->esp_libre; }
+	list < Reg >& get_regs() { return this->regs; }
 
-	void hidratar(char * buffer, unsigned int &offset);
+	void vaciar();
 
-	void limpiar();
+	void serializar(char* buffer, unsigned int& offset);
+	void hidratar(char* buffer, unsigned int& offset);
+
 	void toString();
-	virtual ~Bloque();
+
 };
 
-#endif /* BLOQUE_H_ */
+#endif /* BLOQUE */

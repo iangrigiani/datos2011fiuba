@@ -1,7 +1,7 @@
 #include "Elementos.h"
 
 Elementos::Elementos() {
-
+	this->clave = new Clave("0");
 }
 
 Elementos::Elementos(Clave* clave, unsigned int offset){

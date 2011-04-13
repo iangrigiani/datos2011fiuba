@@ -1,91 +1,77 @@
+
 #include "Bloque.h"
 
-Bloque::Bloque() {
-	this->espacioLibre = TAMANIO_BUFFER;
+Bloque::Bloque() : pos_bloque_aux(-1), esp_libre(TAM_BLOQUE) {}
+
+void Bloque::set_pos_bloque_aux(int pos_bloque_aux) {
+	this->pos_bloque_aux = pos_bloque_aux;
 }
 
-bool Bloque::agregarRegistro(Registro * reg){
-	bool retorno = false;
-	if (tieneEspacio(reg->getTamanio())){
-		retorno = true;
-		this->registros.push_back(reg);
-		espacioLibre -= reg->getTamanio();
-	}	
-	return retorno;
+bool Bloque::esta_vacio() const {
+	if (this->esp_libre == TAM_BLOQUE)
+		return true;
+	return false;
 }
 
-bool Bloque::tieneEspacio(int size){
-	if (espacioLibre > size){
+bool Bloque::entra_en_bloque(const Reg& reg) const {
+	if (this->esp_libre > reg.get_tam())
+		return true;
+	return false;
+}
+
+void Bloque::agregar_nuevo_reg(const Reg& reg) {
+	this->regs.push_back(reg);
+	this->esp_libre -= reg.get_tam();
+}
+
+bool Bloque::eliminar_reg(int clave) {
+	list < Reg > ::iterator it;
+
+	it = this->regs.begin();
+	while (it != this->regs.end() && (*it).get_clave() != clave)
+		++ it;
+
+	if ((*it).get_clave() == clave) {
+		this->regs.erase(it);
+		this->esp_libre += (*it).get_tam();
 		return true;
 	}
 	return false;
 }
 
-Registro * Bloque::getRegistro(Clave * clave){
-	std::list<Registro*>::iterator it = this->registros.begin();
-	bool encontrado = false;
-	Registro * regRetornado = NULL;
-	while (it != this->registros.end() && !encontrado){
-		if ((*it)->getClave()->igual(clave)){
-			encontrado = true;
-			regRetornado = (*it);
-		}
-		it++;
-	}
-	return regRetornado;
+void Bloque::vaciar() {
+	this->pos_bloque_aux = -1;
+	this->esp_libre = TAM_BLOQUE;
+	this->regs.clear();
 }
 
-Registro* Bloque::getSiguienteRegistro(Clave * clave, Clave * claveNumerica){
-	std::list<Registro*>::iterator it = this->registros.begin();
-	bool encontrado = false;
-	Registro * regRetornado = NULL;
-	while (it != this->registros.end() && !encontrado){
-		if ((*it)->getClave()->igual(clave) && claveNumerica->esMenor((*it)->getClave())){
-			encontrado = true;
-			regRetornado = (*it);
-		}
-		it++;
-	}
-	return regRetornado;
+void Bloque::serializar(char* buffer, unsigned int& offset) {
+	Persistencia::PonerEnteroEnChar(buffer, offset, this->pos_bloque_aux);
+
+	Persistencia::PonerEnteroEnChar(buffer, offset, this->regs.size());
+	list < Reg > ::iterator it;
+	for (it = this->regs.begin(); it != this->regs.end(); ++ it)
+		(*it).serializar(buffer, offset);
 }
 
+void Bloque::hidratar(char* buffer, unsigned int& offset) {
+	this->vaciar();
+	this->pos_bloque_aux = Persistencia::getEnteroDesdeBuffer(buffer, offset);
 
-
-void Bloque::limpiar(){
-	this->espacioLibre = TAMANIO_BUFFER;
-	this->registros.clear();
-}
-
-void Bloque::serializar(char * buffer, unsigned int &offset){
-	Persistencia::PonerEnteroEnChar(buffer, offset, this->registros.size());
-	std::list<Registro*>::iterator it = this->registros.begin();
-	while (it != this->registros.end()){
-		(*it)->serializar(buffer, offset);
-		it++;
+	int tam_regs = Persistencia::getEnteroDesdeBuffer(buffer, offset);
+	for (int i = 0; i < tam_regs; ++ i) {
+		Reg reg;
+		reg.hidratar(buffer, offset);
+		this->agregar_nuevo_reg(reg);
 	}
 }
 
-void Bloque::hidratar(char * buffer, unsigned int &offset){
-	int cantidadRegistros = Persistencia::getEnteroDesdeBuffer(buffer, offset);
-	int contador = 0;
-	while (contador < cantidadRegistros){
-		Registro * reg = new Registro();
-		reg->hidratar(buffer, offset);
-		this->agregarRegistro(reg);
-		contador++;
-	}
-}
-void Bloque::toString(){
-	std::list<Registro*>::iterator it = this->registros.begin();
-	while (it != this->registros.end()){
-		(*it)->toString();
-		++it;
-	}
-}
-Bloque::~Bloque() {
-	std::list<Registro*>::iterator it = this->registros.begin();
-	while (it != this->registros.end()){
-		delete (*it);
-		it++;
-	}
+void Bloque::toString() {
+	cout << " Bloque --> " << endl;
+	cout << " Apunta al bloque N°:   " << this->pos_bloque_aux << endl;
+	cout << " Cantidad de espacio libre:   " << this->esp_libre << endl;
+
+	list < Reg > ::iterator it;
+	for (it = this->regs.begin(); it != this->regs.end(); ++ it)
+		(*it).toString();
 }

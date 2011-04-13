@@ -3,7 +3,9 @@
 
 #define ERROR -1
 #define OK 0
-#define TAMANIO_BUFFER 32768
+#define TAMANIO_BUFFER 4096
+#define TAM_BLOQUE 4096
+#define TAM_BUFFER 4096
 #define STRING_BUFFER 32768
 #define BLOQUE_LLENO 1
 #define BLOQUE_NO_LLENO 0
@@ -13,7 +15,9 @@
 #define TAM_EFECTIVO_NODO (TAM_TOTAL_NODO - TAM_CONTROL_NODO)
 #define PORCENTAJE_NODO 50
 #define PATH_CONFIGURACION "ArchivoConfiguracion.cnf"
+#define PATH_CONFIGURACION_LIBRE "ArchivoConfiguracionEL.cnf"
 #define PATH_NODOS "Archivo_Nodos.txt"
+#define PATH_NODOS_LIBRE "Archivo_EL_Nodos.txt"
 #define BUFFER_NODOS_LIBRES 128
 #define TAM_CONTROL_REGISTRO 5
 #define PATH_REG_LONG_VARIABLE "ArchivoDeRLV.txt"

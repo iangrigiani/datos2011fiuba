@@ -4,23 +4,18 @@
 EscritorNodosLibres::EscritorNodosLibres() {
 }
 
-EscritorNodosLibres::EscritorNodosLibres(std::string path) {
+EscritorNodosLibres::EscritorNodosLibres(std::string path, std::string pathEL) {
 	this->path  = path;
-	this->bufferOffset = 0;
-	this->fileOffset = 0;
+	this->pathEL = pathEL;
+	this->handler = new HandlerBloquesOtraVersion(this->path, this->pathEL);
 }
 
 void EscritorNodosLibres::GrabarDatosConfig(int primeraHoja , vector<int> nodosLibres){
-	this->buffer = (char*)calloc (BUFFER_NODOS_LIBRES, sizeof(int));
-	serializarPrimeraHoja(primeraHoja, this->buffer, this->bufferOffset);
-	serializarNodosLibres(nodosLibres, this->buffer, this->bufferOffset);
-	std::ofstream archivoSalida;
-	archivoSalida.open(this->path.c_str());
-	archivoSalida.write(this->buffer, BUFFER_NODOS_LIBRES);
-	archivoSalida.close();
-	free (this->buffer);
-	this->bufferOffset = 0;
-	this->fileOffset += BUFFER_NODOS_LIBRES;
+	this->buffer = (char*)calloc (TAMANIO_BUFFER, sizeof(int));
+	unsigned int offset = 0;
+	serializarPrimeraHoja(primeraHoja, this->buffer, offset);
+	serializarNodosLibres(nodosLibres, this->buffer, offset);
+	this->handler->guardar_bloque(this->buffer, 0);
 }
 
 void EscritorNodosLibres::serializarPrimeraHoja(int primeraHoja, char * buffer, unsigned int &offset){
@@ -33,5 +28,6 @@ void EscritorNodosLibres::serializarNodosLibres(vector<int> nodosLibres, char * 
 	}
 }
 EscritorNodosLibres::~EscritorNodosLibres() {
-
+	free(this->buffer);
+	delete this->handler;
 }

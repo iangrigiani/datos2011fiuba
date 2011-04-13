@@ -1,13 +1,6 @@
-/*
- * Bloque_Hash.cpp
- *
- *  Created on: 31/03/2011
- *      Author: angeles
- */
-
 #include "Bloque_Hash.h"
 
-Bloque_Hash::Bloque_Hash(int tam_dispersion) : Bloq(), tam_dispersion(tam_dispersion) {}
+Bloque_Hash::Bloque_Hash(int tam_dispersion) : Bloque(), tam_dispersion(tam_dispersion) {}
 
 void Bloque_Hash::duplicar_tam_dispersion() {
 	this->tam_dispersion *= 2;

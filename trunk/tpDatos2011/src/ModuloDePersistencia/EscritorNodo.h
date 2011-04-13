@@ -8,27 +8,18 @@
 #include "../ArbolB+/Nodo.h"
 #include "../ArbolB+/NodoInterior.h"
 #include "../ArbolB+/NodoHoja.h"
+#include "../ManejadoresDeArchivos/HandlerBloquesOtraVersion.h"
 
-class EscritorNodo {
+class EscritorNodo{
 private:
-	char * buffer;
-	unsigned int bufferOffset;
-	unsigned int fileOffset;
 	std::string path;
-	std::ofstream oss;
+	std::string pathEspacioLibre;
+	char* buffer;
+	HandlerBloquesOtraVersion* handler;
 public:
 	EscritorNodo();
-	EscritorNodo (std::string path);
-	void GrabarEnArchivo(class Nodo * node);
-	int getOffset(){
-		return this->fileOffset;
-	}
-	void ActualizarArchivoNodo(class Nodo * node);
-	void close(){
-		this->oss.close();
-	}
-
-
+	EscritorNodo (std::string path , std::string pathEspaciosLibres);
+	void ActualizarArchivoNodo(class Nodo * node, int nivel);
 	virtual ~EscritorNodo();
 };
 

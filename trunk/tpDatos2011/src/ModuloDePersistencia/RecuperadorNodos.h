@@ -4,31 +4,28 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include "../ArbolB+/Nodo.h"
 #include "../ArbolB+/NodoHoja.h"
 #include "../ArbolB+/NodoInterior.h"
 #include "../EstructurasEnComun/Constantes.h"
+#include "../ManejadoresDeArchivos/HandlerBloquesOtraVersion.h"
+
 class RecuperadorNodos {
 
 private:
 	std::string path;
-	std::ifstream iss;
+	std::string pathEspaciosLibres;
+	char* buffer;
+	HandlerBloquesOtraVersion* handler;
 public:
 	RecuperadorNodos();
-	RecuperadorNodos (std::string path);
+	RecuperadorNodos (std::string path, std::string pathEspaciosLibres);
 	Nodo * obtenerNodo(int nroNodo, int tipoNodo);
-	virtual ~RecuperadorNodos();
 	int getTamanioArchivo(){
-		if (!iss.is_open()){
-			iss.open(this->path.c_str());
-		}
-		iss.seekg(0, ios::end);
-		int final = iss.tellg();
-		return final;
+		return this->handler->get_tam_arch_bloques();
 	}
-	void close(){
-		iss.close();
-	}
+	virtual ~RecuperadorNodos();
 };
 
 #endif /* RECUPERADORNODOS_H_ */

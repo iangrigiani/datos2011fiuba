@@ -5,7 +5,7 @@
 ArbolBMas::ArbolBMas(string ruta_archivo, int tamanioMaximoClave){
 	this->primeraHoja = 0;
 	this->maxTamanioClave = tamanioMaximoClave;
-	RecuperadorNodos* recup = new RecuperadorNodos(PATH_NODOS);
+	RecuperadorNodos* recup = new RecuperadorNodos(PATH_NODOS, PATH_NODOS_LIBRE);
 	this->raiz = hidratarNodo(0,1);
 	if (this->raiz) {
 		this->cantidadNodos = recup->getTamanioArchivo() / TAM_TOTAL_NODO;
@@ -30,8 +30,7 @@ NodoInterior* ArbolBMas::obtenerNodoInterior(int nivel){
 	return nodoInterior;
 }
 void ArbolBMas::grabarDatosConfiguracion(){
-	string nombreArchivo = PATH_CONFIGURACION;
-	EscritorNodosLibres * escritor = new EscritorNodosLibres(nombreArchivo);
+	EscritorNodosLibres * escritor = new EscritorNodosLibres(PATH_CONFIGURACION, PATH_CONFIGURACION_LIBRE);
 	escritor->GrabarDatosConfig(primeraHoja, nodosLibres);
 }
 bool ArbolBMas::insertar(Elementos* elemento){
@@ -53,6 +52,8 @@ bool ArbolBMas::insertar(Elementos* elemento){
 
 	if (nuevoNodoHijo){
 		persistirNodo(nuevoNodoHijo);
+		cout << "nuevo nodo" << endl;
+		this->MostrarArbol(nuevoNodoHijo);
 		NodoInterior *nuevaRaiz = obtenerNodoInterior(raiz->nivel + 1);
 		// Muevo la raiz a otra posicion y persisto la nueva raiz en la posicion cero
 		raiz->numero = obtenerNumeroNodo();
@@ -61,6 +62,8 @@ bool ArbolBMas::insertar(Elementos* elemento){
 			grabarDatosConfiguracion();
 		}
 		persistirNodo(raiz);
+		cout << "nuevo nodo actual" << endl;
+		this->MostrarArbol(raiz);
 		nuevaRaiz->claves[0] = clavePromocion;
 		nuevaRaiz->hijos[0] = raiz->numero;
 		nuevaRaiz->hijos[1] = nuevoNodoHijo->numero;
@@ -68,6 +71,8 @@ bool ArbolBMas::insertar(Elementos* elemento){
 		nuevaRaiz->espacioOcupado += clavePromocion.getTamanio() + TAM_CONTROL_REGISTRO;
 		nuevaRaiz->numero = 0;
 		persistirNodo(nuevaRaiz);
+		cout << "raiz" << endl;
+		this->MostrarArbol(nuevaRaiz);
 		liberarMemoriaNodo(raiz);
 		liberarMemoriaNodo(nuevoNodoHijo);
 		raiz = nuevaRaiz;
@@ -213,12 +218,12 @@ int ArbolBMas::obtenerNumeroNodo(){
 }
 
 void ArbolBMas::persistirNodo(Nodo* nodo){
-	EscritorNodo* escritor = new EscritorNodo(PATH_NODOS);
-	escritor->ActualizarArchivoNodo(nodo);
+	EscritorNodo* escritor = new EscritorNodo(PATH_NODOS , PATH_NODOS_LIBRE);
+	escritor->ActualizarArchivoNodo(nodo, nodo->getNivel());
 }
 
 Nodo* ArbolBMas::hidratarNodo(int nroNodo, int tipoNodo){
-	RecuperadorNodos* recuperador = new RecuperadorNodos(PATH_NODOS);
+	RecuperadorNodos* recuperador = new RecuperadorNodos(PATH_NODOS, PATH_NODOS_LIBRE);
 	return recuperador->obtenerNodo(nroNodo, tipoNodo);
 }
 
@@ -304,15 +309,22 @@ void ArbolBMas::dividirNodoHoja(NodoHoja* nodoHojaActual, Clave* clavePromocion,
 	nodoHojaActual->espacioOcupado -= auxNuevoNodoHoja->espacioOcupado;
 	nodoHojaActual->cantidadClaves = cantidadClaves;
 	nodoHojaActual->hojaSiguiente = auxNuevoNodoHoja->numero;
-	*clavePromocion = nodoHojaActual->claves[nodoHojaActual->cantidadClaves - 1];
+//	*clavePromocion = nodoHojaActual->claves[nodoHojaActual->cantidadClaves - 1];
+	*clavePromocion = auxNuevoNodoHoja->claves[0];
 	*nuevoNodoHoja = auxNuevoNodoHoja;
 }
 
-void ArbolBMas::MostrarArbol (){
-	if (raiz){
-		toString(raiz,1);
+void ArbolBMas::MostrarArbol (Nodo* nodo){
+	if (nodo){
+		toString(nodo,1);
 	}
 }
+void ArbolBMas::MostrarArbol (){
+	if (this->raiz){
+		toString(this->raiz,1);
+	}
+}
+
 void ArbolBMas::toString(Nodo* nodoAmostrar, int tab){
 	if(nodoAmostrar){
 		if (nodoAmostrar->isNodoHoja()) {
@@ -355,9 +367,8 @@ void ArbolBMas::toString(Nodo* nodoAmostrar, int tab){
 						cout << "  ";
 					cout << "(";
 					cout << clave.getClave();
-//					clave.toString();
 					cout << ")";
-					cout << clave.getTamanio();
+					cout << "PrimerHoja: " << this->primeraHoja;
 				}
 
 			}
@@ -368,6 +379,6 @@ void ArbolBMas::toString(Nodo* nodoAmostrar, int tab){
 
 void ArbolBMas::hidratarDatosConfiguracion(){
 	nodosLibres.clear();
-	RecuperadorNodosLibres* recuperador = new RecuperadorNodosLibres(PATH_CONFIGURACION);
+	RecuperadorNodosLibres* recuperador = new RecuperadorNodosLibres(PATH_CONFIGURACION, PATH_CONFIGURACION_LIBRE);
 	recuperador->obtenerDatos(primeraHoja,nodosLibres);
 }

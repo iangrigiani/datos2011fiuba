@@ -1,10 +1,3 @@
-/*
- * Hash.h
- *
- *  Created on: 08/04/2011
- *      Author: angeles
- */
-
 #ifndef HASH_H_
 #define HASH_H_
 
@@ -12,7 +5,7 @@
 #define NOM_ARCH_ESP_LIBRE "EspLibreHash"
 
 #include "HandlerTabla.h"
-#include "../BloquesYEspLibre/HandlerBloques.h"
+#include "..//ManejadoresDeArchivos/HandlerBloques.h"
 
 class Hash {
 

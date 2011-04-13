@@ -5,36 +5,35 @@ RecuperadorNodos::RecuperadorNodos() {
 
 }
 
-RecuperadorNodos::RecuperadorNodos (std::string path){
+RecuperadorNodos::RecuperadorNodos (std::string path, std::string pathEspaciosLibres){
 	this->path = path;
+	this->pathEspaciosLibres = pathEspaciosLibres;
+	this->handler = new HandlerBloquesOtraVersion(this->path, this->pathEspaciosLibres);
 }
 
 Nodo * RecuperadorNodos::obtenerNodo(int nroNodo, int tipoNodo){
-	if (!iss.is_open()){
-		iss.open(this->path.c_str());
-	}
-	iss.seekg(0, std::ios_base::end);
-	int tamanio = iss.tellg();
-	if (tamanio > 0){
-		iss.seekg(nroNodo*TAM_TOTAL_NODO);
-		char readData[TAM_TOTAL_NODO];
-		iss.read(readData, TAM_TOTAL_NODO);
+	this->buffer = (char*)calloc(TAMANIO_BUFFER, sizeof(char));
+	unsigned int offset = 0;
+	this->buffer = this->handler->recuperar_bloque(nroNodo);
+	std::stringstream ss;
+	ss << this->buffer;
+	string cadena = ss.str();
+	if (cadena.length() > 0){
 		if (tipoNodo == 1){
-			NodoHoja * nodoHoja = new NodoHoja();
-			unsigned int offsetChar = 0;
-			nodoHoja->hidratar(readData, offsetChar);
-			return nodoHoja;
+			NodoHoja* hoja = new NodoHoja();
+			hoja->hidratar(this->buffer, offset);
+			return hoja;
 		}else{
-			NodoInterior* nodoInterior = new NodoInterior();
-			unsigned int offsetChar2 = 0;
-			nodoInterior->hidratar(readData, offsetChar2);
-			return nodoInterior;
+			NodoInterior* interior = new NodoInterior();
+			interior->hidratar(this->buffer, offset);
+			return interior;
+
 		}
-	}else{
-		return NULL;
 	}
+	return NULL;
 }
 
 RecuperadorNodos::~RecuperadorNodos(){
-	close();
+	free(this->buffer);
+	delete this->handler;
 }
