@@ -28,17 +28,17 @@ char * ParserDeLibros::obtenerPalabras(){
 }
 
 char * ParserDeLibros::obtenerPrimerMatch(char * string, char *patronDeFiltro) {
-        regex_t preg;
-        regmatch_t pmatch[2];
-        char* pom = (char*)calloc(STRING_BUFFER, sizeof(char));
-        /* it's possible something won't compile like  ./regexp '*' abc */
-        regcomp (&preg, patronDeFiltro, REG_EXTENDED);
-        regexec (&preg, string, 2, pmatch, 0);
-        strncpy (pom, string + pmatch[1].rm_so,
-                        pmatch[1].rm_eo - pmatch[1].rm_so);
-        pom[pmatch[1].rm_eo - pmatch[1].rm_so] = '\0';
-        regfree (&preg);
-        return pom;
+//        regex_t preg;
+//        regmatch_t pmatch[2];
+//        char* pom = (char*)calloc(STRING_BUFFER, sizeof(char));
+//        /* it's possible something won't compile like  ./regexp '*' abc */
+//        regcomp (&preg, patronDeFiltro, REG_EXTENDED);
+//        regexec (&preg, string, 2, pmatch, 0);
+//        strncpy (pom, string + pmatch[1].rm_so,
+//                        pmatch[1].rm_eo - pmatch[1].rm_so);
+//        pom[pmatch[1].rm_eo - pmatch[1].rm_so] = '\0';
+//        regfree (&preg);
+//        return pom;
 }
 
 Registro * ParserDeLibros::obtenerRegistroDeLibro (char * libro){

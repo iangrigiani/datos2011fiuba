@@ -33,6 +33,7 @@ NodoInterior* ArbolBMas::obtenerNodoInterior(int nivel){
 void ArbolBMas::grabarDatosConfiguracion(){
 	EscritorNodosLibres * escritor = new EscritorNodosLibres(PATH_CONFIGURACION);
 	escritor->GrabarDatosConfig(primeraHoja, nodosLibres);
+	delete escritor;
 }
 bool ArbolBMas::insertar(Elementos* elemento){
 	/* Si el tamanio del registro que quiero insertar es mayor al porcentaje minimo por nodo, lanzo una excepcion */
@@ -221,11 +222,13 @@ int ArbolBMas::obtenerNumeroNodo(){
 void ArbolBMas::persistirNodo(Nodo* nodo){
 	EscritorNodo* escritor = new EscritorNodo(this->path);
 	escritor->ActualizarArchivoNodo(nodo, nodo->getNumero());
+	delete escritor;
 }
 
 Nodo* ArbolBMas::hidratarNodo(int nroNodo, int tipoNodo){
 	RecuperadorNodos* recuperador = new RecuperadorNodos(this->path);
 	return recuperador->obtenerNodo(nroNodo, tipoNodo);
+	delete recuperador;
 }
 
 void ArbolBMas::liberarMemoriaNodo(Nodo* nodo){
@@ -383,4 +386,5 @@ void ArbolBMas::hidratarDatosConfiguracion(){
 	nodosLibres.clear();
 	RecuperadorNodosLibres* recuperador = new RecuperadorNodosLibres(PATH_CONFIGURACION);
 	recuperador->obtenerDatos(primeraHoja,nodosLibres);
+	delete recuperador;
 }

@@ -14,14 +14,12 @@ using namespace std;
 class HandlerDeBloques{
 
 private:
-		fstream ff;
 		string path;
 public:
 		int get_tam_arch_bloques();
 		HandlerDeBloques();
 		HandlerDeBloques(string path);
 		virtual ~HandlerDeBloques() {
-			ff.close();
 		};
 		void guardar_bloque(char* buffer, int nro_Bloque);
 		char* recuperar_bloque(int nro_Bloque);
