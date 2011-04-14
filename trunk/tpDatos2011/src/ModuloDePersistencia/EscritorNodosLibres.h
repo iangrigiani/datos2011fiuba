@@ -8,20 +8,19 @@
 #include <list>
 #include <string>
 #include <vector>
-#include "../ManejadoresDeArchivos/HandlerBloquesOtraVersion.h"
+#include "../ManejadoresDeArchivos/HandlerDeBloques.h"
 using namespace  std;
 
 class EscritorNodosLibres {
 private:
 	char * buffer;
 	std::string path;
-	std::string pathEL;
-	HandlerBloquesOtraVersion* handler;
+	HandlerDeBloques* handler;
 	void serializarPrimeraHoja(int primeraHoja, char * buffer, unsigned int &offset);
 	void serializarNodosLibres(vector<int> nodosLibres, char * buffer, unsigned int &offset);
 public:
 	EscritorNodosLibres();
-	EscritorNodosLibres (std::string path, std::string pahtEL);
+	EscritorNodosLibres (std::string path);
 	void GrabarDatosConfig(int primeraHoja , vector<int> nodosLibres);
 	virtual ~EscritorNodosLibres();
 };

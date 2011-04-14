@@ -5,10 +5,9 @@ RecuperadorNodosLibres::RecuperadorNodosLibres() {
 
 }
 
-RecuperadorNodosLibres::RecuperadorNodosLibres (std::string path, std::string path_EL){
+RecuperadorNodosLibres::RecuperadorNodosLibres (std::string path){
 	this->path = path;
-	this->pathEL = path_EL;
-	this->handler = new HandlerBloquesOtraVersion(this->path, this->pathEL);
+	this->handler = new HandlerDeBloques(this->path);
 }
 
 void RecuperadorNodosLibres::obtenerDatos(int &primeraHoja, vector<int>& nodosLibres){

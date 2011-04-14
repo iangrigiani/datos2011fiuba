@@ -8,18 +8,17 @@
 #include "../ArbolB+/Nodo.h"
 #include "../ArbolB+/NodoInterior.h"
 #include "../ArbolB+/NodoHoja.h"
-#include "../ManejadoresDeArchivos/HandlerBloquesOtraVersion.h"
+#include "../ManejadoresDeArchivos/HandlerDeBloques.h"
 
 class EscritorNodo{
 private:
 	std::string path;
-	std::string pathEspacioLibre;
 	char* buffer;
-	HandlerBloquesOtraVersion* handler;
+	HandlerDeBloques* handler;
 public:
 	EscritorNodo();
-	EscritorNodo (std::string path , std::string pathEspaciosLibres);
-	void ActualizarArchivoNodo(class Nodo * node, int nivel);
+	EscritorNodo (std::string path);
+	void ActualizarArchivoNodo(class Nodo * node, int nro_bloque);
 	virtual ~EscritorNodo();
 };
 

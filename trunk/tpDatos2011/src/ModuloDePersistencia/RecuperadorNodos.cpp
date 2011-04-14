@@ -5,10 +5,9 @@ RecuperadorNodos::RecuperadorNodos() {
 
 }
 
-RecuperadorNodos::RecuperadorNodos (std::string path, std::string pathEspaciosLibres){
+RecuperadorNodos::RecuperadorNodos (std::string path){
 	this->path = path;
-	this->pathEspaciosLibres = pathEspaciosLibres;
-	this->handler = new HandlerBloquesOtraVersion(this->path, this->pathEspaciosLibres);
+	this->handler = new HandlerDeBloques(this->path);
 }
 
 Nodo * RecuperadorNodos::obtenerNodo(int nroNodo, int tipoNodo){

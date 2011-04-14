@@ -4,8 +4,9 @@
 
 ArbolBMas::ArbolBMas(string ruta_archivo, int tamanioMaximoClave){
 	this->primeraHoja = 0;
+	this->path = ruta_archivo;
 	this->maxTamanioClave = tamanioMaximoClave;
-	RecuperadorNodos* recup = new RecuperadorNodos(PATH_NODOS, PATH_NODOS_LIBRE);
+	RecuperadorNodos* recup = new RecuperadorNodos(this->path);
 	this->raiz = hidratarNodo(0,1);
 	if (this->raiz) {
 		this->cantidadNodos = recup->getTamanioArchivo() / TAM_TOTAL_NODO;
@@ -30,7 +31,7 @@ NodoInterior* ArbolBMas::obtenerNodoInterior(int nivel){
 	return nodoInterior;
 }
 void ArbolBMas::grabarDatosConfiguracion(){
-	EscritorNodosLibres * escritor = new EscritorNodosLibres(PATH_CONFIGURACION, PATH_CONFIGURACION_LIBRE);
+	EscritorNodosLibres * escritor = new EscritorNodosLibres(PATH_CONFIGURACION);
 	escritor->GrabarDatosConfig(primeraHoja, nodosLibres);
 }
 bool ArbolBMas::insertar(Elementos* elemento){
@@ -218,12 +219,12 @@ int ArbolBMas::obtenerNumeroNodo(){
 }
 
 void ArbolBMas::persistirNodo(Nodo* nodo){
-	EscritorNodo* escritor = new EscritorNodo(PATH_NODOS , PATH_NODOS_LIBRE);
-	escritor->ActualizarArchivoNodo(nodo, nodo->getNivel());
+	EscritorNodo* escritor = new EscritorNodo(this->path);
+	escritor->ActualizarArchivoNodo(nodo, nodo->getNumero());
 }
 
 Nodo* ArbolBMas::hidratarNodo(int nroNodo, int tipoNodo){
-	RecuperadorNodos* recuperador = new RecuperadorNodos(PATH_NODOS, PATH_NODOS_LIBRE);
+	RecuperadorNodos* recuperador = new RecuperadorNodos(this->path);
 	return recuperador->obtenerNodo(nroNodo, tipoNodo);
 }
 
@@ -380,6 +381,6 @@ void ArbolBMas::toString(Nodo* nodoAmostrar, int tab){
 
 void ArbolBMas::hidratarDatosConfiguracion(){
 	nodosLibres.clear();
-	RecuperadorNodosLibres* recuperador = new RecuperadorNodosLibres(PATH_CONFIGURACION, PATH_CONFIGURACION_LIBRE);
+	RecuperadorNodosLibres* recuperador = new RecuperadorNodosLibres(PATH_CONFIGURACION);
 	recuperador->obtenerDatos(primeraHoja,nodosLibres);
 }
