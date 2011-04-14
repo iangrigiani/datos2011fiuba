@@ -144,7 +144,6 @@ int HandlerArchivoRLV::buscarOffsetArchivoEspaciosLibres(int tamanioRegistro){
 	char* cadena = (char*)calloc(100, sizeof(char));
 	bool encontrado  = false;
 	int tamanioLibro = 0;
-	int offsetAEl = 0;
 	char * caracterProcesado;
 	int retorno = ERROR;
 	string cad;
