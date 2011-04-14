@@ -8,48 +8,38 @@
 
 #include <iostream>
 using namespace std;
-#include "ManejadorArchivoRLV/HandlerArchivoRLV.h"
 #include "EstructurasEnComun/Registro.h"
+#include "ManejadoresDeArchivos/HandlerDeBloques.h"
 #include "ParserLibros/ParserDeLibros.h"
 #include "ArbolB+/ArbolBMas.h"
 
 int main() {
-//	ParserDeLibros* p = new ParserDeLibros();
-//	ifstream fd;
-//	fd.open("Test1.txt", ios_base::in);
-//	fd.seekg(0, ios_base::end);
-//	int tamanio = fd.tellg();
-//	fd.seekg(0, ios_base::beg);
-//	char* libro = (char*)calloc(tamanio, sizeof(char));
-//	fd.read(libro, tamanio);
-//	fd.close();
-//	cout << "El libro es: " << endl;
-//	cout << libro << endl;
-//	Registro* reg = p->obtenerRegistroDeLibro(libro);
-//	reg->toString();
-//	p->mostrarLista();
-////	int offset = handler->insertarRegistro("Test1.txt");
-////	cout << "Grabe libro en offset: " << offset <<  endl;
-//	delete p;
-//	HandlerArchivoRLV* handler2 = new HandlerArchivoRLV();
-//	handler2->insertarLibro("Libro.txt");
-//	cout << "Grabe libro" << endl;
-//	delete handler2;
-//		handler->insertarLibro("Libro.txt");
-//		handler->insertarLibro("Libro.txt");
-//		handler->insertarLibro("Libro.txt");
-//	delete handler;
+	HandlerDeBloques* h = new HandlerDeBloques("Arbol.txt");
 
-//	if (handler->insertarLibro("Libro.txt") == OK){
-//			cout << "Grabe Libro" << endl;
-//	}
-//	delete handler;
-	HandlerArchivoRLV* handler2 = new HandlerArchivoRLV();
-	int offset = handler2->insertarRegistro("Test1.txt");
-	cout << "inserte en el offset: " << offset << endl;
+	Elementos* e = new Elementos(new Clave("holaaa"), 20);
+	unsigned int offsetElemento = 0;
+	char* bufferElemento = (char*)calloc(TAMANIO_BUFFER, sizeof(char));
+	e->serializar(bufferElemento, offsetElemento);
+	h->guardar_bloque(bufferElemento,0);
 
-//	handler2->quitarRegistro(219);
-//	handler2->quitarRegistro(440);
-//	cout << "Elimine Registros" << endl;
-	delete handler2;
+	Elementos* e2 = new Elementos(new Clave("holaaa2"), 202);
+	unsigned int offsetElemento2 = 0;
+	char* bufferElemento2 = (char*)calloc(TAMANIO_BUFFER, sizeof(char));
+	e2->serializar(bufferElemento2, offsetElemento2);
+	h->guardar_bloque(bufferElemento2,1);
+
+	Elementos* e3 = new Elementos(new Clave("holaaa3"), 203);
+	unsigned int offsetElemento3 = 0;
+	char* bufferElemento3 = (char*)calloc(TAMANIO_BUFFER, sizeof(char));
+	e3->serializar(bufferElemento3, offsetElemento3);
+	h->guardar_bloque(bufferElemento3,0);
+
+	cout << "Grabe todos los bloques" << endl;
+	free(bufferElemento);
+	free(bufferElemento2);
+	free(bufferElemento3);
+	delete(h);
+	delete(e);
+	delete(e2);
+	delete(e3);
 }

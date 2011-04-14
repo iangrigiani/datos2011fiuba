@@ -310,7 +310,7 @@ int HandlerTabla::puedo_liberar_bloque(const Bloque_Hash& bloque_a_liberar, int 
 
 	if (bloque_anterior == bloque_siguiente)
 		return bloque_anterior;
-	return NULL;
+	return 0;
 }
 
 void HandlerTabla::liberar_referencias(int pos_inicial, int num_bloque_por_reemplazar,

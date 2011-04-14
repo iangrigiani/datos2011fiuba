@@ -31,6 +31,7 @@ class ArbolBMas {
 
 private:
 	Nodo* raiz;
+	string path;
 	int primeraHoja;
 	int cantidadNodos;
 	int maxTamanioClave;

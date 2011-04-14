@@ -4,10 +4,9 @@
 EscritorNodosLibres::EscritorNodosLibres() {
 }
 
-EscritorNodosLibres::EscritorNodosLibres(std::string path, std::string pathEL) {
+EscritorNodosLibres::EscritorNodosLibres(std::string path) {
 	this->path  = path;
-	this->pathEL = pathEL;
-	this->handler = new HandlerBloquesOtraVersion(this->path, this->pathEL);
+	this->handler = new HandlerDeBloques(this->path);
 }
 
 void EscritorNodosLibres::GrabarDatosConfig(int primeraHoja , vector<int> nodosLibres){

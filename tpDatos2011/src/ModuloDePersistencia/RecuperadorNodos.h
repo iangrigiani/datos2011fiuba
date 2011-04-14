@@ -9,18 +9,17 @@
 #include "../ArbolB+/NodoHoja.h"
 #include "../ArbolB+/NodoInterior.h"
 #include "../EstructurasEnComun/Constantes.h"
-#include "../ManejadoresDeArchivos/HandlerBloquesOtraVersion.h"
+#include "../ManejadoresDeArchivos/HandlerDeBloques.h"
 
 class RecuperadorNodos {
 
 private:
 	std::string path;
-	std::string pathEspaciosLibres;
 	char* buffer;
-	HandlerBloquesOtraVersion* handler;
+	HandlerDeBloques* handler;
 public:
 	RecuperadorNodos();
-	RecuperadorNodos (std::string path, std::string pathEspaciosLibres);
+	RecuperadorNodos (std::string path);
 	Nodo * obtenerNodo(int nroNodo, int tipoNodo);
 	int getTamanioArchivo(){
 		return this->handler->get_tam_arch_bloques();
