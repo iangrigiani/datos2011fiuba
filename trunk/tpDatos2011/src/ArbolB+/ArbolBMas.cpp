@@ -52,8 +52,8 @@ bool ArbolBMas::insertar(Elementos* elemento){
 
 	if (nuevoNodoHijo){
 		persistirNodo(nuevoNodoHijo);
-		cout << "nuevo nodo" << endl;
-		this->MostrarArbol(nuevoNodoHijo);
+//		cout << "nuevo nodo" << endl;
+//		this->MostrarArbol(nuevoNodoHijo);
 		NodoInterior *nuevaRaiz = obtenerNodoInterior(raiz->nivel + 1);
 		// Muevo la raiz a otra posicion y persisto la nueva raiz en la posicion cero
 		raiz->numero = obtenerNumeroNodo();
@@ -62,8 +62,8 @@ bool ArbolBMas::insertar(Elementos* elemento){
 			grabarDatosConfiguracion();
 		}
 		persistirNodo(raiz);
-		cout << "nuevo nodo actual" << endl;
-		this->MostrarArbol(raiz);
+//		cout << "nuevo nodo actual" << endl;
+//		this->MostrarArbol(raiz);
 		nuevaRaiz->claves[0] = clavePromocion;
 		nuevaRaiz->hijos[0] = raiz->numero;
 		nuevaRaiz->hijos[1] = nuevoNodoHijo->numero;
@@ -71,8 +71,8 @@ bool ArbolBMas::insertar(Elementos* elemento){
 		nuevaRaiz->espacioOcupado += clavePromocion.getTamanio() + TAM_CONTROL_REGISTRO;
 		nuevaRaiz->numero = 0;
 		persistirNodo(nuevaRaiz);
-		cout << "raiz" << endl;
-		this->MostrarArbol(nuevaRaiz);
+//		cout << "raiz" << endl;
+//		this->MostrarArbol(nuevaRaiz);
 		liberarMemoriaNodo(raiz);
 		liberarMemoriaNodo(nuevoNodoHijo);
 		raiz = nuevaRaiz;
@@ -281,6 +281,7 @@ void ArbolBMas::dividirNodoInterior(NodoInterior* nodoInteriorActual, Clave* cla
 }
 
 void ArbolBMas::dividirNodoHoja(NodoHoja* nodoHojaActual, Clave* clavePromocion, Nodo** nuevoNodoHoja){
+	cout << "Dividi un nodo Hoja" << endl;
 	int espacioMedio = (nodoHojaActual->espacioOcupado) / 2;
 	int espacioNodoIzquierdo = 0;
 	int cantidadClaves = 0;
