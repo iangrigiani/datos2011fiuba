@@ -2,14 +2,12 @@
 #include "ArbolBMas.h"
 #include <iostream>
 
-ArbolBMas::ArbolBMas(string ruta_archivo, int tamanioMaximoClave){
+ArbolBMas::ArbolBMas(int tipo, string ruta_archivo, int tamanioMaximoClave){
+	this->tipo = tipo;
 	this->primeraHoja = 0;
 	this->path = ruta_archivo;
 	this->maxTamanioClave = tamanioMaximoClave;
-	this->recuperador_Nodos = new RecuperadorNodos(this->path);
-	this->escritor_Nodos = new EscritorNodo(this->path);
-	this->escritor_Datos_Configuracion = new EscritorNodosLibres(PATH_CONFIGURACION);
-	this->recuperador_Datos_Configuracion = new RecuperadorNodosLibres(PATH_CONFIGURACION);
+	inicializarPersistores();
 	this->raiz = hidratarNodo(0,1);
 	if (this->raiz) {
 		this->cantidadNodos = this->recuperador_Nodos->getTamanioArchivo() / TAM_TOTAL_NODO;
@@ -19,6 +17,18 @@ ArbolBMas::ArbolBMas(string ruta_archivo, int tamanioMaximoClave){
 	hidratarDatosConfiguracion();
 }
 
+void ArbolBMas::inicializarPersistores(){
+	this->recuperador_Nodos = new RecuperadorNodos(this->path);
+	this->escritor_Nodos = new EscritorNodo(this->path);
+	if(this->tipo == 1){
+		this->escritor_Datos_Configuracion = new EscritorNodosLibres(PATH_CONFIGURACION_AUTORES);
+		this->recuperador_Datos_Configuracion = new RecuperadorNodosLibres(PATH_CONFIGURACION_AUTORES);
+	}else{
+		this->escritor_Datos_Configuracion = new EscritorNodosLibres(PATH_CONFIGURACION_EDITORIAL);
+		this->recuperador_Datos_Configuracion = new RecuperadorNodosLibres(PATH_CONFIGURACION_EDITORIAL);
+	}
+
+}
 ArbolBMas::~ArbolBMas(){
 	if	(raiz){
 		liberarMemoriaNodo(raiz);
@@ -86,8 +96,8 @@ bool ArbolBMas::insertar(Elementos* elemento){
 	return resultado;
 }
 
-Elementos* ArbolBMas::buscar(Clave clave) {
-	return NULL;
+list<Elementos*> ArbolBMas::buscar(Clave clave) {
+
 }
 
 
