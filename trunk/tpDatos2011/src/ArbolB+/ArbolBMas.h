@@ -32,6 +32,11 @@ class ArbolBMas {
 private:
 	Nodo* raiz;
 	string path;
+	/*
+	 * Si es un 1 guarda Autores,
+	 * si es un 2 guarda editoriales
+	 */
+	int tipo;
 	int primeraHoja;
 	RecuperadorNodos* recuperador_Nodos;
 	EscritorNodo* escritor_Nodos;
@@ -47,9 +52,9 @@ public:
 	/*
 	 * Constructor
 	 * Recibe ruta del archivo donde voy a guardar el arbol y el tamanio
-	 * maximo de clave que puede almacenar.
+	 * maximo de clave que puede almacenar y el tipo de arbol.
 	 */
-	ArbolBMas(string ruta_archivo, int tamanioMaximoClave);
+	ArbolBMas(int tipo, std::string ruta_archivo, int tamanioMaximoClave);
 	~ArbolBMas();
 
 	/*
@@ -70,7 +75,7 @@ public:
 	 * Pre: Recibo la clave del elemento a buscar.
 	 * Pos: Si lo encontro, devuelve el elemento, sino, devuelve NULL.
 	 */
-	Elementos* buscar(Clave clave);
+	list<Elementos*> buscar(Clave clave);
 
 
 	/*
@@ -98,6 +103,10 @@ public:
 	void MostrarArbol ();
 
 	int getCantidadBloques();
+
+	int getTipo(){
+		return this->tipo;
+	}
 private:
 	void grabarDatosConfiguracion();
 	NodoHoja* obtenerNodoHoja();
@@ -112,6 +121,7 @@ private:
 	void dividirNodoInterior(NodoInterior* unNodoInterior, Clave* clavePromocion, Nodo** nuevoNodoInterior, int nuevaPosicion);
 	void dividirNodoHoja(NodoHoja* unNodoHoja, Clave* clavePromocion, Nodo** nuevoNodoHoja);
 	void hidratarDatosConfiguracion();
+	void inicializarPersistores();
 };
 
 #endif // _ARBOLBMAS_H_

@@ -14,11 +14,13 @@
 #define TAM_CONTROL_NODO 12
 #define TAM_EFECTIVO_NODO (TAM_TOTAL_NODO - TAM_CONTROL_NODO)
 #define PORCENTAJE_NODO 50
-#define PATH_CONFIGURACION "ArchivoConfiguracion.txt"
+#define PATH_CONFIGURACION_AUTORES "ArchivoConfiguracionAutores.txt"
+#define PATH_CONFIGURACION_EDITORIAL "ArchivoConfiguracionEditorial.txt"
 #define PATH_NODOS "Archivo_Nodos.txt"
 #define BUFFER_NODOS_LIBRES 128
 #define TAM_CONTROL_REGISTRO 5
 #define PATH_REG_LONG_VARIABLE "ArchivoDeRLV.txt"
 #define PATH_ESPACIO_LIBRE_RLV "controlEspaciosLibresRLV.txt"
 #define PATH_STOPWORDS "stopWords.txt"
+#define PORC_TAMANIO_NODO 50
 #endif /* CONSTANTES_H_ */
