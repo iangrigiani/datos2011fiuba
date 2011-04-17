@@ -6,10 +6,13 @@ ArbolBMas::ArbolBMas(string ruta_archivo, int tamanioMaximoClave){
 	this->primeraHoja = 0;
 	this->path = ruta_archivo;
 	this->maxTamanioClave = tamanioMaximoClave;
-	RecuperadorNodos* recup = new RecuperadorNodos(this->path);
+	this->recuperador_Nodos = new RecuperadorNodos(this->path);
+	this->escritor_Nodos = new EscritorNodo(this->path);
+	this->escritor_Datos_Configuracion = new EscritorNodosLibres(PATH_CONFIGURACION);
+	this->recuperador_Datos_Configuracion = new RecuperadorNodosLibres(PATH_CONFIGURACION);
 	this->raiz = hidratarNodo(0,1);
 	if (this->raiz) {
-		this->cantidadNodos = recup->getTamanioArchivo() / TAM_TOTAL_NODO;
+		this->cantidadNodos = this->recuperador_Nodos->getTamanioArchivo() / TAM_TOTAL_NODO;
 	} else {
 		this->cantidadNodos = 0;
 	}
@@ -20,6 +23,10 @@ ArbolBMas::~ArbolBMas(){
 	if	(raiz){
 		liberarMemoriaNodo(raiz);
 	}
+	delete this->escritor_Nodos;
+	delete this->recuperador_Nodos;
+	delete this->escritor_Datos_Configuracion;
+	delete this->recuperador_Datos_Configuracion;
 }
 
 NodoHoja* ArbolBMas::obtenerNodoHoja(){
@@ -31,9 +38,7 @@ NodoInterior* ArbolBMas::obtenerNodoInterior(int nivel){
 	return nodoInterior;
 }
 void ArbolBMas::grabarDatosConfiguracion(){
-	EscritorNodosLibres * escritor = new EscritorNodosLibres(PATH_CONFIGURACION);
-	escritor->GrabarDatosConfig(primeraHoja, nodosLibres);
-	delete escritor;
+	escritor_Datos_Configuracion->GrabarDatosConfig(primeraHoja, nodosLibres);
 }
 bool ArbolBMas::insertar(Elementos* elemento){
 	/* Si el tamanio del registro que quiero insertar es mayor al porcentaje minimo por nodo, lanzo una excepcion */
@@ -54,8 +59,7 @@ bool ArbolBMas::insertar(Elementos* elemento){
 
 	if (nuevoNodoHijo){
 		persistirNodo(nuevoNodoHijo);
-//		cout << "nuevo nodo" << endl;
-//		this->MostrarArbol(nuevoNodoHijo);
+		this->MostrarArbol(nuevoNodoHijo);
 		NodoInterior *nuevaRaiz = obtenerNodoInterior(raiz->nivel + 1);
 		// Muevo la raiz a otra posicion y persisto la nueva raiz en la posicion cero
 		raiz->numero = obtenerNumeroNodo();
@@ -64,8 +68,7 @@ bool ArbolBMas::insertar(Elementos* elemento){
 			grabarDatosConfiguracion();
 		}
 		persistirNodo(raiz);
-//		cout << "nuevo nodo actual" << endl;
-//		this->MostrarArbol(raiz);
+		this->MostrarArbol(raiz);
 		nuevaRaiz->claves[0] = clavePromocion;
 		nuevaRaiz->hijos[0] = raiz->numero;
 		nuevaRaiz->hijos[1] = nuevoNodoHijo->numero;
@@ -73,8 +76,7 @@ bool ArbolBMas::insertar(Elementos* elemento){
 		nuevaRaiz->espacioOcupado += clavePromocion.getTamanio() + TAM_CONTROL_REGISTRO;
 		nuevaRaiz->numero = 0;
 		persistirNodo(nuevaRaiz);
-//		cout << "raiz" << endl;
-//		this->MostrarArbol(nuevaRaiz);
+		this->MostrarArbol(nuevaRaiz);
 		liberarMemoriaNodo(raiz);
 		liberarMemoriaNodo(nuevoNodoHijo);
 		raiz = nuevaRaiz;
@@ -85,32 +87,6 @@ bool ArbolBMas::insertar(Elementos* elemento){
 }
 
 Elementos* ArbolBMas::buscar(Clave clave) {
-
-
-//	Nodo *unNodo = raiz;
-//
-//	if (!unNodo)
-//		NULL;
-//
-//	while (!unNodo->isNodoHoja()) {
-//		NodoInterior *unNodoInterior = static_cast<NodoInterior*> (unNodo);
-//		int posicion = obtenerPosicion(unNodoInterior, clave);
-//		unNodo = hidratarNodo(unNodoInterior->hijos[posicion]);
-//		if (unNodoInterior != raiz)
-//			liberarMemoriaNodo(unNodoInterior);
-//	}
-//
-//	NodoHoja *unNodoHoja = static_cast<NodoHoja*> (unNodo);
-//	Elementos* elemento = NULL;
-//	int posicion = obtenerPosicion(unNodoHoja, clave);
-//
-//	if (posicion < unNodoHoja->cantidadClaves && claveIgual(clave, unNodoHoja->claves[posicion]))
-//		elemento = unNodoHoja->datos[posicion];
-//	if (unNodoHoja != raiz)
-//		liberarMemoriaNodo(unNodoHoja);
-//	return elemento;
-
-	//Devuelvo NULL porque debe devolver un elemento
 	return NULL;
 }
 
@@ -121,7 +97,14 @@ bool ArbolBMas::insertarRecursivamente(Nodo* nodoCorriente, Clave& clave, Elemen
 		Clave nuevaClave;
 		Nodo* nuevoNodoHijo = NULL;
 		int posicion = obtenerPosicion(nodoInteriorCorriente, clave);
-		Nodo* nodoHijo = hidratarNodo(nodoInteriorCorriente->hijos[posicion], 2);
+		int tipoNodo = 0;
+		if (nodoInteriorCorriente->nivel > 1 ){
+			tipoNodo = 2;
+		}else{
+			tipoNodo = 1;
+		}
+		//Nodo* nodoHijo = hidratarNodo(nodoInteriorCorriente->hijos[posicion], tipoNodo);
+		Nodo* nodoHijo = hidratarNodo(nodoInteriorCorriente->hijos[posicion-1], tipoNodo);
 
 		bool resultado = insertarRecursivamente(nodoHijo, clave, dato, &nuevaClave, &nuevoNodoHijo);
 
@@ -220,15 +203,11 @@ int ArbolBMas::obtenerNumeroNodo(){
 }
 
 void ArbolBMas::persistirNodo(Nodo* nodo){
-	EscritorNodo* escritor = new EscritorNodo(this->path);
-	escritor->ActualizarArchivoNodo(nodo, nodo->getNumero());
-	delete escritor;
+	escritor_Nodos->ActualizarArchivoNodo(nodo, nodo->getNumero());
 }
 
 Nodo* ArbolBMas::hidratarNodo(int nroNodo, int tipoNodo){
-	RecuperadorNodos* recuperador = new RecuperadorNodos(this->path);
-	return recuperador->obtenerNodo(nroNodo, tipoNodo);
-	delete recuperador;
+	return (recuperador_Nodos->obtenerNodo(nroNodo, tipoNodo));
 }
 
 void ArbolBMas::liberarMemoriaNodo(Nodo* nodo){
@@ -334,48 +313,47 @@ void ArbolBMas::toString(Nodo* nodoAmostrar, int tab){
 	if(nodoAmostrar){
 		if (nodoAmostrar->isNodoHoja()) {
 			NodoHoja *nodo = static_cast<NodoHoja*> (nodoAmostrar);
-			for(int i=0 ; i<tab ; i++)
+			for(int i=0 ; i<tab ; i++) cout << "  ";
 				cout   << "Numero: " << nodo->numero << "  Nivel: " << nodo->nivel << "  Cant.Elem: " << nodo->cantidadClaves
 				<< " Esp.Libre: " << TAM_EFECTIVO_NODO - nodo->espacioOcupado << "  Hoja.Sig: " << nodo->hojaSiguiente << "    " << endl;
+
+			for(int i=0 ; i<tab ; i++) cout << "  ";
 			for (int posicion = 0; posicion < nodo->cantidadClaves; ++posicion){
 				cout << "(";
 				Clave clave = nodo->claves[posicion];
 				cout << clave.getClave() ;
-//				clave.toString();
 				cout << ";";
 				Elementos elemento = nodo->datos[posicion];
-//				elemento.toString();
 				cout << "Titulo: " << elemento.getClave()->getClave() << "/ Offset: " << elemento.getOffset()  ;
 				cout << ")";
 			}
 			cout << endl;
 		} else {
-
 			NodoInterior *nodoInt= static_cast<NodoInterior*> (nodoAmostrar);
 			cout << endl;
 			for(int i=0; i<tab ; i++)
 				cout << "  ";
 			cout << "Numero: " << nodoInt->numero << "  Nivel: " << nodoInt->nivel << "  Cant.Elem: " << nodoInt->cantidadClaves
-					<< "  Esp.Libre: " << TAM_EFECTIVO_NODO - nodoInt->espacioOcupado << endl;
-
+					<< "  Esp.Libre: " << TAM_EFECTIVO_NODO - nodoInt->espacioOcupado << "  Claves: (";
 			for (int posicion = 0; posicion <= nodoInt->cantidadClaves; ++posicion) {
-
-				Nodo *hijo = hidratarNodo(nodoInt->hijos[posicion],2);
+				if (posicion < nodoInt->cantidadClaves - 1) {
+					Clave clave = nodoInt->claves[posicion];
+					cout << clave.getClave();
+					cout << " , ";
+				}
+			}
+			cout << " )" << endl;
+			for (int posicion = 0; posicion <= nodoInt->cantidadClaves; ++posicion) {
+				int tipoNodo = 0;
+				if (nodoInt->nivel > 1 ){
+					tipoNodo = 2;
+				}else{
+					tipoNodo = 1;
+				}
+				Nodo *hijo = hidratarNodo(posicion+1,tipoNodo);
 				toString(hijo, tab+2);
 				if (hijo)
 					liberarMemoriaNodo(hijo);
-
-				if (posicion < nodoInt->cantidadClaves) {
-					Clave clave = nodoInt->claves[posicion];;
-
-					for(int i=0; i<(tab+1) ; i++)
-						cout << "  ";
-					cout << "(";
-					cout << clave.getClave();
-					cout << ")";
-					cout << "PrimerHoja: " << this->primeraHoja;
-				}
-
 			}
 			cout << endl;
 		}
@@ -384,7 +362,5 @@ void ArbolBMas::toString(Nodo* nodoAmostrar, int tab){
 
 void ArbolBMas::hidratarDatosConfiguracion(){
 	nodosLibres.clear();
-	RecuperadorNodosLibres* recuperador = new RecuperadorNodosLibres(PATH_CONFIGURACION);
-	recuperador->obtenerDatos(primeraHoja,nodosLibres);
-	delete recuperador;
+	recuperador_Datos_Configuracion->obtenerDatos(primeraHoja,nodosLibres);
 }

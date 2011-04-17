@@ -33,6 +33,10 @@ private:
 	Nodo* raiz;
 	string path;
 	int primeraHoja;
+	RecuperadorNodos* recuperador_Nodos;
+	EscritorNodo* escritor_Nodos;
+	RecuperadorNodosLibres* recuperador_Datos_Configuracion;
+	EscritorNodosLibres* escritor_Datos_Configuracion;
 	int cantidadNodos;
 	int maxTamanioClave;
 	vector<int> nodosLibres;
