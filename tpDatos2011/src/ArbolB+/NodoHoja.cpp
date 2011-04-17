@@ -45,29 +45,3 @@ void NodoHoja::hidratar(char * buffer, unsigned int &offset) {
 	}
 }
 
-//void NodoHoja::modificarDatos(int posicion, Elementos* dato){
-//	bool encontrado = false;
-//	int cont = 0;
-//	list<Elementos*>::iterator itDatos = this->datos.begin();
-//	while ( itDatos != datos.end() && !encontrado){
-//		if (cont == posicion){
-//			encontrado = true;
-//			(*(*itDatos)) = (*dato);
-//		}
-//		++cont;
-//		++itDatos;
-//	}
-//}
-//
-//Elementos* NodoHoja::obtenerDato(int posicion){
-//	int cont = 0;
-//	list<Elementos*>::iterator itDatos = this->datos.begin();
-//	while ( itDatos != datos.end()){
-//		if (cont == posicion){
-//			return (*itDatos);
-//		}
-//		++cont;
-//		++itDatos;
-//	}
-//	return NULL;
-//}

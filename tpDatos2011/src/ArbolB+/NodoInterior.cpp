@@ -11,11 +11,7 @@ NodoInterior::NodoInterior() : Nodo(0){
 }
 
 NodoInterior::~NodoInterior() {
-//	list<int*>::iterator it = this->hijos.begin();
-//	while (it != this->hijos.end()){
-//		delete (*it);
-//		it++;
-//	}
+	delete[] hijos;
 }
 
 void NodoInterior::serializar(char * buffer, unsigned int &offset){
@@ -47,20 +43,3 @@ void NodoInterior::hidratar(char * buffer, unsigned int &offset){
 		this->hijos[i] = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	}
 }
-
-//int NodoInterior::obtenerHijo(int Posicion){
-//	int nroNodohijo;
-//	int cont = 0;
-//	bool encontrado = false;
-//
-//	list<int*>::iterator it = this->hijos.begin();
-//	while (it != this->hijos.end() && !encontrado){
-//		if (cont == Posicion){
-//			nroNodohijo = (*(*it));
-//			return nroNodohijo;
-//		}
-//		++cont;
-//		++it;
-//	}
-//	return NULL;
-//}

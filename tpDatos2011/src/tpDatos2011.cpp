@@ -15,7 +15,7 @@ using namespace std;
 #include "ArbolB+/ArbolBMas.h"
 
 int main() {
-
+//
 //	HandlerDeBloques* h = new HandlerDeBloques("Archivo_Nodos.txt");
 //
 //	Elementos* e = new Elementos(new Clave("holaaa"), 20);
@@ -47,37 +47,51 @@ int main() {
 
 
 
-//-----------------------------------------------------------------------------
-	HandlerDeBloques* h = new HandlerDeBloques("Archivo_Nodos.txt");
+////-----------------------------------------------------------------------------
+//	HandlerDeBloques* h = new HandlerDeBloques("Archivo_Nodos.txt");
+//
+//	Elementos* e = new Elementos();
+//	unsigned int offsetElemento = 0;
+//	char* bufferElemento = (char*)calloc(TAMANIO_BUFFER, sizeof(char));
+//	bufferElemento = h->recuperar_bloque(0);
+//	e->hidratar(bufferElemento, offsetElemento);
+//	e->toString();
+//
+//	Elementos* e2 = new Elementos();
+//	unsigned int offsetElemento2 = 0;
+//	char* bufferElemento2 = (char*)calloc(TAMANIO_BUFFER, sizeof(char));
+//	bufferElemento2 = h->recuperar_bloque(1);
+//	e->hidratar(bufferElemento2, offsetElemento2);
+//	e->toString();
+//
+//	Elementos* e3 = new Elementos();
+//	unsigned int offsetElemento3 = 0;
+//	char* bufferElemento3 = (char*)calloc(TAMANIO_BUFFER, sizeof(char));
+//	bufferElemento3 = h->recuperar_bloque(2);
+//	e->hidratar(bufferElemento3, offsetElemento3);
+//	e->toString();
+//
+//	cout << "Recupere todos los bloques" << endl;
+//	free(bufferElemento);
+//	free(bufferElemento2);
+//	free(bufferElemento3);
+//	delete(h);
+//	delete(e);
+//	delete(e2);
+//	delete(e3);
+//
+	ArbolBMas* a = new ArbolBMas(PATH_NODOS, 20);
+	int i = 0;
+	while (i < 60){
+		stringstream ss;
+		ss << i;
+		string s = ss.str();
+		a->insertar(new Elementos(new Clave(s), i+2));
+		cout << "Inserte Elemento: " << i << endl;
+		++i;
+	}
 
-	Elementos* e = new Elementos();
-	unsigned int offsetElemento = 0;
-	char* bufferElemento = (char*)calloc(TAMANIO_BUFFER, sizeof(char));
-	bufferElemento = h->recuperar_bloque(0);
-	e->hidratar(bufferElemento, offsetElemento);
-	e->toString();
 
-	Elementos* e2 = new Elementos();
-	unsigned int offsetElemento2 = 0;
-	char* bufferElemento2 = (char*)calloc(TAMANIO_BUFFER, sizeof(char));
-	bufferElemento2 = h->recuperar_bloque(1);
-	e->hidratar(bufferElemento2, offsetElemento2);
-	e->toString();
-
-	Elementos* e3 = new Elementos();
-	unsigned int offsetElemento3 = 0;
-	char* bufferElemento3 = (char*)calloc(TAMANIO_BUFFER, sizeof(char));
-	bufferElemento3 = h->recuperar_bloque(2);
-	e->hidratar(bufferElemento3, offsetElemento3);
-	e->toString();
-
-	cout << "Recupere todos los bloques" << endl;
-	free(bufferElemento);
-	free(bufferElemento2);
-	free(bufferElemento3);
-	delete(h);
-	delete(e);
-	delete(e2);
-	delete(e3);
-
+//	a->MostrarArbol();
+	delete a;
 }

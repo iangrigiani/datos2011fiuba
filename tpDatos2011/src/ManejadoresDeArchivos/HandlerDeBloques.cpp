@@ -15,7 +15,7 @@ void HandlerDeBloques::guardar_bloque(char* buffer, int nro_bloque){
 		int offset_bloque = nro_bloque * TAMANIO_BUFFER;
 		// Manejo sobre el archivo de bloques
 		stringstream ss;
-		ss << buffer << "\n";
+		ss << buffer;
 		string str = ss.str();
 		// Escribo libro en el archivo de bloques
 		ff.seekg(offset_bloque);
@@ -37,8 +37,8 @@ char* HandlerDeBloques::recuperar_bloque(int nro_bloque){
 		ff.seekg(offset_bloque);
 		ff.read(bloqueARetornoar, TAMANIO_BUFFER);
 		ff.close();
-		string cad = bloqueARetornoar;
-		return ((char*)cad.c_str());
+//		string cad = bloqueARetornoar;
+		return bloqueARetornoar;
 	}else{
 		cout << "No se pudo abrir el archivo para recuperar bloque" << endl;
 		return NULL;
@@ -57,7 +57,7 @@ int HandlerDeBloques::get_tam_arch_bloques(){
 		return tamanio;
 
 	}else{
-		cout << "No se pudo abrir el archivo para obtener su tamaño" << endl;
+		cout << "No se pudo abrir el archivo para obtener su tamaï¿½o" << endl;
 		return ERROR;
 	}
 }
