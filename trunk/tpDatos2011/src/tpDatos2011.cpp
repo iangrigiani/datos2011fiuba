@@ -80,18 +80,18 @@ int main() {
 //	delete(e2);
 //	delete(e3);
 //
-	ArbolBMas* a = new ArbolBMas(PATH_NODOS, 20);
+	ArbolBMas* a = new ArbolBMas(1, PATH_NODOS, 20);
 	int i = 0;
-	while (i < 60){
+	while (i < 500){
 		stringstream ss;
 		ss << i;
 		string s = ss.str();
-		a->insertar(new Elementos(new Clave(s), i+2));
+		a->insertar(new Elementos(new Clave(s), 0));
 		cout << "Inserte Elemento: " << i << endl;
 		++i;
 	}
 
 
-//	a->MostrarArbol();
+	a->MostrarArbol();
 	delete a;
 }

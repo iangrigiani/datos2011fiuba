@@ -69,7 +69,7 @@ bool ArbolBMas::insertar(Elementos* elemento){
 
 	if (nuevoNodoHijo){
 		persistirNodo(nuevoNodoHijo);
-		this->MostrarArbol(nuevoNodoHijo);
+//		this->MostrarArbol(nuevoNodoHijo);
 		NodoInterior *nuevaRaiz = obtenerNodoInterior(raiz->nivel + 1);
 		// Muevo la raiz a otra posicion y persisto la nueva raiz en la posicion cero
 		raiz->numero = obtenerNumeroNodo();
@@ -78,7 +78,7 @@ bool ArbolBMas::insertar(Elementos* elemento){
 			grabarDatosConfiguracion();
 		}
 		persistirNodo(raiz);
-		this->MostrarArbol(raiz);
+//		this->MostrarArbol(raiz);
 		nuevaRaiz->claves[0] = clavePromocion;
 		nuevaRaiz->hijos[0] = raiz->numero;
 		nuevaRaiz->hijos[1] = nuevoNodoHijo->numero;
@@ -86,7 +86,7 @@ bool ArbolBMas::insertar(Elementos* elemento){
 		nuevaRaiz->espacioOcupado += clavePromocion.getTamanio() + TAM_CONTROL_REGISTRO;
 		nuevaRaiz->numero = 0;
 		persistirNodo(nuevaRaiz);
-		this->MostrarArbol(nuevaRaiz);
+//		this->MostrarArbol(nuevaRaiz);
 		liberarMemoriaNodo(raiz);
 		liberarMemoriaNodo(nuevoNodoHijo);
 		raiz = nuevaRaiz;
@@ -113,8 +113,7 @@ bool ArbolBMas::insertarRecursivamente(Nodo* nodoCorriente, Clave& clave, Elemen
 		}else{
 			tipoNodo = 1;
 		}
-		//Nodo* nodoHijo = hidratarNodo(nodoInteriorCorriente->hijos[posicion], tipoNodo);
-		Nodo* nodoHijo = hidratarNodo(nodoInteriorCorriente->hijos[posicion-1], tipoNodo);
+		Nodo* nodoHijo = hidratarNodo(nodoInteriorCorriente->hijos[posicion], tipoNodo);
 
 		bool resultado = insertarRecursivamente(nodoHijo, clave, dato, &nuevaClave, &nuevoNodoHijo);
 
@@ -233,7 +232,7 @@ int ArbolBMas::obtenerPosicion(Nodo *unNodo, Clave clave) {
 	if (unNodo->cantidadClaves == 0)
 		return 0;
 	int inferior = 0;
-	int superior = (unNodo->cantidadClaves);
+	int superior = (unNodo->cantidadClaves) - 1;
 
 	while (inferior < superior) {
 		int medio = (inferior + superior) / 2;
@@ -273,38 +272,36 @@ void ArbolBMas::dividirNodoInterior(NodoInterior* nodoInteriorActual, Clave* cla
 	*nuevoNodoInterior = auxNuevoNodoInterior;
 }
 
-void ArbolBMas::dividirNodoHoja(NodoHoja* nodoHojaActual, Clave* clavePromocion, Nodo** nuevoNodoHoja){
-	cout << "Dividi un nodo Hoja" << endl;
-	int espacioMedio = (nodoHojaActual->espacioOcupado) / 2;
+void ArbolBMas::dividirNodoHoja(NodoHoja* unNodoHoja, Clave* clavePromocion, Nodo** nuevoNodoHoja){
+	int espacioMedio = (unNodoHoja->espacioOcupado) / 2;
 	int espacioNodoIzquierdo = 0;
 	int cantidadClaves = 0;
-	while (cantidadClaves < nodoHojaActual->cantidadClaves && espacioNodoIzquierdo < espacioMedio){
-		espacioNodoIzquierdo += nodoHojaActual->datos[cantidadClaves].getTamanio() + nodoHojaActual->claves[cantidadClaves].getTamanio() + TAM_CONTROL_REGISTRO;
+	while (cantidadClaves < unNodoHoja->cantidadClaves && espacioNodoIzquierdo < espacioMedio){
+		espacioNodoIzquierdo += unNodoHoja->datos[cantidadClaves].getTamanio() + unNodoHoja->claves[cantidadClaves].getTamanio() + TAM_CONTROL_REGISTRO;
 		cantidadClaves++;
 		if (espacioNodoIzquierdo > TAM_EFECTIVO_NODO) {
 			cantidadClaves--;
-			espacioNodoIzquierdo -= (nodoHojaActual->datos[cantidadClaves].getTamanio() + nodoHojaActual->claves[cantidadClaves].getTamanio() + TAM_CONTROL_REGISTRO);
+			espacioNodoIzquierdo -= (unNodoHoja->datos[cantidadClaves].getTamanio() + unNodoHoja->claves[cantidadClaves].getTamanio() + TAM_CONTROL_REGISTRO);
 			break;
 		}
 	}
 
 	NodoHoja *auxNuevoNodoHoja = obtenerNodoHoja();
 	auxNuevoNodoHoja->numero = obtenerNumeroNodo();
-	auxNuevoNodoHoja->cantidadClaves = nodoHojaActual->cantidadClaves - cantidadClaves;
-	auxNuevoNodoHoja->espacioOcupado = nodoHojaActual->espacioOcupado - espacioNodoIzquierdo;
-	auxNuevoNodoHoja->hojaSiguiente = nodoHojaActual->hojaSiguiente;
+	auxNuevoNodoHoja->cantidadClaves = unNodoHoja->cantidadClaves - cantidadClaves;
+	auxNuevoNodoHoja->espacioOcupado = unNodoHoja->espacioOcupado - espacioNodoIzquierdo;
+	auxNuevoNodoHoja->hojaSiguiente = unNodoHoja->hojaSiguiente;
 
-	for (int posicion = cantidadClaves; posicion < nodoHojaActual->cantidadClaves; ++posicion) {
+	for (int posicion = cantidadClaves; posicion < unNodoHoja->cantidadClaves; ++posicion) {
 		int auxPosicion = posicion - cantidadClaves;
-		auxNuevoNodoHoja->claves[auxPosicion] = nodoHojaActual->claves[posicion];
-		auxNuevoNodoHoja->datos[auxPosicion] = nodoHojaActual->datos[posicion];
+		auxNuevoNodoHoja->claves[auxPosicion] = unNodoHoja->claves[posicion];
+		auxNuevoNodoHoja->datos[auxPosicion] = unNodoHoja->datos[posicion];
 	}
 
-	nodoHojaActual->espacioOcupado -= auxNuevoNodoHoja->espacioOcupado;
-	nodoHojaActual->cantidadClaves = cantidadClaves;
-	nodoHojaActual->hojaSiguiente = auxNuevoNodoHoja->numero;
-//	*clavePromocion = nodoHojaActual->claves[nodoHojaActual->cantidadClaves - 1];
-	*clavePromocion = auxNuevoNodoHoja->claves[0];
+	unNodoHoja->espacioOcupado -= auxNuevoNodoHoja->espacioOcupado;
+	unNodoHoja->cantidadClaves = cantidadClaves;
+	unNodoHoja->hojaSiguiente = auxNuevoNodoHoja->numero;
+	*clavePromocion = unNodoHoja->claves[unNodoHoja->cantidadClaves - 1];
 	*nuevoNodoHoja = auxNuevoNodoHoja;
 }
 
@@ -332,9 +329,6 @@ void ArbolBMas::toString(Nodo* nodoAmostrar, int tab){
 				cout << "(";
 				Clave clave = nodo->claves[posicion];
 				cout << clave.getClave() ;
-				cout << ";";
-				Elementos elemento = nodo->datos[posicion];
-				cout << "Titulo: " << elemento.getClave()->getClave() << "/ Offset: " << elemento.getOffset()  ;
 				cout << ")";
 			}
 			cout << endl;
@@ -346,13 +340,16 @@ void ArbolBMas::toString(Nodo* nodoAmostrar, int tab){
 			cout << "Numero: " << nodoInt->numero << "  Nivel: " << nodoInt->nivel << "  Cant.Elem: " << nodoInt->cantidadClaves
 					<< "  Esp.Libre: " << TAM_EFECTIVO_NODO - nodoInt->espacioOcupado << "  Claves: (";
 			for (int posicion = 0; posicion <= nodoInt->cantidadClaves; ++posicion) {
-				if (posicion < nodoInt->cantidadClaves - 1) {
+				if (posicion < nodoInt->cantidadClaves) {
 					Clave clave = nodoInt->claves[posicion];
 					cout << clave.getClave();
-					cout << " , ";
+					if (posicion == nodoInt->cantidadClaves-1){
+						cout << ")" << endl;
+					}else{
+						cout << "," ;
+					}
 				}
 			}
-			cout << " )" << endl;
 			for (int posicion = 0; posicion <= nodoInt->cantidadClaves; ++posicion) {
 				int tipoNodo = 0;
 				if (nodoInt->nivel > 1 ){
