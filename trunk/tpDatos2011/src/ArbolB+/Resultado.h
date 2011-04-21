@@ -10,7 +10,7 @@ class Resultado {
 
 private:
 
-	enum eFlagsResultado {RESULTADO_OK = 0, NO_ENCONTRADO = 1, ACTUALIZAR_ULTIMA_CLAVE = 2, FUSION_NODOS = 4} flags;
+	enum eFlagsResultado {OK=0,RESULTADO_OK = 0, NO_ENCONTRADO = 1, ACTUALIZAR_ULTIMA_CLAVE = 2, FUSION_NODOS = 4} flags;
 	Clave ultimaClave;
 
 public:

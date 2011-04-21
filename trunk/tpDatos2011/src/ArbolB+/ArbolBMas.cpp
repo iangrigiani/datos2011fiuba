@@ -8,7 +8,7 @@ ArbolBMas::ArbolBMas(int tipo, string ruta_archivo, int tamanioMaximoClave){
 	this->path = ruta_archivo;
 	this->maxTamanioClave = tamanioMaximoClave;
 	inicializarPersistores();
-	this->raiz = hidratarNodo(0,1);
+	this->raiz = hidratarNodo(0);
 	if (this->raiz) {
 		this->cantidadNodos = this->recuperador_Nodos->getTamanioArchivo() / TAM_TOTAL_NODO;
 	} else {
@@ -107,13 +107,7 @@ bool ArbolBMas::insertarRecursivamente(Nodo* nodoCorriente, Clave& clave, Elemen
 		Clave nuevaClave;
 		Nodo* nuevoNodoHijo = NULL;
 		int posicion = obtenerPosicion(nodoInteriorCorriente, clave);
-		int tipoNodo = 0;
-		if (nodoInteriorCorriente->nivel > 1 ){
-			tipoNodo = 2;
-		}else{
-			tipoNodo = 1;
-		}
-		Nodo* nodoHijo = hidratarNodo(nodoInteriorCorriente->hijos[posicion], tipoNodo);
+		Nodo* nodoHijo = hidratarNodo(nodoInteriorCorriente->hijos[posicion]);
 
 		bool resultado = insertarRecursivamente(nodoHijo, clave, dato, &nuevaClave, &nuevoNodoHijo);
 
@@ -215,8 +209,8 @@ void ArbolBMas::persistirNodo(Nodo* nodo){
 	escritor_Nodos->ActualizarArchivoNodo(nodo, nodo->getNumero());
 }
 
-Nodo* ArbolBMas::hidratarNodo(int nroNodo, int tipoNodo){
-	return (recuperador_Nodos->obtenerNodo(nroNodo, tipoNodo));
+Nodo* ArbolBMas::hidratarNodo(int nroNodo){
+	return (recuperador_Nodos->obtenerNodo(nroNodo));
 }
 
 void ArbolBMas::liberarMemoriaNodo(Nodo* nodo){
@@ -357,7 +351,7 @@ void ArbolBMas::toString(Nodo* nodoAmostrar, int tab){
 				}else{
 					tipoNodo = 1;
 				}
-				Nodo *hijo = hidratarNodo(posicion+1,tipoNodo);
+				Nodo *hijo = hidratarNodo(posicion+1);
 				toString(hijo, tab+2);
 				if (hijo)
 					liberarMemoriaNodo(hijo);
@@ -373,7 +367,6 @@ void ArbolBMas::hidratarDatosConfiguracion(){
 }
 
 
-
 bool ArbolBMas::borrar(Clave clave) {
 	if (!raiz)
 		return false;
@@ -381,19 +374,15 @@ bool ArbolBMas::borrar(Clave clave) {
 	return !resultado.contiene(Resultado::NO_ENCONTRADO);
 }
 
-
 Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nodoIzquierda, Nodo *nodoDerecha,
 		NodoInterior *nodoPadreIzquierda, NodoInterior *nodoPadreDerecha, NodoInterior *nodoPadre, int posicionPadre) {
-
 	if (nodoCorriente->isNodoHoja()) {
 
 		NodoHoja *nodoHojaCorriente = static_cast<NodoHoja*> (nodoCorriente);
 		NodoHoja *nodoHojaIzquierda = static_cast<NodoHoja*> (nodoIzquierda);
 		NodoHoja *nodoHojaDerecha = static_cast<NodoHoja*> (nodoDerecha);
 		int posicion = obtenerPosicion(nodoHojaCorriente, clave);
-		//if (posicion >= nodoHojaCorriente->cantidadClaves || !claveIgual(clave, nodoHojaCorriente->claves[posicion])) {
-		if (posicion >= nodoHojaCorriente->cantidadClaves ||
-				(clave.getClave() != nodoHojaCorriente->claves[posicion].getClave() )) {
+		if (posicion >= nodoHojaCorriente->cantidadClaves || clave.getClave() == nodoHojaCorriente->claves[posicion].getClave()) {
 			return Resultado::NO_ENCONTRADO;
 		}
 
@@ -404,7 +393,7 @@ Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nod
 			nodoHojaCorriente->datos[i] = nodoHojaCorriente->datos[i + 1];
 		}
 
-		Resultado resultado = Resultado::RESULTADO_OK;
+		Resultado resultado = Resultado::OK;
 
 		// si se borro el elemento de la ultima posicion y no es la raiz
 		if (posicion == nodoHojaCorriente->cantidadClaves && nodoPadre) {
@@ -430,9 +419,9 @@ Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nod
 					liberarMemoriaNodo(raiz);
 				raiz = nodoHojaCorriente = NULL;
 				primeraHoja = 0;
-
-				remove( PATH_CONFIGURACION_AUTORES );
-				return Resultado::RESULTADO_OK;
+				string archivoConfiguracion = PATH_CONFIGURACION_AUTORES;
+				remove(archivoConfiguracion.c_str());
+				return Resultado::OK;
 
 			} else if (((nodoHojaIzquierda == NULL || !nodoHojaIzquierda->puedeCederElementos())
 					&& (nodoHojaDerecha == NULL || !nodoHojaDerecha->puedeCederElementos()))
@@ -489,55 +478,25 @@ Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nod
 		Nodo *auxNodoIzquierda, *auxNodoDerecha;
 		NodoInterior *auxPadreIzquierda, *auxPadreDerecha;
 
-		int tipoNodo = 0;
-
-
 		int posicion = obtenerPosicion(nodoInteriorCorriente, clave);
 		if (posicion == 0) {
-			if (nodoIzquierda->nivel > 1 ){
-				tipoNodo = 2;
-			}else{
-				tipoNodo = 1;
-			}
-			auxNodoIzquierda = (nodoIzquierda == NULL) ? NULL : hidratarNodo((static_cast<NodoInterior*> (nodoIzquierda))->hijos[nodoIzquierda->cantidadClaves], tipoNodo);
+			auxNodoIzquierda = (nodoIzquierda == NULL) ? NULL : hidratarNodo((static_cast<NodoInterior*> (nodoIzquierda))->hijos[nodoIzquierda->cantidadClaves]);
 			auxPadreIzquierda = nodoPadreIzquierda;
 		} else {
-			if (nodoInteriorCorriente->nivel > 1 ){
-				tipoNodo = 2;
-			}else{
-				tipoNodo = 1;
-			}
-			auxNodoIzquierda = hidratarNodo(nodoInteriorCorriente->hijos[posicion - 1], tipoNodo);
+			auxNodoIzquierda = hidratarNodo(nodoInteriorCorriente->hijos[posicion - 1]);
 			auxPadreIzquierda = nodoInteriorCorriente;
 		}
 
 		if (posicion == nodoInteriorCorriente->cantidadClaves) {
-			if (nodoDerecha->nivel > 1 ){
-				tipoNodo = 2;
-			}else{
-				tipoNodo = 1;
-			}
-			auxNodoDerecha = (nodoDerecha == NULL) ? NULL : hidratarNodo((static_cast<NodoInterior*> (nodoDerecha))->hijos[0], tipoNodo);
+			auxNodoDerecha = (nodoDerecha == NULL) ? NULL : hidratarNodo((static_cast<NodoInterior*> (nodoDerecha))->hijos[0]);
 			auxPadreDerecha = nodoPadreDerecha;
 		} else {
-			if (nodoInteriorCorriente->nivel > 1 ){
-				tipoNodo = 2;
-			}else{
-				tipoNodo = 1;
-			}
-			auxNodoDerecha = hidratarNodo(nodoInteriorCorriente->hijos[posicion + 1], tipoNodo);
+			auxNodoDerecha = hidratarNodo(nodoInteriorCorriente->hijos[posicion + 1]);
 			auxPadreDerecha = nodoInteriorCorriente;
 		}
-
-		if (nodoInteriorCorriente->nivel > 1 ){
-			tipoNodo = 2;
-		}else{
-			tipoNodo = 1;
-		}
-
-		Nodo* auxNodoCorriente = hidratarNodo(nodoInteriorCorriente->hijos[posicion], tipoNodo);
+		Nodo* auxNodoCorriente = hidratarNodo(nodoInteriorCorriente->hijos[posicion]);
 		Resultado resultadoParcial = borrarRecursivo(clave, auxNodoCorriente, auxNodoIzquierda, auxNodoDerecha, auxPadreIzquierda, auxPadreDerecha, nodoInteriorCorriente, posicion);
-		Resultado resultado = Resultado::RESULTADO_OK;
+		Resultado resultado = Resultado::OK;
 
 		if (auxNodoIzquierda)
 			liberarMemoriaNodo(auxNodoIzquierda);
@@ -561,7 +520,7 @@ Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nod
 		}
 
 		if (resultadoParcial.contiene(Resultado::FUSION_NODOS)) {
-			Nodo* nodoHijo = hidratarNodo(nodoInteriorCorriente->hijos[posicion], tipoNodo);
+			Nodo* nodoHijo = hidratarNodo(nodoInteriorCorriente->hijos[posicion]);
 			if (nodoHijo->cantidadClaves != 0)
 				posicion++;
 
@@ -578,7 +537,7 @@ Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nod
 				liberarMemoriaNodo(nodoHijo);
 			if (nodoInteriorCorriente->nivel == 1) {
 				posicion--;
-				nodoHijo = hidratarNodo(nodoInteriorCorriente->hijos[posicion], tipoNodo);
+				nodoHijo = hidratarNodo(nodoInteriorCorriente->hijos[posicion]);
 				nodoInteriorCorriente->espacioOcupado -= nodoInteriorCorriente->claves[posicion].getTamanio();
 				nodoInteriorCorriente->espacioOcupado += nodoHijo->claves[nodoHijo->cantidadClaves - 1].getTamanio();
 				nodoInteriorCorriente->claves[posicion] = nodoHijo->claves[nodoHijo->cantidadClaves - 1];
@@ -592,12 +551,12 @@ Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nod
 				&& !(nodoInteriorCorriente == raiz && nodoInteriorCorriente->cantidadClaves >= 1)) {
 
 			if (nodoInteriorIzquierda == NULL && nodoInteriorDerecha == NULL) {
-				raiz = hidratarNodo(nodoInteriorCorriente->hijos[0], tipoNodo);
+				raiz = hidratarNodo(nodoInteriorCorriente->hijos[0]);
 				raiz->numero = 0;
 				persistirNodo(raiz);
 				nodosLibres.push_back(nodoInteriorCorriente->hijos[0]);
 				grabarDatosConfiguracion();
-				return Resultado::RESULTADO_OK;
+				return Resultado::OK;
 
 			} else if ((nodoInteriorIzquierda == NULL || !nodoInteriorIzquierda->puedeCederElementos())
 					&& (nodoInteriorDerecha == NULL || !nodoInteriorDerecha->puedeCederElementos())) {
@@ -652,7 +611,6 @@ Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nod
 }
 
 
-
 Resultado ArbolBMas::fusionarHojas(NodoHoja* hojaIzquierda, NodoHoja* hojaDerecha) {
 
 	for (int i = 0; i < hojaDerecha->cantidadClaves; i++) {
@@ -673,6 +631,39 @@ Resultado ArbolBMas::fusionarHojas(NodoHoja* hojaIzquierda, NodoHoja* hojaDerech
 	persistirNodo(hojaDerecha);
 
 	return Resultado::FUSION_NODOS;
+}
+
+
+Resultado ArbolBMas::fusionarNodosInteriores(NodoInterior* nodoIzquierda, NodoInterior* nodoDerecha, NodoInterior* nodoPadre, int posicionPadre) {
+
+	Resultado resultado;
+	int espacioOcupadoTotal = (nodoIzquierda->espacioOcupado + nodoDerecha->espacioOcupado + nodoPadre->claves[posicionPadre].getTamanio() + TAM_CONTROL_REGISTRO);
+
+	if (espacioOcupadoTotal > TAM_EFECTIVO_NODO) {
+		resultado = Resultado::OK;
+	} else {
+		nodoIzquierda->claves[nodoIzquierda->cantidadClaves] = nodoPadre->claves[posicionPadre];
+		nodoIzquierda->cantidadClaves++;
+		nodoIzquierda->espacioOcupado += nodoPadre->claves[posicionPadre].getTamanio() + TAM_CONTROL_REGISTRO;
+		for (int i = 0; i < nodoDerecha->cantidadClaves; i++) {
+			nodoIzquierda->claves[nodoIzquierda->cantidadClaves + i] = nodoDerecha->claves[i];
+			nodoIzquierda->hijos[nodoIzquierda->cantidadClaves + i] = nodoDerecha->hijos[i];
+		}
+		nodoIzquierda->cantidadClaves += nodoDerecha->cantidadClaves;
+		nodoIzquierda->espacioOcupado += nodoDerecha->espacioOcupado;
+		nodoIzquierda->hijos[nodoIzquierda->cantidadClaves] = nodoDerecha->hijos[nodoDerecha->cantidadClaves];
+		nodoDerecha->cantidadClaves = 0;
+		nodoDerecha->espacioOcupado = 0;
+
+		nodosLibres.push_back(nodoDerecha->numero);
+		grabarDatosConfiguracion();
+
+		resultado = Resultado::FUSION_NODOS;
+	}
+	persistirNodo(nodoIzquierda);
+	persistirNodo(nodoDerecha);
+
+	return resultado;
 }
 
 
@@ -718,86 +709,13 @@ Resultado ArbolBMas::pasarElementosHojaIzquierda(NodoHoja *hojaIzquierda, NodoHo
 			nodoPadre->espacioOcupado -= nodoPadre->claves[posicionPadre].getTamanio();
 			nodoPadre->espacioOcupado += hojaIzquierda->claves[hojaIzquierda->cantidadClaves - 1].getTamanio();
 			nodoPadre->claves[posicionPadre] = hojaIzquierda->claves[hojaIzquierda->cantidadClaves - 1];
-			return Resultado::RESULTADO_OK;
+			return Resultado::OK;
 		} else {
 			return Resultado(Resultado::ACTUALIZAR_ULTIMA_CLAVE, hojaIzquierda->claves[hojaIzquierda->cantidadClaves - 1]);
 		}
 	} else {
-		return Resultado::RESULTADO_OK;
+		return Resultado::OK;
 	}
-}
-
-
-
-void ArbolBMas::pasarElementosHojaDerecha(NodoHoja *hojaIzquierda, NodoHoja *hojaDerecha, NodoInterior *nodoPadre, int posicionPadre) {
-
-	int espacioOcupadoMedio = (hojaIzquierda->espacioOcupado - hojaDerecha->espacioOcupado) / 2;
-	int espacioDesplazado = 0;
-	int cantidadClavesDesplazadas = 0;
-	for (int i = hojaIzquierda->cantidadClaves; i > 0 && espacioDesplazado < espacioOcupadoMedio; i--) {
-		espacioDesplazado += hojaIzquierda->datos[i-1].getTamanio() + hojaIzquierda->claves[i-1].getTamanio() + TAM_CONTROL_REGISTRO;
-		cantidadClavesDesplazadas++;
-		if (espacioDesplazado + hojaDerecha->espacioOcupado > TAM_EFECTIVO_NODO) {
-			espacioDesplazado -= (hojaIzquierda->datos[i-1].getTamanio() + hojaIzquierda->claves[i-1].getTamanio() + TAM_CONTROL_REGISTRO);
-			cantidadClavesDesplazadas--;
-			break;
-		}
-	}
-
-	if (cantidadClavesDesplazadas > 0) {
-		for (int i = hojaDerecha->cantidadClaves; i >= 0; i--) {
-			hojaDerecha->claves[i + cantidadClavesDesplazadas] = hojaDerecha->claves[i];
-			hojaDerecha->datos[i + cantidadClavesDesplazadas] = hojaDerecha->datos[i];
-		}
-		hojaDerecha->cantidadClaves += cantidadClavesDesplazadas;
-		hojaDerecha->espacioOcupado += espacioDesplazado;
-
-		for (int i = 0; i < cantidadClavesDesplazadas; i++) {
-			hojaDerecha->claves[i] = hojaIzquierda->claves[hojaIzquierda->cantidadClaves - cantidadClavesDesplazadas + i];
-			hojaDerecha->datos[i] = hojaIzquierda->datos[hojaIzquierda->cantidadClaves - cantidadClavesDesplazadas + i];
-		}
-		hojaIzquierda->cantidadClaves -= cantidadClavesDesplazadas;
-		hojaIzquierda->espacioOcupado -= espacioDesplazado;
-		nodoPadre->espacioOcupado -= nodoPadre->claves[posicionPadre].getTamanio();
-		nodoPadre->espacioOcupado += hojaIzquierda->claves[hojaIzquierda->cantidadClaves - 1].getTamanio();
-		nodoPadre->claves[posicionPadre] = hojaIzquierda->claves[hojaIzquierda->cantidadClaves - 1];
-	}
-	persistirNodo(hojaIzquierda);
-	persistirNodo(hojaDerecha);
-}
-
-
-
-Resultado ArbolBMas::fusionarNodosInteriores(NodoInterior* nodoIzquierda, NodoInterior* nodoDerecha, NodoInterior* nodoPadre, int posicionPadre) {
-
-	Resultado resultado;
-	int espacioOcupadoTotal = (nodoIzquierda->espacioOcupado + nodoDerecha->espacioOcupado + nodoPadre->claves[posicionPadre].getTamanio() + TAM_CONTROL_REGISTRO);
-
-	if (espacioOcupadoTotal > TAM_EFECTIVO_NODO) {
-		resultado = Resultado::RESULTADO_OK;
-	} else {
-		nodoIzquierda->claves[nodoIzquierda->cantidadClaves] = nodoPadre->claves[posicionPadre];
-		nodoIzquierda->cantidadClaves++;
-		nodoIzquierda->espacioOcupado += nodoPadre->claves[posicionPadre].getTamanio() + TAM_CONTROL_REGISTRO;
-		for (int i = 0; i < nodoDerecha->cantidadClaves; i++) {
-			nodoIzquierda->claves[nodoIzquierda->cantidadClaves + i] = nodoDerecha->claves[i];
-			nodoIzquierda->hijos[nodoIzquierda->cantidadClaves + i] = nodoDerecha->hijos[i];
-		}
-		nodoIzquierda->cantidadClaves += nodoDerecha->cantidadClaves;
-		nodoIzquierda->espacioOcupado += nodoDerecha->espacioOcupado;
-		nodoIzquierda->hijos[nodoIzquierda->cantidadClaves] = nodoDerecha->hijos[nodoDerecha->cantidadClaves];
-		nodoDerecha->cantidadClaves = 0;
-		nodoDerecha->espacioOcupado = 0;
-
-		nodosLibres.push_back(nodoDerecha->numero);
-		grabarDatosConfiguracion();
-
-		resultado = Resultado::FUSION_NODOS;
-	}
-	persistirNodo(nodoIzquierda);
-	persistirNodo(nodoDerecha);
-
-	return resultado;
 }
 
 
@@ -849,6 +767,44 @@ void ArbolBMas::pasarElementosNodoInteriorIzquierdo(NodoInterior *nodoIzquierda,
 	}
 	persistirNodo(nodoIzquierda);
 	persistirNodo(nodoDerecha);
+}
+
+
+void ArbolBMas::pasarElementosHojaDerecha(NodoHoja *hojaIzquierda, NodoHoja *hojaDerecha, NodoInterior *nodoPadre, int posicionPadre) {
+
+	int espacioOcupadoMedio = (hojaIzquierda->espacioOcupado - hojaDerecha->espacioOcupado) / 2;
+	int espacioDesplazado = 0;
+	int cantidadClavesDesplazadas = 0;
+	for (int i = hojaIzquierda->cantidadClaves; i > 0 && espacioDesplazado < espacioOcupadoMedio; i--) {
+		espacioDesplazado += hojaIzquierda->datos[i-1].getTamanio() + hojaIzquierda->claves[i-1].getTamanio() + TAM_CONTROL_REGISTRO;
+		cantidadClavesDesplazadas++;
+		if (espacioDesplazado + hojaDerecha->espacioOcupado > TAM_EFECTIVO_NODO) {
+			espacioDesplazado -= (hojaIzquierda->datos[i-1].getTamanio() + hojaIzquierda->claves[i-1].getTamanio() + TAM_CONTROL_REGISTRO);
+			cantidadClavesDesplazadas--;
+			break;
+		}
+	}
+
+	if (cantidadClavesDesplazadas > 0) {
+		for (int i = hojaDerecha->cantidadClaves; i >= 0; i--) {
+			hojaDerecha->claves[i + cantidadClavesDesplazadas] = hojaDerecha->claves[i];
+			hojaDerecha->datos[i + cantidadClavesDesplazadas] = hojaDerecha->datos[i];
+		}
+		hojaDerecha->cantidadClaves += cantidadClavesDesplazadas;
+		hojaDerecha->espacioOcupado += espacioDesplazado;
+
+		for (int i = 0; i < cantidadClavesDesplazadas; i++) {
+			hojaDerecha->claves[i] = hojaIzquierda->claves[hojaIzquierda->cantidadClaves - cantidadClavesDesplazadas + i];
+			hojaDerecha->datos[i] = hojaIzquierda->datos[hojaIzquierda->cantidadClaves - cantidadClavesDesplazadas + i];
+		}
+		hojaIzquierda->cantidadClaves -= cantidadClavesDesplazadas;
+		hojaIzquierda->espacioOcupado -= espacioDesplazado;
+		nodoPadre->espacioOcupado -= nodoPadre->claves[posicionPadre].getTamanio();
+		nodoPadre->espacioOcupado += hojaIzquierda->claves[hojaIzquierda->cantidadClaves - 1].getTamanio();
+		nodoPadre->claves[posicionPadre] = hojaIzquierda->claves[hojaIzquierda->cantidadClaves - 1];
+	}
+	persistirNodo(hojaIzquierda);
+	persistirNodo(hojaDerecha);
 }
 
 

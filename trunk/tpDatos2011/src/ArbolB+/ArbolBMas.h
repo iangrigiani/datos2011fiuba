@@ -183,7 +183,7 @@ private:
 	void toString(Nodo* nodo, int tab);
 	void liberarMemoriaNodo(Nodo* nodo);
 	int obtenerPosicion(Nodo *unNodo, Clave clave);
-	Nodo* hidratarNodo(int nroNodo, int tipoNodo);
+	Nodo* hidratarNodo(int nroNodo);
 	void dividirNodoInterior(NodoInterior* unNodoInterior, Clave* clavePromocion, Nodo** nuevoNodoInterior, int nuevaPosicion);
 	void dividirNodoHoja(NodoHoja* unNodoHoja, Clave* clavePromocion, Nodo** nuevoNodoHoja);
 	void hidratarDatosConfiguracion();

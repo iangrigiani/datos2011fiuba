@@ -20,7 +20,7 @@ private:
 public:
 	RecuperadorNodos();
 	RecuperadorNodos (std::string path);
-	Nodo * obtenerNodo(int nroNodo, int tipoNodo);
+	Nodo * obtenerNodo(int nroNodo);
 	int getTamanioArchivo(){
 		return this->handler->get_tam_arch_bloques();
 	}
