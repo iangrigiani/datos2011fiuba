@@ -15,7 +15,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include "Bloque_Hash.h"
+#include "Cubo.h"
 
 class HandlerTabla {
 
@@ -38,14 +38,14 @@ public:
 	bool mitades_iguales() const;
 
 	int get_num_bloque(int clave, int& pos_tabla) const;
-	list < Reg > actualizar_regs(int num_bloque, Bloque_Hash& bloque);
+	list < Reg > actualizar_regs(int num_bloque, Cubo& bloque);
 
 	void reemplazar_referencia(int num_bloque_a_reemplazar, int num_nuevo_bloque);
-	void reemplazar_referencias(int pos_inicial, int num_nuevo_bloque, const Bloque_Hash& nuevo_bloque);
+	void reemplazar_referencias(int pos_inicial, int num_nuevo_bloque, const Cubo& nuevo_bloque);
 
-	int puedo_liberar_bloque(const Bloque_Hash& bloque_a_liberar, int pos_actual) const;
+	int puedo_liberar_bloque(const Cubo& bloque_a_liberar, int pos_actual) const;
 	void liberar_referencias(int pos_inicial, int num_bloque_por_reemplazar,
-			const Bloque_Hash& bloque_por_reemplazar);
+			const Cubo& bloque_por_reemplazar);
 
 };
 
