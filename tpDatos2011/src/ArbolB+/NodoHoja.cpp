@@ -12,8 +12,8 @@ NodoHoja::~NodoHoja() {
 }
 
 void NodoHoja::serializar(char * buffer, unsigned int &offset) {
-	Persistencia::PonerEnteroEnChar(buffer, offset, this->numero);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->nivel);
+	Persistencia::PonerEnteroEnChar(buffer, offset, this->numero);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->offset);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->espacioOcupado);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->cantidadClaves);
@@ -27,8 +27,8 @@ void NodoHoja::serializar(char * buffer, unsigned int &offset) {
 }
 
 void NodoHoja::hidratar(char * buffer, unsigned int &offset) {
-	this->numero = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	this->nivel = Persistencia::getEnteroDesdeBuffer(buffer,offset);
+	this->numero = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	this->offset = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	this->espacioOcupado = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	this->cantidadClaves = Persistencia::getEnteroDesdeBuffer(buffer,offset);

@@ -23,6 +23,7 @@ public:
         return hijos;
     }
     int obtenerHijo(int posicion);
+    int obtenerNivel (char* buffer);
 };
 
 #endif /* NODOINTERIOR_H_ */
