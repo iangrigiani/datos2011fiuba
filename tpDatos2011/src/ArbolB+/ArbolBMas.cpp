@@ -96,9 +96,9 @@ bool ArbolBMas::insertar(Elementos* elemento){
 	return resultado;
 }
 
-list<Elementos*> ArbolBMas::buscar(Clave clave) {
-
-}
+//list<Elementos*> ArbolBMas::buscar(Clave clave) {
+//
+//}
 
 
 bool ArbolBMas::insertarRecursivamente(Nodo* nodoCorriente, Clave& clave, Elementos* dato, Clave* clavePromocion, Nodo** nuevoNodo){

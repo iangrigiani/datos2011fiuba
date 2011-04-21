@@ -158,5 +158,5 @@ void Hash::agregar_nuevo_offset(Cubo& bloque, int num_bloque, Reg& reg, int offs
 }
 
 bool Hash::eliminar_offset(int clave, int offset) {
-
+	return false;
 }
