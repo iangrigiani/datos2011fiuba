@@ -1,7 +1,7 @@
 #ifndef HANDLERBLOQUES_H_
 #define HANDLERBLOQUES_H_
 #include "../EstructurasEnComun/Constantes.h"
-#include "../EstructurasEnComun/Bloque.h"
+#include "../Hash/Cubo.h"
 #include "HandlerEspLibre.h"
 
 class HandlerBloques {
@@ -33,7 +33,7 @@ public:
 
 	const string& get_ruta_arch_bloques() const { return this->ruta_arch_bloques; }
 
-	const HandlerEspLibre& get_handler_esp_libre() const { return this->handler_esp_libre; }
+	HandlerEspLibre& get_handler_esp_libre() { return this->handler_esp_libre; }
 
 	/*
 	 * Obtiene la posicion en la que sera insertado el bloque en caso de que la operacion a llevar
@@ -52,7 +52,7 @@ public:
 	 * atributos inicializados segun la información cargada desde el archivo de bloques(que
 	 * permanece intacto).
 	 */
-	void recuperar_bloque(Bloque& bloque, int pos_arch_bloques);
+	void recuperar_bloque(Cubo& bloque, int pos_arch_bloques);
 
 	/*
 	 * Guarda el bloque pasado por referencia en el archivo de bloques. Si hay algun espacio libre,
@@ -64,7 +64,7 @@ public:
 	 * Pos: devuelve la posicion del archivo de bloques en donde se realizo la insercion del bloque
 	 * en cuestion.
 	 */
-	int guardar_bloque(Bloque& bloque);
+	int guardar_bloque(Cubo& bloque);
 
 	/*
 	 * Guarda el bloque pasado por referencia en la posicion pasada por parametro en el archivo de
@@ -74,7 +74,7 @@ public:
 	 * Pre: -
 	 * Pos: -
 	 */
-	void guardar_bloque(Bloque& bloque, int pos_arch_bloques);
+	void guardar_bloque(Cubo& bloque, int pos_arch_bloques);
 
 	/*
 	 * Elimina el bloque que se encuentra almacenado en la posicion pasada por parametro del archivo de

@@ -19,6 +19,7 @@ class Reg: public Serializable {
 private:
 
 	int clave;
+	int bloque_sig;
 	list < int > offsets;
 
 public:
@@ -27,12 +28,20 @@ public:
 	Reg(int clave);
 	virtual ~Reg() {};
 
+	void set_clave(int clave);
 	int get_clave() const { return this->clave; }
+
+	void set_bloque_sig(int bloque_sig);
+	int get_bloque_sig() const { return this->bloque_sig; }
 
 	int get_tam() const;
 
+	list < int > get_offsets() const { return this->offsets; }
+
 	void agregar_nuevo_offset(int offset);
 	bool eliminar_offset(int offset);
+
+	void incorporar_offsets(list < int > offsets);
 
 	void serializar(char* buffer, unsigned int& offset);
 	void hidratar(char* buffer, unsigned int& offset);

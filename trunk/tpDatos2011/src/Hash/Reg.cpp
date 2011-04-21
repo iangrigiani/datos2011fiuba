@@ -7,9 +7,21 @@
 
 #include "Reg.h"
 
-Reg::Reg() : clave(0) {}
+Reg::Reg() : clave(-1), bloque_sig(-1) {}
 
-Reg::Reg(int clave) : clave(clave) {}
+Reg::Reg(int clave) : clave(clave), bloque_sig(-1) {}
+
+void Reg::set_clave(int clave) {
+	this->clave = clave;
+}
+
+void Reg::set_bloque_sig(int bloque_sig) {
+	this->bloque_sig = bloque_sig;
+}
+
+int Reg::get_tam() const {
+	return (sizeof(int) + sizeof(int) + this->offsets.size() * sizeof(int));
+}
 
 void Reg::agregar_nuevo_offset(int offset) {
 	this->offsets.push_back(offset);
@@ -29,12 +41,16 @@ bool Reg::eliminar_offset(int offset) {
 	return false;
 }
 
-int Reg::get_tam() const {
-	return (sizeof(int) + this->offsets.size() * sizeof(int));
+void Reg::incorporar_offsets(list < int > offsets) {
+	list < int > ::iterator it;
+
+	for (it = offsets.begin(); it != offsets.end(); ++ it)
+		this->offsets.push_back(*it);
 }
 
 void Reg::serializar(char* buffer, unsigned int& offset) {
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->clave);
+	Persistencia::PonerEnteroEnChar(buffer, offset, this->bloque_sig);
 
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->offsets.size());
 	list < int > ::iterator it;
@@ -44,6 +60,7 @@ void Reg::serializar(char* buffer, unsigned int& offset) {
 
 void Reg::hidratar(char* buffer, unsigned int& offset) {
 	this->clave = Persistencia::getEnteroDesdeBuffer(buffer, offset);
+	this->bloque_sig = Persistencia::getEnteroDesdeBuffer(buffer, offset);
 
 	int tam_offsets = Persistencia::getEnteroDesdeBuffer(buffer, offset);
 	for (int i = 0; i < tam_offsets; ++ i)
@@ -53,12 +70,14 @@ void Reg::hidratar(char* buffer, unsigned int& offset) {
 void Reg::toString() {
 	cout << " Registro --> " << endl;
 	cout << " Clave:   " << this->clave << endl;
+	cout << " Bloque siguiente:   " << this->bloque_sig << endl;
 	cout << " Tamaño ocupado:   " << this->get_tam() << " Bytes" << endl;
 
-	list < int > ::iterator it;
+/*	list < int > ::iterator it;
 	int i = 0;
 	for (it = this->offsets.begin(); it != this->offsets.end(); ++ it) {
 		cout << " Offset #" << i << ":   " << *it << endl;
 		++ i;
 	}
+*/
 }

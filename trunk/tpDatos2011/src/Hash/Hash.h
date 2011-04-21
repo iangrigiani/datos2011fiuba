@@ -25,9 +25,17 @@ public:
 
 	void crear_condiciones_iniciales();
 
-	void insertar_reg(const Reg& reg);
+	void compactar_bloque(Cubo& bloque);
+
+	bool insertar_reg(const Reg& reg);
 
 	bool eliminar_reg(int clave);
+
+	void agregar_nuevo_offset(Cubo& bloque, int num_bloque, Reg& reg, int offset);
+
+	bool eliminar_offset(int clave, int offset);
+
+	void insercion(int clave, int offset);
 
 };
 

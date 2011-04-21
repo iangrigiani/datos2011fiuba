@@ -29,20 +29,20 @@ int HandlerArchivoBloques::get_pos_insercion() const {
 	else return (this->get_tam_arch_bloques() / TAM_BLOQUE);
 }
 */
-void HandlerBloques::recuperar_bloque(Bloque& bloque, int pos_arch_bloques) {
+void HandlerBloques::recuperar_bloque(Cubo& bloque, int pos_arch_bloques) {
 	fstream arch;
 	unsigned int offset = 0;
 	char buffer[TAM_BUFFER];
 
 	arch.open(this->ruta_arch_bloques.c_str(), fstream::in);
-	arch.seekp(pos_arch_bloques * TAM_BLOQUE);
+	arch.seekg(pos_arch_bloques * TAM_BLOQUE);
 	arch.read(buffer, TAM_BUFFER);
 	arch.close();
 
 	bloque.hidratar(buffer, offset);
 }
 
-int HandlerBloques::guardar_bloque(Bloque& bloque) {
+int HandlerBloques::guardar_bloque(Cubo& bloque) {
 	fstream arch;
 	int pos_insercion;
 	unsigned int offset = 0;
@@ -53,7 +53,7 @@ int HandlerBloques::guardar_bloque(Bloque& bloque) {
 	arch.open(this->ruta_arch_bloques.c_str(), fstream::out | fstream::in);
 	if (this->handler_esp_libre.hay_bloque_libre() == true) {
 		pos_insercion = this->handler_esp_libre.get_pos_bloque_libre();
-		arch.seekp(pos_insercion * TAM_BLOQUE);
+		arch.seekg(pos_insercion * TAM_BLOQUE);
 		this->handler_esp_libre.actualizar_baja_bloque_libre();
 	}
 	else {
@@ -67,26 +67,22 @@ int HandlerBloques::guardar_bloque(Bloque& bloque) {
 	return pos_insercion;
 }
 
-void HandlerBloques::guardar_bloque(Bloque& bloque, int pos_arch_bloques) {
+void HandlerBloques::guardar_bloque(Cubo& bloque, int pos_arch_bloques) {
 	fstream arch;
 	unsigned int offset = 0;
 	char buffer[TAM_BUFFER];
 
 	bloque.serializar(buffer, offset);
 
-	arch.open(this->ruta_arch_bloques.c_str(), fstream::out);
-	arch.seekp(pos_arch_bloques * TAM_BLOQUE);
+	arch.open(this->ruta_arch_bloques.c_str(), fstream::out | fstream::in);
+	arch.seekg(pos_arch_bloques * TAM_BLOQUE);
 	arch.write(buffer, TAM_BUFFER);
 	arch.close();
-
-	if (this->handler_esp_libre.ya_existe(pos_arch_bloques))
-		this->handler_esp_libre.actualizar_baja_bloque_libre();
 }
 
 bool HandlerBloques::eliminar_bloque(int pos_arch_bloques) {
 	if (this->get_tam_arch_bloques() / TAM_BLOQUE > pos_arch_bloques) {
-		if (this->handler_esp_libre.ya_existe(pos_arch_bloques) == false)
-			this->handler_esp_libre.actualizar_alta_bloque_libre(pos_arch_bloques);
+		this->handler_esp_libre.actualizar_alta_bloque_libre(pos_arch_bloques);
 		return true;
 	}
 	return false;
