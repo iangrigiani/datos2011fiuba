@@ -47,20 +47,20 @@ void HandlerEstructuras::borrarEnArbol(Clave* clave, ArbolBMas &arbol){
 }
 
 void HandlerEstructuras::buscarEnArbol(Clave* clave, ArbolBMas &arbol){
-	std::list<Elementos*> elementos = arbol.buscar(*(clave));
-	if (elementos.size() > 0){
-
-		cout<<"Elementos encontrados: ";
-		std::list<Elementos*>::iterator it = elementos.begin();
-		while ( it != elementos.end()){
-			Registro* reg = this->parser->obtenerRegistroDeLibro(handler->buscarRegistro((*it)->getOffset()));
-			reg->toString();
-			++it;
-			delete reg;
-		}
-	}else{
-		cout<<"elemento no encontrado"<<endl;
-	}
+//	std::list<Elementos*> elementos = arbol.buscar(*(clave));
+//	if (elementos.size() > 0){
+//
+//		cout<<"Elementos encontrados: ";
+//		std::list<Elementos*>::iterator it = elementos.begin();
+//		while ( it != elementos.end()){
+//			Registro* reg = this->parser->obtenerRegistroDeLibro(handler->buscarRegistro((*it)->getOffset()));
+//			reg->toString();
+//			++it;
+//			delete reg;
+//		}
+//	}else{
+//		cout<<"elemento no encontrado"<<endl;
+//	}
 }
 
 void HandlerEstructuras::borrarEnHash(Clave* clave, Hash &hash){

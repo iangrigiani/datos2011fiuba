@@ -22,5 +22,6 @@
 #define PATH_REG_LONG_VARIABLE "ArchivoDeRLV.txt"
 #define PATH_ESPACIO_LIBRE_RLV "controlEspaciosLibresRLV.txt"
 #define PATH_STOPWORDS "stopWords.txt"
+#define PATH_FRONT_CODING "frontCoding.txt"
 #define PORC_TAMANIO_NODO 50
 #endif /* CONSTANTES_H_ */
