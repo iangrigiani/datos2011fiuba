@@ -1,12 +1,5 @@
-/*
- * Main.cpp
- *
- *  Created on: 22/04/2011
- *      Author: andrea
- */
 
-
-#include "HandlerEstructuras.h"
+#include "ManejadoresInforme/HandlerComandos.h"
 #include <iostream>
 #include <stdio.h>
 #include <cstring>
@@ -17,7 +10,9 @@ using namespace std;
 
 
 int main (int argc , char *argv[]){
-	int i = 1 ;
+/* TODO cambiar printfs por métodos de HandlerComandos*/
+	HandlerComandos* handlerComandos = new HandlerComandos();
+
     int opcion, opcion2;
     if ((argc!= 2) && (argc!=3) ) {
         printf("Bookerio: Cantidad errónea de parámetros. Sólo puede pasar un parámetro. \n");
