@@ -23,7 +23,7 @@ void NodoInterior::serializar(char * buffer, unsigned int &offset){
 	for (int i = 0; i < cantidadClaves; i++){
 		claves[i].serializar(buffer,offset);
 	}
-	for (int i = 0; i < cantidadClaves; i++){
+	for (int i = 0; i <= cantidadClaves; i++){
 		Persistencia::PonerEnteroEnChar(buffer,offset,hijos[i]);
 	}
 }
@@ -39,7 +39,7 @@ void NodoInterior::hidratar(char * buffer, unsigned int &offset){
 		this->claves[i] = clave;
 	}
 
-	for (int i = 0; i < cantidadClaves ; i++){
+	for (int i = 0; i <= cantidadClaves ; i++){
 		this->hijos[i] = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	}
 }
