@@ -382,7 +382,7 @@ Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nod
 		NodoHoja *nodoHojaIzquierda = static_cast<NodoHoja*> (nodoIzquierda);
 		NodoHoja *nodoHojaDerecha = static_cast<NodoHoja*> (nodoDerecha);
 		int posicion = obtenerPosicion(nodoHojaCorriente, clave);
-		if (posicion >= nodoHojaCorriente->cantidadClaves || clave.getClave() == nodoHojaCorriente->claves[posicion].getClave()) {
+		if (posicion >= nodoHojaCorriente->cantidadClaves || clave.getClave() != nodoHojaCorriente->claves[posicion].getClave()) {
 			return Resultado::NO_ENCONTRADO;
 		}
 
@@ -477,7 +477,10 @@ Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nod
 		NodoInterior *nodoInteriorDerecha = static_cast<NodoInterior*> (nodoDerecha);
 		Nodo *auxNodoIzquierda, *auxNodoDerecha;
 		NodoInterior *auxPadreIzquierda, *auxPadreDerecha;
-
+//		cout << "Cantidad de claves del padre: " << nodoInteriorCorriente->cantidadClaves << endl;
+//		for ( int i = 0; i <= nodoInteriorCorriente->cantidadClaves ; i++){
+//			cout << "Hijo " << i << ": " << nodoInteriorCorriente->hijos[i] << endl;
+//		}
 		int posicion = obtenerPosicion(nodoInteriorCorriente, clave);
 		if (posicion == 0) {
 			auxNodoIzquierda = (nodoIzquierda == NULL) ? NULL : hidratarNodo((static_cast<NodoInterior*> (nodoIzquierda))->hijos[nodoIzquierda->cantidadClaves]);
