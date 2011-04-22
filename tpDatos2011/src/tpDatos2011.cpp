@@ -14,6 +14,63 @@ using namespace std;
 #include "ParserLibros/ParserDeLibros.h"
 #include "ArbolB+/ArbolBMas.h"
 
+
+void llenarArbol(ArbolBMas* a){
+		int i = 0;
+		while (i < 60){
+			stringstream ss;
+			ss << i;
+			string s = ss.str();
+			a->insertar(new Elementos(new Clave(s), 0));
+			cout << "Inserte Elemento: " << i << endl;
+			++i;
+		}
+
+		a->MostrarArbol();
+}
+
+
+void borrarNodos(ArbolBMas *a){
+
+	a->MostrarArbol();
+	Clave * clave;
+	clave = new Clave("26");
+	a->borrar(*clave);
+	delete clave;
+	cout << "Borro la clave 26" << endl;
+	a->MostrarArbol();
+
+	clave = new Clave("27");
+	a->borrar(*clave);
+	delete clave;
+	cout << "Borro la clave 27" << endl;
+
+	a->MostrarArbol();
+
+
+//	clave = new Clave("45");
+//	a->borrar(*clave);
+//	delete clave;
+//	cout << "Borro la clave 45" << endl;
+//	a->MostrarArbol();
+//
+//
+//	clave = new Clave("52");
+//	a->borrar(*clave);
+//	delete clave;
+//	cout << "Borro la clave 52" << endl;
+//	a->MostrarArbol();
+//
+//
+//	clave = new Clave("0");
+//	a->borrar(*clave);
+//	delete clave;
+//	cout << "Borro la clave 0" << endl;
+//	a->MostrarArbol();
+
+
+}
+
 int main() {
 //
 //	HandlerDeBloques* h = new HandlerDeBloques("Archivo_Nodos.txt");
@@ -81,22 +138,11 @@ int main() {
 //	delete(e3);
 //
 	ArbolBMas* a = new ArbolBMas(1, PATH_NODOS, 20);
-//	int i = 0;
-//	while (i < 500){
-//		stringstream ss;
-//		ss << i;
-//		string s = ss.str();
-//		a->insertar(new Elementos(new Clave(s), 0));
-//		cout << "Inserte Elemento: " << i << endl;
-//		++i;
-//	}
 
-	Clave * clave = new Clave("235");
-	a->borrar(*clave);
+	llenarArbol(a);
 
-	cout << "Borro la clave 235" << endl;
+	//borrarNodos(a);
 
 
-	//a->MostrarArbol();
 	delete a;
 }
