@@ -1,16 +1,16 @@
-#include "HandlerEstructuras.h"
+#include "HandlerComandos.h"
 
-HandlerEstructuras::HandlerEstructuras() {
+HandlerComandos::HandlerComandos() {
 	this-> handler = new HandlerArchivoRLV();
 	this-> parser = new ParserDeLibros();
 }
 
-HandlerEstructuras::~HandlerEstructuras() {
+HandlerComandos::~HandlerComandos() {
 	delete this-> parser;
 	delete this-> handler;
 }
 
-void HandlerEstructuras::insertar(string path, ArbolBMas &arbol, Hash& hash){
+void HandlerComandos::insertar(string path, ArbolBMas &arbol, Hash& hash){
 
 	unsigned int offset = this->handler->insertarRegistro(path);
 
@@ -43,10 +43,10 @@ void HandlerEstructuras::insertar(string path, ArbolBMas &arbol, Hash& hash){
 	 */
 }
 
-void HandlerEstructuras::borrarEnArbol(Clave* clave, ArbolBMas &arbol){
+void HandlerComandos::borrarEnArbol(Clave* clave, ArbolBMas &arbol){
 }
 
-void HandlerEstructuras::buscarEnArbol(Clave* clave, ArbolBMas &arbol){
+void HandlerComandos::buscarEnArbol(Clave* clave, ArbolBMas &arbol){
 //	std::list<Elementos*> elementos = arbol.buscar(*(clave));
 //	if (elementos.size() > 0){
 //
@@ -63,9 +63,9 @@ void HandlerEstructuras::buscarEnArbol(Clave* clave, ArbolBMas &arbol){
 //	}
 }
 
-void HandlerEstructuras::borrarEnHash(Clave* clave, Hash &hash){
+void HandlerComandos::borrarEnHash(Clave* clave, Hash &hash){
 
 }
-void HandlerEstructuras::buscarEnHash(Clave* clave, Hash &hash){
+void HandlerComandos::buscarEnHash(Clave* clave, Hash &hash){
 
 }

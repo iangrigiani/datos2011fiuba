@@ -5,20 +5,20 @@
 #include "../ParserLibros/ParserDeLibros.h"
 #include "../ManejadoresDeArchivos/HandlerArchivoRLV.h"
 
-class HandlerEstructuras {
+class HandlerComandos {
 
 private:
 	ParserDeLibros* parser;
 	HandlerArchivoRLV* handler;
 public:
 
-	HandlerEstructuras();
+	HandlerComandos();
 	void insertar(string path, ArbolBMas &arbol, Hash& hash);
 	void borrarEnArbol(Clave* clave, ArbolBMas &arbol);
 	void buscarEnArbol(Clave* clave, ArbolBMas &arbol);
 	void borrarEnHash(Clave* clave, Hash &hash);
 	void buscarEnHash(Clave* clave, Hash &hash);
-	virtual ~HandlerEstructuras();
+	virtual ~HandlerComandos();
 };
 
 #endif /* HANDLERARBOL_H_ */
