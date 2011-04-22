@@ -5,11 +5,12 @@
 #include "../ParserLibros/ParserDeLibros.h"
 #include "../ManejadoresDeArchivos/HandlerArchivoRLV.h"
 
+
 class HandlerComandos {
 
 private:
 	ParserDeLibros* parser;
-	HandlerArchivoRLV* handler;
+	HandlerArchivoRLV* handlerArchivoRLV;
 public:
 
 	HandlerComandos();
