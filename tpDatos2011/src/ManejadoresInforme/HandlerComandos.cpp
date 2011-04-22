@@ -16,11 +16,12 @@ HandlerComandos::~HandlerComandos() {
 void HandlerComandos::guardarLibroEnArchivoMaestro(const string& path_nuevo_libro){
 	int ID_Archivo =  0;
 	ID_Archivo = this->handler->insertarRegistro(path_nuevo_libro);
+//
 //	this->loguearNuevoLibro(ID_Archivo); TODO
 }
 
 void HandlerComandos::indexarPorEditoriales(){
-	//TODO Obtener del log cada libro guardado
+	//TODO Obtener del log cada libro guardado y su editorial
 	//TODO Indexar cada libro por editorial
 	//TODO Escribir el flag de "indexado por editorial" de cada libro
 

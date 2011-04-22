@@ -42,7 +42,7 @@ int HandlerArchivoRLV::insertarRegistro(const string& path_nuevo_libro)
  *  Si lo voy a insertar en un espacio libre debo borrar ese dato
  *  del archivo de espacios libres
  */
-		borrarOffsetArchivoDeEspaciosLibres();
+	borrarOffsetArchivoDeEspaciosLibres();
 	}
     int indexado = 0;
 	int procesado = 1;
