@@ -10,20 +10,23 @@ class HandlerComandos {
 
 private:
 	ParserDeLibros* parser;
-	HandlerArchivoRLV* handlerArchivoRLV;
+	HandlerArchivoRLV* handler;
+	void loguearNuevoLibro(int IDArchivo);
+
 public:
 
 	HandlerComandos();
 
 	/*
-	 * Toma un path donde se encuentra el libro original guardado y lo agrega al Archivo Maestro de libros
+	 * Toma un path donde se encuentra el libro original guardado, procesa el libro
+	 * y lo agrega al Archivo Maestro de libros.
 	 * */
-	void guardarLibroEnArchivoMaestro();
+	void guardarLibroEnArchivoMaestro(const string& path_nuevo_libro);
 
 	/*
 	 * Agrega en el árbol de editoriales todos los libros agregados recientemente al Archivo Maestro
 	 * */
-	void indexarporEditoriales();
+	void indexarPorEditoriales();
 
 	/*
 	 * Agrega en el árbol de autores todos los libros agregados recientemente al Archivo Maestro
@@ -48,12 +51,12 @@ public:
 	/*
 	 * Busca y muestra un libro por ID
 	 */
-	void obtenerLibro();
+	void obtenerLibro(int IDArchivo);
 
 	/*
 	 * Busca un libro por ID y lo elimina del registro maestro y de los 4 índices
 	 */
-	void quitarLibro();
+	void quitarLibro(int IDArchivo);
 
 	/*
 	 * Muestra la estructura del árbol de editoriales como texto plano

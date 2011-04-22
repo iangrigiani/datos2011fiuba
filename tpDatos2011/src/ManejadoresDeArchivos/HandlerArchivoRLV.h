@@ -28,7 +28,7 @@ private:
 		/*
 		 * Retorna el tamanio del libro
 		 * Pre: Se le pasa en un char* la cabecera del Libro separada por pipes
-		 * Post: Retorna el tamanio (segundo par�metro)
+		 * Post: Retorna el tamanio (segundo parametro)
 		 */
 		int obtenerTamanioLibro(char * cadenaDeDatos);
 		/*
@@ -59,23 +59,23 @@ public:
 		HandlerArchivoRLV();
 		virtual ~HandlerArchivoRLV() {};
 		/*
-		 * M�todo que inserta un registro (libro ) en el
+		 * Metodo que inserta un registro (libro ) en el
 		 * archivo de registros de longitud variable.
 		 * Pre: ingresar path del registro a insertar
 		 * Post: devuelve el offset donde inserto el registro
 		 */
 		int insertarRegistro(const string& path_nuevo_libro);
 		/*
-		 * M�todo que busca un registro (libro ) en el
+		 * Metodo que busca un registro (libro ) en el
 		 * archivo de registros d elongitud variable
-		 * Pre: Pasa el offset donde est� el registro en el archivo
+		 * Pre: Pasa el offset donde esta el registro en el archivo
 		 * Post: Devuelve en una variable char* el libro completo sin la cabecera
 		 */
 		char* buscarRegistro(int offset);
 		/*
-		 * M�todo que elimina un registro (libro ) del
-		 * archivo de registros d elongitud variable
-		 * Pre: Pasa el offset donde est� el registro en el archivo
+		 * Metodo que elimina un registro (libro ) del
+		 * archivo de registros de longitud variable
+		 * Pre: Pasa el offset donde esta el registro en el archivo
 		 * Post: Queda un espacio del tamanio del registro en blanco en el archivo.
 		 */
 		void quitarRegistro(int offset);
