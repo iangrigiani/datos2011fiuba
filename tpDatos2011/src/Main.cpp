@@ -13,13 +13,13 @@ int main (int argc , char *argv[]){
 /* TODO cambiar printfs por métodos de HandlerComandos*/
 	HandlerComandos* handlerComandos = new HandlerComandos();
 
-    int opcion, opcion2;
+    int opcion1, opcion2;
     if ((argc!= 2) && (argc!=3) ) {
-        printf("Bookerio: Cantidad errónea de parámetros. Sólo puede pasar un parámetro. \n");
+        printf("Bookerio: Cantidad errónea de parámetros. Sólo puede pasar un parámetro o dos en caso de -v(er). \n");
         printf("Bookerio: Ingrese el parámetro -h(elp) para ver la referencia de parámetros. \n");
     }else{
-        (opcion = getopt(argc,argv, "ieatploqvh?:")) ;
-        switch ( opcion ) {
+        (opcion1 = getopt(argc,argv, "ieatploqvh?:")) ;
+        switch ( opcion1 ) {
             case 'i':   printf("-i      Tomar texto de un archivo\n"); break;
 
             case 'e':   printf("-e      Indexar por Editorial los libros agregados recientemente \n"); break;
@@ -72,7 +72,7 @@ int main (int argc , char *argv[]){
             case '?':   printf("Bookerio: Parámetro inválido. \nBookerio: Ingrese el parámetro -h(help) para ver la referencia de parámetros. \n"); break;
         }
 
-}
+    }
 }
 
 
