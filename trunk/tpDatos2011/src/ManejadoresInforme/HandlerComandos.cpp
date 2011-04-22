@@ -10,6 +10,56 @@ HandlerComandos::~HandlerComandos() {
 	delete this-> handler;
 }
 
+void guardarLibroEnArchivoMaestro(){
+
+}
+
+void indexarporEditoriales(){
+
+}
+
+void indexarPorAutores(){
+
+}
+
+void indexarPorTitulos(){
+
+}
+
+void indexarPorPalabras(){
+
+}
+
+void listarLibrosIngresados(){
+
+}
+
+void obtenerLibro(){
+
+}
+
+void quitarLibro(){
+}
+
+void verArbolEditorial(){
+
+}
+
+void verArbolAutor(){
+
+}
+
+void verHashTitulo(){
+
+}
+
+void verHashPalabras(){
+
+}
+
+
+
+/*
 void HandlerComandos::insertar(string path, ArbolBMas &arbol, Hash& hash){
 
 	unsigned int offset = this->handler->insertarRegistro(path);
@@ -41,11 +91,12 @@ void HandlerComandos::insertar(string path, ArbolBMas &arbol, Hash& hash){
 	 *  en Registor tenes la lista de palabras y el titulo y en offset
 	 *  tenes el offset donde se inserto en el archivo de RLV
 	 */
-}
 
+/*
 void HandlerComandos::borrarEnArbol(Clave* clave, ArbolBMas &arbol){
-}
+}*/
 
+/*
 void HandlerComandos::buscarEnArbol(Clave* clave, ArbolBMas &arbol){
 //	std::list<Elementos*> elementos = arbol.buscar(*(clave));
 //	if (elementos.size() > 0){
@@ -61,11 +112,13 @@ void HandlerComandos::buscarEnArbol(Clave* clave, ArbolBMas &arbol){
 //	}else{
 //		cout<<"elemento no encontrado"<<endl;
 //	}
-}
-
+}*/
+/*
 void HandlerComandos::borrarEnHash(Clave* clave, Hash &hash){
 
-}
+}*/
+/*
 void HandlerComandos::buscarEnHash(Clave* clave, Hash &hash){
 
 }
+*/
