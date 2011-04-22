@@ -161,9 +161,9 @@ bool ArbolBMas::insertarRecursivamente(Nodo* nodoCorriente, Clave& clave, Elemen
 		NodoHoja *nodoHojaCorriente = static_cast<NodoHoja*> (nodoCorriente);
 		int posicion = obtenerPosicion(nodoHojaCorriente, clave);
 		// chequea que no exista la clave
-		if (posicion < nodoHojaCorriente->cantidadClaves && clave.getClave() == nodoHojaCorriente->claves[posicion].getClave()){
-			return false;
-		}
+//		if (posicion < nodoHojaCorriente->cantidadClaves && clave.getClave() == nodoHojaCorriente->claves[posicion].getClave()){
+//			return false;
+//		}
 
 		int i = nodoHojaCorriente->cantidadClaves-1;
 		while (i >= 0 && clave.getClave() < nodoHojaCorriente->claves[i].getClave()){
