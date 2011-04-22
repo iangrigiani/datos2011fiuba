@@ -344,14 +344,12 @@ void ArbolBMas::toString(Nodo* nodoAmostrar, int tab){
 					}
 				}
 			}
+			int * hijos;
+			Nodo *hijo;
 			for (int posicion = 0; posicion <= nodoInt->cantidadClaves; ++posicion) {
-				int tipoNodo = 0;
-				if (nodoInt->nivel > 1 ){
-					tipoNodo = 2;
-				}else{
-					tipoNodo = 1;
-				}
-				Nodo *hijo = hidratarNodo(posicion+1);
+
+				hijos = nodoInt->getHijos();
+				hijo = hidratarNodo(hijos[posicion]);
 				toString(hijo, tab+2);
 				if (hijo)
 					liberarMemoriaNodo(hijo);
