@@ -1,13 +1,13 @@
 #include "HandlerComandos.h"
 
 HandlerComandos::HandlerComandos() {
-	this-> handler = new HandlerArchivoRLV();
+	this-> handlerArchivoRLV = new HandlerArchivoRLV();
 	this-> parser = new ParserDeLibros();
 }
 
 HandlerComandos::~HandlerComandos() {
 	delete this-> parser;
-	delete this-> handler;
+	delete this-> handlerArchivoRLV;
 }
 
 void guardarLibroEnArchivoMaestro(){
