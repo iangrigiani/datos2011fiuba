@@ -1,59 +1,67 @@
 #include "HandlerComandos.h"
 
+
 HandlerComandos::HandlerComandos() {
-	this-> handlerArchivoRLV = new HandlerArchivoRLV();
+	this-> handler = new HandlerArchivoRLV();
 	this-> parser = new ParserDeLibros();
+//	this-> log = new HandlerArchivoLog(); TODO
 }
 
 HandlerComandos::~HandlerComandos() {
 	delete this-> parser;
-	delete this-> handlerArchivoRLV;
+	delete this-> handler;
+//	delete this-> log;
 }
 
-void guardarLibroEnArchivoMaestro(){
-
+void HandlerComandos::guardarLibroEnArchivoMaestro(const string& path_nuevo_libro){
+	int ID_Archivo =  0;
+	ID_Archivo = this->handler->insertarRegistro(path_nuevo_libro);
+//	this->loguearNuevoLibro(ID_Archivo); TODO
 }
 
-void indexarporEditoriales(){
+void HandlerComandos::indexarPorEditoriales(){
+	//TODO Obtener del log cada libro guardado
+	//TODO Indexar cada libro por editorial
+	//TODO Escribir el flag de "indexado por editorial" de cada libro
 
 }
-
-void indexarPorAutores(){
-
-}
-
-void indexarPorTitulos(){
-
-}
-
-void indexarPorPalabras(){
-
-}
-
-void listarLibrosIngresados(){
+void HandlerComandos::indexarPorAutores(){
+	// TODO Idem, anterior
 
 }
 
-void obtenerLibro(){
+void HandlerComandos::indexarPorTitulos(){
+	// TODO Idem, anterior
+}
+
+void HandlerComandos::indexarPorPalabras(){
+	// TODO Idem, anterior
+}
+
+void HandlerComandos::listarLibrosIngresados(){
+	//this->mostrarLog();TODO
+}
+
+void HandlerComandos::obtenerLibro(int IDArchivo){
 
 }
 
-void quitarLibro(){
+void HandlerComandos::quitarLibro(int IDArchivo){
 }
 
-void verArbolEditorial(){
-
-}
-
-void verArbolAutor(){
+void HandlerComandos::verArbolEditorial(){
 
 }
 
-void verHashTitulo(){
+void HandlerComandos::verArbolAutor(){
 
 }
 
-void verHashPalabras(){
+void HandlerComandos::verHashTitulo(){
+
+}
+
+void HandlerComandos::verHashPalabras(){
 
 }
 
