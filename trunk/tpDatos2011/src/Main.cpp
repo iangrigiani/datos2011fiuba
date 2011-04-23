@@ -25,7 +25,7 @@ int main (int argc , char *argv[]){
 						printf("-i      Tomar texto de un archivo\n");
 						if (argv[2]) {
 							printf("La ruta del archivo es %s \n", argv[2]);
-							// handlerComandos.guardarLibroEnArchivoMaestro(argv[2]);
+							handlerComandos->guardarLibroEnArchivoMaestro(argv[2]);
 							printf("Bookerio: Libro guardado. \n");
 						}else{
 							printf("Bookerio: No se puede procesar la orden: falta ruta de archivo.\n");}
