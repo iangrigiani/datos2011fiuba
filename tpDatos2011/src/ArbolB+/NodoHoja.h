@@ -11,7 +11,6 @@ class NodoHoja : public Nodo {
 private:
 	int hojaSiguiente;
 	Elementos* datos;
-
 public:
 	NodoHoja();
 	virtual ~NodoHoja();

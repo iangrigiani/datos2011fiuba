@@ -15,9 +15,11 @@ ArbolBMas::ArbolBMas(int tipo, string ruta_archivo, int tamanioMaximoClave){
 		this->cantidadNodos = 0;
 	}
 	hidratarDatosConfiguracion();
+	this->frontCoding = new FrontCoding();
 }
 
 void ArbolBMas::inicializarPersistores(){
+
 	this->recuperador_Nodos = new RecuperadorNodos(this->path);
 	this->escritor_Nodos = new EscritorNodo(this->path);
 	if(this->tipo == 1){
@@ -33,6 +35,7 @@ ArbolBMas::~ArbolBMas(){
 	if	(raiz){
 		liberarMemoriaNodo(raiz);
 	}
+	delete this->frontCoding;
 	delete this->escritor_Nodos;
 	delete this->recuperador_Nodos;
 	delete this->escritor_Datos_Configuracion;
@@ -160,10 +163,6 @@ bool ArbolBMas::insertarRecursivamente(Nodo* nodoCorriente, Clave& clave, Elemen
 	} else {
 		NodoHoja *nodoHojaCorriente = static_cast<NodoHoja*> (nodoCorriente);
 		int posicion = obtenerPosicion(nodoHojaCorriente, clave);
-		// chequea que no exista la clave
-//		if (posicion < nodoHojaCorriente->cantidadClaves && clave.getClave() == nodoHojaCorriente->claves[posicion].getClave()){
-//			return false;
-//		}
 
 		int i = nodoHojaCorriente->cantidadClaves-1;
 		while (i >= 0 && clave.getClave() < nodoHojaCorriente->claves[i].getClave()){
@@ -188,6 +187,7 @@ bool ArbolBMas::insertarRecursivamente(Nodo* nodoCorriente, Clave& clave, Elemen
 		if (nuevoNodo && nodoHojaCorriente != *nuevoNodo && posicion == nodoHojaCorriente->cantidadClaves - 1) {
 			*clavePromocion = clave;
 		}
+
 		return true;
 	}
 }
@@ -315,14 +315,14 @@ void ArbolBMas::toString(Nodo* nodoAmostrar, int tab){
 		if (nodoAmostrar->isNodoHoja()) {
 			NodoHoja *nodo = static_cast<NodoHoja*> (nodoAmostrar);
 			for(int i=0 ; i<tab ; i++) cout << "  ";
-				cout   << "Numero: " << nodo->numero << "  Nivel: " << nodo->nivel << "  Cant.Elem: " << nodo->cantidadClaves
+				cout   << "Numero: " << nodo->numero <<  "  Nivel: " << nodo->nivel << "  Cant.Elem: " << nodo->cantidadClaves
 				<< " Esp.Libre: " << TAM_EFECTIVO_NODO - nodo->espacioOcupado << "  Hoja.Sig: " << nodo->hojaSiguiente << "    " << endl;
 
 			for(int i=0 ; i<tab ; i++) cout << "  ";
 			for (int posicion = 0; posicion < nodo->cantidadClaves; ++posicion){
 				cout << "(";
-				Clave clave = nodo->claves[posicion];
-				cout << clave.getClave() ;
+				Clave clave = (*nodo->datos[posicion].getClave());
+				cout << clave.getClave();
 				cout << ")";
 			}
 			cout << endl;
@@ -331,7 +331,7 @@ void ArbolBMas::toString(Nodo* nodoAmostrar, int tab){
 			cout << endl;
 			for(int i=0; i<tab ; i++)
 				cout << "  ";
-			cout << "Numero: " << nodoInt->numero << "  Nivel: " << nodoInt->nivel << "  Cant.Elem: " << nodoInt->cantidadClaves
+			cout << "Numero: " << nodoInt->numero << "  Primer Hoja: " << nodoInt->hijos[0] << "  Nivel: " << nodoInt->nivel << "  Cant.Elem: " << nodoInt->cantidadClaves
 					<< "  Esp.Libre: " << TAM_EFECTIVO_NODO - nodoInt->espacioOcupado << "  Claves: (";
 			for (int posicion = 0; posicion <= nodoInt->cantidadClaves; ++posicion) {
 				if (posicion < nodoInt->cantidadClaves) {
