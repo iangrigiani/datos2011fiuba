@@ -31,14 +31,99 @@ void HandlerComandos::guardarLibroEnArchivoMaestro(const string& path_nuevo_libr
 }
 
 void HandlerComandos::indexar(int parametro){
-	//TODO Obtener del log una Lista de quintuplas (o como se diga) que contega los 5 campos
-	//	   guardados en el log (ID_Archivo, ind1, ind2, ind3, ind4).
-	//TODO Indexar cada libro de acuerdo al parámetro si es que ya no fue indexado,
-	//     modificando el índice correspondiente
-	//TODO Escribir el flag indX de cada libro y actualizar el log
+	//Obtener del log una Lista de quintuplas (o como se diga) que contega los 5 campos
+	//guardados en el log (ID_Archivo, ind1, ind2, ind3, ind4).
 
+	// En esta lista obtengo los offset de todos los archivos que debo indexar.
+	list<int> listaDeIds;
+	// Obtengo todos los offsets
+	obtenerListaIDs(parametro, listaDeIds);
+	list<int>::iterator it = listaDeIds.begin();
+
+	// Para cada offset segun que parametro recibi inserto.
+	while ( it != listaDeIds.end()){
+	    switch (parametro){
+	        case 'a':{	insertarEnArbol (1, (*it));	break;}
+	        case 'e':{	insertarEnArbol (2, (*it));	break;}
+	        case 't':{ // TODO HASH
+	        	break;}
+	        case 'p':{ // TODO HASH
+	        	break;}
+	    }
+		++it;
+	}
+}
+void HandlerComandos::insertarEnArbol (int tipoArbol, int offset){
+	ArbolBMas* arbol = new ArbolBMas(tipoArbol, PATH_NODOS, 20);
+	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
+
+	if (tipoArbol == 1){
+		Elementos* elemento = new Elementos(new Clave(reg->getAutor()), offset);
+		if(elemento->getTamanio() > (TAM_EFECTIVO_NODO * PORC_TAMANIO_NODO / 100) ){
+			cout<<"Elemento demasiado grande"<<endl;
+		}else{
+			if(arbol->insertar(elemento))
+				cout<<"Elemento Insertado"<<endl;
+		}
+		delete elemento;
+	}else{
+		Elementos* elemento2 = new Elementos(new Clave(reg->getEditorial()), offset);
+		if(elemento2->getTamanio() > (TAM_EFECTIVO_NODO * PORC_TAMANIO_NODO / 100) ){
+			cout<<"Elemento demasiado grande"<<endl;
+		}else{
+			if(arbol->insertar(elemento2))
+				cout<<"Elemento Insertado"<<endl;
+		}
+		delete elemento2;
+	}
+	delete reg;
+	delete arbol;
 }
 
+
+void HandlerComandos::obtenerListaIDs (int parametro,list<int>& listaDeIds){
+	fstream archivoLog;
+    int IDActual = 0, ind1=0 , ind2=0, ind3=0, ind4=0;
+    string cad;
+    char* cadena = (char*)calloc(100, sizeof(char));
+	bool indexado = false;
+	archivoLog.open(PATH_ARCHIVO_LOG, std::ios_base::in | std::ios_base::out);
+	archivoLog.seekg(0);
+	while (!archivoLog.eof() ){
+		archivoLog.getline (cadena, 100);
+		cad = cadena;
+		if (cad.length() > 0 ) {
+			IDActual = atoi(strtok(cadena,"|"));
+		    ind1 = atoi ( strtok(NULL,"|") );
+		    ind2 = atoi ( strtok(NULL,"|") );
+		    ind3 = atoi ( strtok(NULL,"|") );
+		    ind4 = atoi ( strtok(NULL,"\n") );
+		    switch (parametro){
+		        case 'a':{
+		        	if (ind1 == 1)
+		        		indexado = true;
+		        	break;}
+		        case 'e':{
+		        	if (ind2 == 1)
+		        		indexado = true;
+		        	break;}
+		        case 't':{
+		        	if (ind3 == 1)
+		        		indexado = true;
+		        	break;}
+		        case 'p':{
+		        	if (ind4 == 1)
+		        		indexado = true;
+		        	break;}
+		    }
+			if (!indexado){
+				listaDeIds.push_back(IDActual);
+			}
+
+		}
+		indexado = false;
+	}
+}
 void HandlerComandos::listarLibrosIngresados(){
 	//this->mostrarLog();TODO
 }
@@ -79,70 +164,3 @@ void HandlerComandos::verEstructura(int parametro){
 
 	}
 }
-
-
-
-
-/*
-void HandlerComandos::insertar(string path, ArbolBMas &arbol, Hash& hash){
-
-	unsigned int offset = this->handler->insertarRegistro(path);
-
-	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
-
-	if ( arbol.getTipo() == 1){
-		// El dato es un Autor.
-		Elementos* elemento = new Elementos(new Clave(reg->getAutor()), offset);
-		if(elemento->getTamanio() > (TAM_EFECTIVO_NODO * PORC_TAMANIO_NODO / 100) ){
-			cout<<"Elemento demasiado grande"<<endl;
-		}else{
-			if(arbol.insertar(elemento))
-				cout<<"Elemento Insertado"<<endl;
-		}
-	}else{
-		Elementos* elemento = new Elementos(new Clave(reg->getEditorial()), offset);
-		if(elemento->getTamanio() > (TAM_EFECTIVO_NODO * PORC_TAMANIO_NODO / 100) ){
-			cout<<"Elemento demasiado grande"<<endl;
-		}else{
-			if(arbol.insertar(elemento))
-				cout<<"Elemento Insertado"<<endl;
-		}
-	}
-
-
-	/*
-	 *  TODO aca agregar lo que sea del hash para ese elemento usando "hash"
-	 *  en Registor tenes la lista de palabras y el titulo y en offset
-	 *  tenes el offset donde se inserto en el archivo de RLV
-	 */
-
-/*
-void HandlerComandos::borrarEnArbol(Clave* clave, ArbolBMas &arbol){
-}*/
-
-/*
-void HandlerComandos::buscarEnArbol(Clave* clave, ArbolBMas &arbol){
-//	std::list<Elementos*> elementos = arbol.buscar(*(clave));
-//	if (elementos.size() > 0){
-//
-//		cout<<"Elementos encontrados: ";
-//		std::list<Elementos*>::iterator it = elementos.begin();
-//		while ( it != elementos.end()){
-//			Registro* reg = this->parser->obtenerRegistroDeLibro(handler->buscarRegistro((*it)->getOffset()));
-//			reg->toString();
-//			++it;
-//			delete reg;
-//		}
-//	}else{
-//		cout<<"elemento no encontrado"<<endl;
-//	}
-}*/
-/*
-void HandlerComandos::borrarEnHash(Clave* clave, Hash &hash){
-
-}*/
-/*
-void HandlerComandos::buscarEnHash(Clave* clave, Hash &hash){
-
-}
-*/
