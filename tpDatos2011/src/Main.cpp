@@ -33,22 +33,22 @@ int main (int argc , char *argv[]){
 
             case 'e':   {
 						printf("-e      Indexar por Editorial los libros agregados recientemente \n");
-						// handlerComandos.indexarporEditoriales();
+						// handlerComandos.indexar('e');
 						break;}
 
             case 'a':   {
 						printf("-a      Indexar por Autor los libros agregados recientemente \n");
-						// handlerComandos.indexarPorAutores();
+						// handlerComandos.indexar('a');
 						break;}
 
             case 't':   {
 						printf("-t      Indexar por Título los libros agregados recientemente \n");
-						// handlerComandos.indexarPorTitulos();
+						// handlerComandos.indexar('t');
 						break;}
 
             case 'p':   {
 						printf("-p      Indexar por Palabras los libros agregados recientemente \n");
-						// handlerComandos.indexarPorPalabras();
+						// handlerComandos.indexar('p');
 						break;}
 
             case 'l':   {
