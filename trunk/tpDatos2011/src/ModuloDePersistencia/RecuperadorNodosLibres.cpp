@@ -21,10 +21,10 @@ void RecuperadorNodosLibres::obtenerDatos(int &primeraHoja, vector<int>& nodosLi
 void RecuperadorNodosLibres::hidratarPrimeraHoja(char* readData, unsigned int &offset, int& primeraHoja){
 	primeraHoja = Persistencia::getEnteroDesdeBuffer(readData,offset);
 }
-void RecuperadorNodosLibres::hidratarNodosLibres(char* readData, unsigned int &offset, vector<int>& nodosLibres){
-   int nodos = Persistencia::getEnteroDesdeBuffer(readData,offset);
-   for (int i = 0; i < nodos; i++){
-	   nodosLibres[i] = Persistencia::getEnteroDesdeBuffer(readData,offset);
+int* RecuperadorNodosLibres::hidratarNodosLibres(char* readData, unsigned int &offset, vector<int>& nodosLibres){
+   int cantidad = Persistencia::getEnteroDesdeBuffer(readData,offset);
+   for (int i = 0; i < cantidad; i++){
+	   nodosLibres.push_back(Persistencia::getEnteroDesdeBuffer(readData,offset));
    }
 }
 RecuperadorNodosLibres::~RecuperadorNodosLibres(){

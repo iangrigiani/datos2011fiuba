@@ -14,7 +14,7 @@
 #include "../ModuloDePersistencia/EscritorNodo.h"
 #include "../ModuloDePersistencia/RecuperadorNodos.h"
 #include "../ModuloDePersistencia/RecuperadorNodosLibres.h"
-//#include "ComparadorClavesContexto.h"
+#include "FrontCoding.h"
 
 #include <fstream>
 #include <vector>
@@ -40,6 +40,7 @@ private:
 
 	int tipo;
 	int primeraHoja;
+	FrontCoding* frontCoding;
 	RecuperadorNodos* recuperador_Nodos;
 	EscritorNodo* escritor_Nodos;
 	RecuperadorNodosLibres* recuperador_Datos_Configuracion;

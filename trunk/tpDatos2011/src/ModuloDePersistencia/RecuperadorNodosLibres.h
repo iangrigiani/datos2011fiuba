@@ -16,7 +16,7 @@ private:
 	char* buffer;
 	HandlerDeBloques* handler;
 	void hidratarPrimeraHoja(char* readData, unsigned int &offset, int& primeraHoja);
-	void hidratarNodosLibres(char* readData, unsigned int &offset, vector<int> & nodosLibres);
+	int* hidratarNodosLibres(char* readData, unsigned int &offset, vector<int>& nodosLibres);
 public:
 	RecuperadorNodosLibres();
 	RecuperadorNodosLibres (std::string path);
