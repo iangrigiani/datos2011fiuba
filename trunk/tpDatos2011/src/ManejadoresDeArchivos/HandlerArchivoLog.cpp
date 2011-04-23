@@ -32,6 +32,7 @@ void HandlerArchivoLog::insertarRegistro(int IDArchivo){
 	archivoLog.close();
 }
 
+
 int HandlerArchivoLog::buscarRegistro(int IDArchivo){
 
     bool registroEncontrado = false ;

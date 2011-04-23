@@ -19,15 +19,26 @@
 using namespace std;
 
 class HandlerArchivoLog {
+
 public:
+
 	HandlerArchivoLog();
+
 	virtual ~HandlerArchivoLog();
+
 	void insertarRegistro(int IDArchivo);
+
 	int  buscarRegistro(int IDArchivo);
+
+	/*
+	 *PRE: Recibe:  IDArchivo , parametro ('a'|'e'|'t'|'p')
+	 *POST: Guarda en el archivo log la línea con los flags cambiados
+	 **/
 	void setearIndexado(int IDArchivo, int parametro);
 
 
 private:
+
 	string crearStringAInsertar(int numero, int ind1, int ind2, int ind3, int ind4);
 
 };

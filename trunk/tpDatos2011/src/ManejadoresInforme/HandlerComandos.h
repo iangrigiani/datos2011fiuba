@@ -4,6 +4,7 @@
 #include "../Hash/Hash.h"
 #include "../ParserLibros/ParserDeLibros.h"
 #include "../ManejadoresDeArchivos/HandlerArchivoRLV.h"
+#include "../ManejadoresDeArchivos/HandlerArchivoLog.h"
 
 
 class HandlerComandos {
@@ -11,7 +12,7 @@ class HandlerComandos {
 private:
 	ParserDeLibros* parser;
 	HandlerArchivoRLV* handler;
-	void loguearNuevoLibro(int IDArchivo);
+	HandlerArchivoLog* log;
 
 public:
 
@@ -20,28 +21,16 @@ public:
 	/*
 	 * Toma un path donde se encuentra el libro original guardado, procesa el libro
 	 * y lo agrega al Archivo Maestro de libros.
+	 * Además, agrega una línea al Archivo de Log con los Flags de indexado en 0
 	 * */
 	void guardarLibroEnArchivoMaestro(const string& path_nuevo_libro);
 
 	/*
-	 * Agrega en el árbol de editoriales todos los libros agregados recientemente al Archivo Maestro
+	 * PRE: int parametro ('a'|'e'|'t'|'p')
+	 * POS: Agrega segun parametro en el indice correspondiente todos los libros agregados recientemente al Archivo Maestro
+	 *
 	 * */
-	void indexarPorEditoriales();
-
-	/*
-	 * Agrega en el árbol de autores todos los libros agregados recientemente al Archivo Maestro
-	 * */
-	void indexarPorAutores();
-
-	/*
-	 * Agrega en el hash de títulos todos los libros agregados recientemente al Archivo Maestro
-	 * */
-	void indexarPorTitulos();
-
-	/*
-	 * Agrega en el hash de palabras todos los libros agregados recientemente al Archivo Maestro
-	 * */
-	void indexarPorPalabras();
+	void indexar(int parametro);
 
 	/*
 	 * Muestra el log de todos los archivos ingresados recientemente

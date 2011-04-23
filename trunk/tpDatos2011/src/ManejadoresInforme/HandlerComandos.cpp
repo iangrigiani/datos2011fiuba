@@ -2,41 +2,28 @@
 
 
 HandlerComandos::HandlerComandos() {
-	this-> handler = new HandlerArchivoRLV();
-	this-> parser = new ParserDeLibros();
-//	this-> log = new HandlerArchivoLog(); TODO
+	this-> handler 	= new HandlerArchivoRLV();
+	this-> parser 	= new ParserDeLibros();
+	this-> log 		= new HandlerArchivoLog();
 }
 
 HandlerComandos::~HandlerComandos() {
 	delete this-> parser;
 	delete this-> handler;
-//	delete this-> log;
+	delete this-> log;
 }
 
 void HandlerComandos::guardarLibroEnArchivoMaestro(const string& path_nuevo_libro){
 	int ID_Archivo =  0;
 	ID_Archivo = this->handler->insertarRegistro(path_nuevo_libro);
-//
-//	this->loguearNuevoLibro(ID_Archivo); TODO
+	this-> log->insertarRegistro(ID_Archivo);
 }
 
-void HandlerComandos::indexarPorEditoriales(){
+void HandlerComandos::indexar(int parametro){
 	//TODO Obtener del log cada libro guardado y su editorial
 	//TODO Indexar cada libro por editorial
 	//TODO Escribir el flag de "indexado por editorial" de cada libro
 
-}
-void HandlerComandos::indexarPorAutores(){
-	// TODO Idem, anterior
-
-}
-
-void HandlerComandos::indexarPorTitulos(){
-	// TODO Idem, anterior
-}
-
-void HandlerComandos::indexarPorPalabras(){
-	// TODO Idem, anterior
 }
 
 void HandlerComandos::listarLibrosIngresados(){
