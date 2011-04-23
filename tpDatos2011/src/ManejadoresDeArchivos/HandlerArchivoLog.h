@@ -23,14 +23,13 @@ public:
 	HandlerArchivoLog();
 	virtual ~HandlerArchivoLog();
 	void insertarRegistro(int IDArchivo);
-	void buscarRegistro(int IDArchivo);
-	void setearIndexadoPorAutor(int IDArchivo);
-	void setearIndexadoPorEditorial(int IDArchivo);
-	void setearIndexadoPorTitulo(int IDArchivo);
-	void setearIndexadoPorPalabras(int IDArchivo);
+	int  buscarRegistro(int IDArchivo);
+	void setearIndexado(int IDArchivo, int parametro);
+
 
 private:
-	string crearStringAInsertar(int numero);
+	string crearStringAInsertar(int numero, int ind1, int ind2, int ind3, int ind4);
+
 };
 
 #endif /* HANDLERARCHIVOLOG_H_ */
