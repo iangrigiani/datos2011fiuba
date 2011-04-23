@@ -5,7 +5,7 @@
 #include "../ParserLibros/ParserDeLibros.h"
 #include "../ManejadoresDeArchivos/HandlerArchivoRLV.h"
 #include "../ManejadoresDeArchivos/HandlerArchivoLog.h"
-
+#include <list>
 
 class HandlerComandos {
 
@@ -17,7 +17,16 @@ private:
 	ArbolBMas* arbol_editoriales;
 	Hash* hash_titulos;
 	Hash* hash_palabras;*/
-
+	/*
+	 * se le pasa por referencia una lista a la cual se completara con todos los offsets
+	 * de los archivos que tengan el parametro correspondiente como NO indexado.
+	 */
+	void obtenerListaIDs (int parametro,list<int>& listaDeIds);
+	/*
+	 * Crea un arbol del tipo autor o editorial e inserta el elemento
+	 * que obtiene del handler de reg de LV correspondiente.
+	 */
+	void insertarEnArbol (int tipoArbol, int offset);
 public:
 
 	HandlerComandos();
