@@ -22,9 +22,7 @@ int main (int argc , char *argv[]){
         (opcion1 = getopt(argc,argv, "ieatploqvh?:")) ;
         switch ( opcion1 ) {
             case 'i':   {
-						printf("-i      Tomar texto de un archivo\n");
 						if (argv[2]) {
-							printf("La ruta del archivo es %s \n", argv[2]);
 							handlerComandos->guardarLibroEnArchivoMaestro(argv[2]);
 							printf("Bookerio: Libro guardado. \n");
 						}else{
@@ -81,22 +79,22 @@ int main (int argc , char *argv[]){
 							switch (opcion2){
 								case 'e': {
 									      printf("-e      Ver árbol de Editorial\n");
-										  //handlerComandos.verArbolEditorial();
+										  //handlerComandos.verEstructura('e');
 								          break;}
 
 								case 'a': {
 										  printf("-a      Ver árbol de Autor\n");
-										  //handlerComandos.verArbolAutor();
+										  //handlerComandos.verEstructura('a');
 										  break;}
 
 								case 't': {
 										  printf("-t      Ver hash de Título\n");
-										  // handlerComandos.verHashTitulo();
+										  // handlerComandos.verEstructura('t');
 										  break;}
 
 								case 'p': {
 									      printf("-p      Ver hash de Palabras\n");
-									      //handlerComandos.verHashPalabras();
+									      //handlerComandos.verEstructura('p');
 									      break;}
 
 								case '?': {
