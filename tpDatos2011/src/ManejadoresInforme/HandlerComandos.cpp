@@ -2,15 +2,26 @@
 
 
 HandlerComandos::HandlerComandos() {
-	this-> handler 	= new HandlerArchivoRLV();
-	this-> parser 	= new ParserDeLibros();
-	this-> log 		= new HandlerArchivoLog();
+	this-> handler 			= new HandlerArchivoRLV();
+	this-> parser 			= new ParserDeLibros();
+	this-> log 				= new HandlerArchivoLog();
+
+/*	this-> arbol_autores     = new ArbolBMas();
+	this-> arbol_editoriales = new ArbolBMas();
+	this-> hash_titulos		 = new Hash();
+	this-> hash_palabras	 = new Hash();*/
+
 }
 
 HandlerComandos::~HandlerComandos() {
 	delete this-> parser;
 	delete this-> handler;
 	delete this-> log;
+
+/*	delete this-> arbol_autores    	= new ArbolBMas();
+	delete this-> arbol_editoriales	= new ArbolBMas();
+	delete this-> hash_titulos		= new Hash();
+	delete this-> hash_palabras		= new Hash();*/
 }
 
 void HandlerComandos::guardarLibroEnArchivoMaestro(const string& path_nuevo_libro){
@@ -20,9 +31,11 @@ void HandlerComandos::guardarLibroEnArchivoMaestro(const string& path_nuevo_libr
 }
 
 void HandlerComandos::indexar(int parametro){
-	//TODO Obtener del log cada libro guardado y su editorial
-	//TODO Indexar cada libro por editorial
-	//TODO Escribir el flag de "indexado por editorial" de cada libro
+	//TODO Obtener del log una Lista de quintuplas (o como se diga) que contega los 5 campos
+	//	   guardados en el log (ID_Archivo, ind1, ind2, ind3, ind4).
+	//TODO Indexar cada libro de acuerdo al parámetro si es que ya no fue indexado,
+	//     modificando el índice correspondiente
+	//TODO Escribir el flag indX de cada libro y actualizar el log
 
 }
 
@@ -31,27 +44,42 @@ void HandlerComandos::listarLibrosIngresados(){
 }
 
 void HandlerComandos::obtenerLibro(int IDArchivo){
-
+	//TODO
 }
 
 void HandlerComandos::quitarLibro(int IDArchivo){
+	//TODO Borrar del archivo maestro
+	//TODO Borrar de todos los índices
+	//¿TODO Borrar del log?
 }
 
-void HandlerComandos::verArbolEditorial(){
+void HandlerComandos::verEstructura(int parametro){
+	//TODO enlazar con los métodos que tiene cada índice para mostrarse
+	switch (parametro){
+	case 'a':{
+			printf("Viendo estructura del árbol de autores. \n");
+			//this.arbol_autores->MostrarArbol();
+			break;
+			}
+	case 'e':{
+			printf("Viendo estructura del árbol de editoriales. \n");
+			//this.arbol_editoriales->MostrarArbol();
+			break;
+			}
+	case 't':{
+			printf("Viendo estructura del hash de titulos. \n");
+			//this.hash_titulos->MostrarHash(); TODO
+			break;
+			}
+	case 'p':{
+			printf("Viendo estructura del hash de palabras. \n");
+			//this.hash_palabras->MostrarHash(); TODO
+			break;
+			}
 
+	}
 }
 
-void HandlerComandos::verArbolAutor(){
-
-}
-
-void HandlerComandos::verHashTitulo(){
-
-}
-
-void HandlerComandos::verHashPalabras(){
-
-}
 
 
 

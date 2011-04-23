@@ -13,6 +13,10 @@ private:
 	ParserDeLibros* parser;
 	HandlerArchivoRLV* handler;
 	HandlerArchivoLog* log;
+/*	ArbolBMas* arbol_autores;
+	ArbolBMas* arbol_editoriales;
+	Hash* hash_titulos;
+	Hash* hash_palabras;*/
 
 public:
 
@@ -48,24 +52,12 @@ public:
 	void quitarLibro(int IDArchivo);
 
 	/*
-	 * Muestra la estructura del árbol de editoriales como texto plano
+	 * PRE: int parametro ('a'|'e'|'t'|'p')
+	 * POS: Muestra la estructura del indice correspondiente segun el parametro recibido
+	 * como texto plano
 	 * */
-	void verArbolEditorial();
+	void verEstructura(int parametro);
 
-	/*
-	 * Muestra la estructura del árbol de autores como texto plano
-	 * */
-	void verArbolAutor();
-
-	/*
-	 * Muestra la estructura del hash de títulos como texto plano
-	 * */
-	void verHashTitulo();
-
-	/*
-	 * Muestra la estructura del hash de palabras como texto plano
-	 * */
-	void verHashPalabras();
 
 	virtual ~HandlerComandos();
 
