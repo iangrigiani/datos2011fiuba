@@ -40,6 +40,7 @@ void FrontCoding::obtenerOffset(string primerPalabraNodo){
 }
 
 void FrontCoding::aplicarFrontCoding(string primerPalabraNodo , string palabra){
+	this->igual = this->distinto = 0;
 	obtenerOffset(primerPalabraNodo);
 	if(primerPalabraNodo == palabra){
 		this->cadena = "";
