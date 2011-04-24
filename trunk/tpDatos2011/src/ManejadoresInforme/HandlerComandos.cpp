@@ -5,7 +5,9 @@ HandlerComandos::HandlerComandos() {
 	this-> handler 			= new HandlerArchivoRLV();
 	this-> parser 			= new ParserDeLibros();
 	this-> log 				= new HandlerArchivoLog();
-
+	fstream ff ;
+	ff.open(PATH_ARCHIVO_LOG, ios_base::out);
+	ff.close();
 /*	this-> arbol_autores     = new ArbolBMas();
 	this-> arbol_editoriales = new ArbolBMas();
 	this-> hash_titulos		 = new Hash();
@@ -43,8 +45,42 @@ void HandlerComandos::indexar(int parametro){
 	// Para cada offset segun que parametro recibi inserto.
 	while ( it != listaDeIds.end()){
 	    switch (parametro){
-	        case 'a':{	insertarEnArbol (1, (*it));	break;}
-	        case 'e':{	insertarEnArbol (2, (*it));	break;}
+	        case 'a':{
+	        	fstream ff ;
+	        	ff.open(PATH_CONFIGURACION_AUTORES, ios_base::out);
+	        	ff.close();
+	        	ff.open(PATH_NODOS, ios_base::out);
+	        	ff.close();
+	        	ff.open(PATH_FRONT_CODING, ios_base::out);
+	        	ff.close();
+	        	ff.open(PATH_ARBOL, ios_base::out);
+	        	ff.close();
+	        	ff.open(PATH_ESPACIO_LIBRE_RLV, ios_base::out);
+	        	ff.close();
+	        	ff.open(PATH_REG_LONG_VARIABLE, ios_base::out);
+	        	ff.close();
+	        	ff.open(PATH_STOPWORDS, ios_base::out);
+	        	ff.close();
+	        	insertarEnArbol (1, (*it));	break;}
+
+	        case 'e':{
+	        	fstream ff ;
+	        	ff.open(PATH_CONFIGURACION_EDITORIAL, ios_base::out);
+	        	ff.close();
+	        	ff.open(PATH_NODOS, ios_base::out);
+	        	ff.close();
+	        	ff.open(PATH_FRONT_CODING, ios_base::out);
+	        	ff.close();
+	        	ff.open(PATH_ARBOL, ios_base::out);
+	        	ff.close();
+	        	ff.open(PATH_ESPACIO_LIBRE_RLV, ios_base::out);
+	        	ff.close();
+	        	ff.open(PATH_REG_LONG_VARIABLE, ios_base::out);
+	        	ff.close();
+	        	ff.open(PATH_STOPWORDS, ios_base::out);
+	        	ff.close();
+	        	insertarEnArbol (2, (*it));	break;}
+
 	        case 't':{ // TODO HASH
 	        	break;}
 	        case 'p':{ // TODO HASH

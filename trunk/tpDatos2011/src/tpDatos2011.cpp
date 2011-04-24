@@ -17,9 +17,9 @@ using namespace std;
 
 void llenarArbol(ArbolBMas* a){
 		int i = 0;
-		while (i < 560){
+		while (i < 50){
 			stringstream ss;
-			ss << i;
+			ss << "casa" << i;
 			string s = ss.str();
 			a->insertar(new Elementos(new Clave(s), 0));
 			cout << "Inserte Elemento: " << i << endl;
@@ -31,25 +31,19 @@ void llenarArbol(ArbolBMas* a){
 void limpiarArchivos(){
 	fstream ff ;
 	ff.open(PATH_CONFIGURACION_AUTORES, ios_base::out);
-	ff.clear();
-	ff.flush();
 	ff.close();
 
 	ff.open(PATH_CONFIGURACION_EDITORIAL, ios_base::out);
-	ff.clear();
-	ff.flush();
 	ff.close();
 
 	ff.open(PATH_NODOS, ios_base::out);
-	ff.clear();
-	ff.flush();
 	ff.close();
 
 	ff.open(PATH_FRONT_CODING, ios_base::out);
-	ff.clear();
-	ff.flush();
 	ff.close();
 
+	ff.open(PATH_ARBOL, ios_base::out);
+	ff.close();
 }
 
 void borrarNodos(ArbolBMas *a){
@@ -160,10 +154,9 @@ int main() {
 //	delete(e3);
 //
 	limpiarArchivos();
-	ArbolBMas* a = new ArbolBMas(1, PATH_NODOS, 20);
+	ArbolBMas* a = new ArbolBMas(1, PATH_ARBOL, 20);
 
 	llenarArbol(a);
-
 	//borrarNodos(a);
 
 

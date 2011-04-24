@@ -4,7 +4,6 @@ FrontCoding::FrontCoding(){
 	this->cadena = "";
 	this->distinto = 0;
 	this->igual = 0;
-
 }
 
 FrontCoding::~FrontCoding() {

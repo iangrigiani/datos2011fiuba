@@ -1,10 +1,10 @@
 #include "HandlerDeBloques.h"
 
 HandlerDeBloques::HandlerDeBloques() {
+
 }
 
 HandlerDeBloques::HandlerDeBloques(string path){
-	fstream ff ;
 	this->path = path;
 }
 
