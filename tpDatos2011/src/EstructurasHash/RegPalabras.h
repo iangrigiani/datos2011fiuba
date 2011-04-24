@@ -5,49 +5,45 @@
  *      Author: angeles
  */
 
-#ifndef REG_H_
-#define REG_H_
+#ifndef REGPALABRAS_H_
+#define REGPALABRAS_H_
 
 #include <list>
-#include "../ModuloDePersistencia/Serializable.h"
-#include "../ModuloDePersistencia/Persistencia.h"
+#include "Reg.h"
 
 using namespace std;
 
-class Reg: public Serializable {
+class RegPalabras: public Reg {
 
 private:
 
-	int clave;
 	int bloque_sig;
 	list < int > offsets;
 
 public:
 
-	Reg();
-	Reg(int clave);
-	virtual ~Reg() {};
+	RegPalabras() : Reg(),bloque_sig(-1) {}
+	RegPalabras(int clave): Reg(clave),bloque_sig(-1){}
+	virtual ~RegPalabras() {};
 
-	void set_clave(int clave);
-	int get_clave() const { return this->clave; }
+	int get_tam() const;
 
 	void set_bloque_sig(int bloque_sig);
 	int get_bloque_sig() const { return this->bloque_sig; }
 
-	int get_tam() const;
-
+	void set_offsets(list < int > & offsets);
 	list < int > get_offsets() const { return this->offsets; }
 
-	void agregar_nuevo_offset(int offset);
+	void agregar_nuevos_offsets(list < int > & offsets);
 	bool eliminar_offset(int offset);
-
-	void incorporar_offsets(list < int > offsets);
 
 	void serializar(char* buffer, unsigned int& offset);
 	void hidratar(char* buffer, unsigned int& offset);
 
 	void toString();
 
+	void agregar_nuevo_offset(int offset);
+
 };
 
-#endif /* REG_H_ */
+#endif /* REGPALABRAS_H_ */

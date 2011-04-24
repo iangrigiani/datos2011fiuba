@@ -12,7 +12,7 @@ HandlerTabla::HandlerTabla() {
 	string s;
 	stringstream ss;
 
-	arch.open(NOM_ARCH_TABLA);
+	arch.open(this->ruta_arch_tabla.c_str());
 	getline(arch, s, '|');
 	arch.close();
 
@@ -25,7 +25,7 @@ bool HandlerTabla::tabla_vacia() {
 	string s;
 	stringstream ss;
 
-	arch.open(NOM_ARCH_TABLA);
+	arch.open(this->ruta_arch_tabla.c_str());
 	getline(arch, s, '|');
 	arch.close();
 
@@ -44,7 +44,7 @@ void HandlerTabla::crear_tabla_inicial(int num_bloque) {
 
 	this->tam_tabla = 1;
 
-	arch.open(NOM_ARCH_TABLA, fstream::in | fstream::out);
+	arch.open(this->ruta_arch_tabla.c_str(), fstream::in | fstream::out);
 
 	arch.width(8);
 	arch << hex << this->tam_tabla << '|';
@@ -59,7 +59,7 @@ void HandlerTabla::duplicar_tabla() {
 	long pos;
 	int contador = 0;
 
-	arch.open(NOM_ARCH_TABLA, fstream::in | fstream::out);
+	arch.open(this->ruta_arch_tabla.c_str(), fstream::in | fstream::out);
 
 	getline(arch, s, '|');
 
@@ -87,8 +87,8 @@ void HandlerTabla::truncar_tabla() {
 	string s;
 	int contador = 0;
 
-	arch.open(NOM_ARCH_TABLA);
-	arch_aux.open(NOM_ARCH_TEMP);
+	arch.open(this->ruta_arch_tabla.c_str());
+	arch_aux.open(this->ruta_arch_temporal.c_str());
 
 	this->tam_tabla /= 2;
 	if (this->tam_tabla < 0)
@@ -107,8 +107,11 @@ void HandlerTabla::truncar_tabla() {
 	arch.close();
 	arch_aux.close();
 
-	remove(NOM_ARCH_TABLA);
-	rename(NOM_ARCH_TEMP, NOM_ARCH_TABLA);
+	remove(this->ruta_arch_tabla.c_str());
+
+
+	rename(this->ruta_arch_temporal.c_str(), this->ruta_arch_tabla.c_str());
+
 }
 
 bool HandlerTabla::mitades_iguales() const {
@@ -118,7 +121,7 @@ bool HandlerTabla::mitades_iguales() const {
 	int contador = 0;
 	bool igual = true;
 
-	arch.open(NOM_ARCH_TABLA, fstream::in);
+	arch.open(this->ruta_arch_tabla.c_str(), fstream::in);
 
 	getline(arch, s, '|');
 	pos_1 = arch.tellp();
@@ -157,7 +160,7 @@ int HandlerTabla::get_num_bloque(int clave, int& pos_tabla) const {
 	int num_bloque;
 	int contador = 0;
 
-	arch.open(NOM_ARCH_TABLA);
+	arch.open(this->ruta_arch_tabla.c_str());
 
 	getline(arch, s, '|');
 
@@ -172,31 +175,6 @@ int HandlerTabla::get_num_bloque(int clave, int& pos_tabla) const {
 	return num_bloque;
 }
 
-list < Reg > HandlerTabla::actualizar_regs(int num_bloque, Cubo& bloque) {
-	list < Reg > ::iterator it;
-	list < Reg > list_aux;
-	Reg reg_desact;
-	int pos_tabla;
-	unsigned int tam_regs;
-	unsigned int contador = 0;
-
-	tam_regs = bloque.get_regs().size();
-	it = bloque.get_regs().begin();
-
-	while (contador != tam_regs) {
-		if (num_bloque != this->get_num_bloque((*it).get_clave(), pos_tabla)) {
-			reg_desact = *it;
-			it = bloque.get_regs().erase(it);
-			bloque.aumentar_esp_libre(reg_desact.get_tam());
-			list_aux.push_back(reg_desact);
-		}
-		else ++ it;
-		++ contador;
-	}
-
-	return list_aux;
-}
-
 void HandlerTabla::reemplazar_referencia(int num_bloque_a_reemplazar, int num_nuevo_bloque) {
 	ifstream arch;
 	ofstream arch_aux;
@@ -205,8 +183,8 @@ void HandlerTabla::reemplazar_referencia(int num_bloque_a_reemplazar, int num_nu
 	bool encontrado = false;
 	int contador = 0;
 
-	arch.open(NOM_ARCH_TABLA);
-	arch_aux.open(NOM_ARCH_TEMP);
+	arch.open(this->ruta_arch_tabla.c_str());
+	arch_aux.open(this->ruta_arch_temporal.c_str());
 
 	arch_aux.width(8);
 	arch_aux << hex << this->tam_tabla << '|';
@@ -234,11 +212,53 @@ void HandlerTabla::reemplazar_referencia(int num_bloque_a_reemplazar, int num_nu
 	arch.close();
 	arch_aux.close();
 
-	remove(NOM_ARCH_TABLA);
-	rename(NOM_ARCH_TEMP, NOM_ARCH_TABLA);
+	remove(this->ruta_arch_tabla.c_str());
+	rename(this->ruta_arch_temporal.c_str(),this->ruta_arch_tabla.c_str());
 }
 
-void HandlerTabla::reemplazar_referencias(int pos_inicial, int num_nuevo_bloque, const Cubo& nuevo_bloque) {
+void HandlerTabla::reemplazar_referencias(int pos_inicial, int num_nuevo_bloque, const Bloque& nuevo_bloque) {
+	ifstream arch;
+	ofstream arch_aux;
+	string s;
+	int pos_aux, pos;
+	int contador = 0;
+	int dist_salto = nuevo_bloque.get_tam_disp();
+
+	arch.open(this->ruta_arch_tabla.c_str());
+	arch_aux.open(this->ruta_arch_temporal.c_str());
+
+	arch_aux.width(8);
+	arch_aux << hex << this->tam_tabla << '|';
+
+	getline(arch, s, '|');
+
+	pos = pos_inicial;
+	pos_aux = pos_inicial - dist_salto;
+	while (pos_aux >= 0) {
+		pos = pos_aux;
+		pos_aux = pos - dist_salto;
+	}
+
+	while (contador != this->tam_tabla) {
+		arch >> s;
+		if (contador == pos) {
+			arch_aux << ' ' << dec << num_nuevo_bloque;
+			pos += dist_salto;
+		}
+		else arch_aux << ' ' << s;
+		++ contador;
+	}
+
+	arch.close();
+	arch_aux.close();
+
+	remove(this->ruta_arch_tabla.c_str());
+
+	rename(this->ruta_arch_temporal.c_str(), this->ruta_arch_tabla.c_str());
+
+}
+/*
+void HandlerTabla::reemplazar_referencias(int pos_inicial, int num_nuevo_bloque, const Bloque& nuevo_bloque) {
 	ifstream arch;
 	ofstream arch_aux;
 	string s;
@@ -272,14 +292,14 @@ void HandlerTabla::reemplazar_referencias(int pos_inicial, int num_nuevo_bloque,
 	remove(NOM_ARCH_TABLA);
 	rename(NOM_ARCH_TEMP, NOM_ARCH_TABLA);
 }
-
-int HandlerTabla::puedo_liberar_bloque(const Cubo& bloque_a_liberar, int pos_actual) const {
+*/
+int HandlerTabla::puedo_liberar_bloque(const Bloque& bloque_a_liberar, int pos_actual) const {
 	ifstream arch;
 	string s;
 	int bloque_anterior, bloque_siguiente, pos_anterior, pos_siguiente;
 	int contador = 0;
 
-	arch.open(NOM_ARCH_TABLA);
+	arch.open(this->ruta_arch_tabla.c_str());
 
 	getline(arch, s, '|');
 
@@ -326,6 +346,18 @@ int HandlerTabla::puedo_liberar_bloque(const Cubo& bloque_a_liberar, int pos_act
 }
 
 void HandlerTabla::liberar_referencias(int pos_inicial, int num_bloque_por_reemplazar,
-		const Cubo& bloque_por_reemplazar) {
+		const Bloque& bloque_por_reemplazar) {
 	this->reemplazar_referencias(pos_inicial, num_bloque_por_reemplazar, bloque_por_reemplazar);
 }
+
+void HandlerTabla::set_ruta_arch_tabla(const string& ruta_arch_tabla)
+{
+	this->ruta_arch_tabla = ruta_arch_tabla;
+}
+
+void HandlerTabla::set_ruta_arch_temporal(const string& ruta_arch_temporal)
+{
+	this->ruta_arch_temporal = ruta_arch_temporal;
+}
+
+
