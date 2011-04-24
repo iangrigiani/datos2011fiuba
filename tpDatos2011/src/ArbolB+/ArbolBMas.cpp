@@ -15,7 +15,6 @@ ArbolBMas::ArbolBMas(int tipo, string ruta_archivo, int tamanioMaximoClave){
 		this->cantidadNodos = 0;
 	}
 	hidratarDatosConfiguracion();
-	this->frontCoding = new FrontCoding();
 }
 
 void ArbolBMas::inicializarPersistores(){
@@ -35,7 +34,6 @@ ArbolBMas::~ArbolBMas(){
 	if	(raiz){
 		liberarMemoriaNodo(raiz);
 	}
-	delete this->frontCoding;
 	delete this->escritor_Nodos;
 	delete this->recuperador_Nodos;
 	delete this->escritor_Datos_Configuracion;
@@ -171,14 +169,19 @@ bool ArbolBMas::insertarRecursivamente(Nodo* nodoCorriente, Clave& clave, Elemen
 			i--;
 		}
 
+		dato->transformarAFrontCoding(nodoHojaCorriente->datos[0].getClave()->getClave());
 		nodoHojaCorriente->datos[i + 1] = *dato;
 		nodoHojaCorriente->claves[i + 1] = clave;
 		nodoHojaCorriente->cantidadClaves++;
 		nodoHojaCorriente->espacioOcupado += dato->getTamanio() + clave.getTamanio() + TAM_CONTROL_REGISTRO;
+//		nodoHojaCorriente->datos[0].sacarElFrontCoding(nodoHojaCorriente->datos[0].getClave()->getClave());
 		if (nodoHojaCorriente->isOverflow(maxTamanioClave)) {
 
 			dividirNodoHoja(nodoHojaCorriente, clavePromocion, nuevoNodo);
-
+//
+//			if (nuevoNodo){
+//				static_cast<NodoHoja*> (*nuevoNodo)->datos[0].sacarElFrontCoding(static_cast<NodoHoja*> (*nuevoNodo)->datos[0].getClave()->getClave());
+//			}
 			if (posicion >= nodoHojaCorriente->cantidadClaves) {
 				posicion -= nodoHojaCorriente->cantidadClaves;
 				nodoHojaCorriente = static_cast<NodoHoja*> (*nuevoNodo);
@@ -206,7 +209,21 @@ int ArbolBMas::obtenerNumeroNodo(){
 }
 
 void ArbolBMas::persistirNodo(Nodo* nodo){
+//	if (nodo->nivel == 0){
+//		aplicarFrontCoding(static_cast<NodoHoja*>(nodo));
+//	}
 	escritor_Nodos->ActualizarArchivoNodo(nodo, nodo->getNumero());
+}
+
+void ArbolBMas::aplicarFrontCoding(NodoHoja* nodo){
+	if (nodo->nivel == 0){
+		if (nodo->cantidadClaves > 1){
+			string primera = nodo->datos[0].getClave()->getClave();
+			for (int i = 1; i < nodo->cantidadClaves ; i++){
+				nodo->datos[i].transformarAFrontCoding(primera);
+			}
+		}
+	}
 }
 
 Nodo* ArbolBMas::hidratarNodo(int nroNodo){
@@ -321,7 +338,7 @@ void ArbolBMas::toString(Nodo* nodoAmostrar, int tab){
 			for(int i=0 ; i<tab ; i++) cout << "  ";
 			for (int posicion = 0; posicion < nodo->cantidadClaves; ++posicion){
 				cout << "(";
-				Clave clave = (*nodo->datos[posicion].getClave());
+				Clave clave = (*nodo->datos[posicion].getClaveFC());
 				cout << clave.getClave();
 				cout << ")";
 			}

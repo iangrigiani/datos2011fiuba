@@ -17,7 +17,7 @@ using namespace std;
 
 void llenarArbol(ArbolBMas* a){
 		int i = 0;
-		while (i < 60){
+		while (i < 560){
 			stringstream ss;
 			ss << i;
 			string s = ss.str();
@@ -28,7 +28,29 @@ void llenarArbol(ArbolBMas* a){
 
 		a->MostrarArbol();
 }
+void limpiarArchivos(){
+	fstream ff ;
+	ff.open(PATH_CONFIGURACION_AUTORES, ios_base::out);
+	ff.clear();
+	ff.flush();
+	ff.close();
 
+	ff.open(PATH_CONFIGURACION_EDITORIAL, ios_base::out);
+	ff.clear();
+	ff.flush();
+	ff.close();
+
+	ff.open(PATH_NODOS, ios_base::out);
+	ff.clear();
+	ff.flush();
+	ff.close();
+
+	ff.open(PATH_FRONT_CODING, ios_base::out);
+	ff.clear();
+	ff.flush();
+	ff.close();
+
+}
 
 void borrarNodos(ArbolBMas *a){
 
@@ -137,6 +159,7 @@ int main() {
 //	delete(e2);
 //	delete(e3);
 //
+	limpiarArchivos();
 	ArbolBMas* a = new ArbolBMas(1, PATH_NODOS, 20);
 
 	llenarArbol(a);
