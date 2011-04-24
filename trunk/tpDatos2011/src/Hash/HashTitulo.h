@@ -26,10 +26,6 @@ public:
 
 	virtual ~HashTitulo() {};
 
-	const HandlerTabla& get_handler_tabla() const { return this->handler_tabla; }
-
-	HandlerBloques& get_handler_bloques() { return this->handler_bloques; }
-
 	void crear_condiciones_iniciales();
 
 	void insertar_reg(const RegTitulo& reg);
