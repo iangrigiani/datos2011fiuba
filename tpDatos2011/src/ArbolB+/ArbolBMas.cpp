@@ -18,9 +18,9 @@ ArbolBMas::ArbolBMas(int tipo, string ruta_archivo, int tamanioMaximoClave){
 }
 
 void ArbolBMas::inicializarPersistores(){
+	this->recuperador_Nodos = new RecuperadorNodos(PATH_NODOS);
+	this->escritor_Nodos = new EscritorNodo(PATH_NODOS);
 
-	this->recuperador_Nodos = new RecuperadorNodos(this->path);
-	this->escritor_Nodos = new EscritorNodo(this->path);
 	if(this->tipo == 1){
 		this->escritor_Datos_Configuracion = new EscritorNodosLibres(PATH_CONFIGURACION_AUTORES);
 		this->recuperador_Datos_Configuracion = new RecuperadorNodosLibres(PATH_CONFIGURACION_AUTORES);
@@ -317,47 +317,73 @@ void ArbolBMas::dividirNodoHoja(NodoHoja* unNodoHoja, Clave* clavePromocion, Nod
 }
 
 void ArbolBMas::MostrarArbol (Nodo* nodo){
-	if (nodo){
-		toString(nodo,1);
+	ofstream fo;
+	fo.open(PATH_ARBOL, ios_base::app);
+	fo << "---------------------------------" << endl << endl;
+	if (this->tipo == 1){
+		fo << "-      ARBOL B+ DE AUTORES      -" << endl << endl;
+		fo << "Tamanio de Nodo:  " << TAM_TOTAL_NODO << "Bytes" << endl;
+		fo << "Primer Hoja, Nodo N°:  " << primeraHoja << endl;
 	}
+	if (nodo){
+		toString(nodo,1, fo);
+	}
+	fo.flush();
+	fo.close();
 }
 void ArbolBMas::MostrarArbol (){
-	if (this->raiz){
-		toString(this->raiz,1);
+	ofstream fo;
+	fo.open(PATH_ARBOL, ios_base::app);
+	fo << "*********************************************************************" << endl << endl;
+	if (this->tipo == 1){
+	fo << "*                       ARBOL B+ DE AUTORES                         *" << endl << endl;
+	fo << "*********************************************************************" << endl << endl;
+	fo << "Tamanio de Nodo:  " << TAM_TOTAL_NODO << endl;
+		fo << "Primer Hoja:  " << primeraHoja << endl;
 	}
+	fo << "---------------------------------------------------------------------" << endl << endl;
+	if (this->raiz){
+		toString(this->raiz,1, fo);
+	}
+	fo.flush();
+	fo.close();
 }
 
-void ArbolBMas::toString(Nodo* nodoAmostrar, int tab){
+void ArbolBMas::toString(Nodo* nodoAmostrar, int tab, ofstream& fo){
+
 	if(nodoAmostrar){
 		if (nodoAmostrar->isNodoHoja()) {
 			NodoHoja *nodo = static_cast<NodoHoja*> (nodoAmostrar);
-			for(int i=0 ; i<tab ; i++) cout << "  ";
-				cout   << "Numero: " << nodo->numero <<  "  Nivel: " << nodo->nivel << "  Cant.Elem: " << nodo->cantidadClaves
+			for(int i=0 ; i<tab ; i++) fo << "  ";
+				fo   << "Numero: " << nodo->numero <<  "  Nivel: " << nodo->nivel << "  Cant.Elem: " << nodo->cantidadClaves
 				<< " Esp.Libre: " << TAM_EFECTIVO_NODO - nodo->espacioOcupado << "  Hoja.Sig: " << nodo->hojaSiguiente << "    " << endl;
 
-			for(int i=0 ; i<tab ; i++) cout << "  ";
+			for(int i=0 ; i<tab ; i++) fo << "  ";
 			for (int posicion = 0; posicion < nodo->cantidadClaves; ++posicion){
-				cout << "(";
-				Clave clave = (*nodo->datos[posicion].getClaveFC());
-				cout << clave.getClave();
-				cout << ")";
+				fo << "(";
+				Clave clave = (*nodo->datos[posicion].getClave());
+				fo << clave.getClave();
+				fo << "  ,  " ;
+				Clave clave2 = (*nodo->datos[posicion].getClaveFC());
+				fo << clave2.getClave();
+				fo << ")";
 			}
-			cout << endl;
+			fo << endl;
 		} else {
 			NodoInterior *nodoInt= static_cast<NodoInterior*> (nodoAmostrar);
-			cout << endl;
+			fo << endl;
 			for(int i=0; i<tab ; i++)
-				cout << "  ";
-			cout << "Numero: " << nodoInt->numero << "  Primer Hoja: " << nodoInt->hijos[0] << "  Nivel: " << nodoInt->nivel << "  Cant.Elem: " << nodoInt->cantidadClaves
+				fo << "  ";
+			fo << "Numero: " << nodoInt->numero << "  Nivel: " << nodoInt->nivel << "  Cant.Elem: " << nodoInt->cantidadClaves
 					<< "  Esp.Libre: " << TAM_EFECTIVO_NODO - nodoInt->espacioOcupado << "  Claves: (";
 			for (int posicion = 0; posicion <= nodoInt->cantidadClaves; ++posicion) {
 				if (posicion < nodoInt->cantidadClaves) {
 					Clave clave = nodoInt->claves[posicion];
-					cout << clave.getClave();
+					fo << clave.getClave();
 					if (posicion == nodoInt->cantidadClaves-1){
-						cout << ")" << endl;
+						fo << ")" << endl;
 					}else{
-						cout << "," ;
+						fo << "," ;
 					}
 				}
 			}
@@ -367,11 +393,11 @@ void ArbolBMas::toString(Nodo* nodoAmostrar, int tab){
 
 				hijos = nodoInt->getHijos();
 				hijo = hidratarNodo(hijos[posicion]);
-				toString(hijo, tab+2);
+				toString(hijo, tab+2, fo);
 				if (hijo)
 					liberarMemoriaNodo(hijo);
 			}
-			cout << endl;
+			fo << endl;
 		}
 	}
 }

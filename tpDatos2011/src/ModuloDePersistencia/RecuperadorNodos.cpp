@@ -2,7 +2,6 @@
 
 
 RecuperadorNodos::RecuperadorNodos() {
-
 }
 
 RecuperadorNodos::RecuperadorNodos (std::string path){

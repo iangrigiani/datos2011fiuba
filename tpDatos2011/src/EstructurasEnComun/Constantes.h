@@ -21,6 +21,7 @@
 #define BUFFER_NODOS_LIBRES 128
 #define TAM_CONTROL_REGISTRO 5
 #define PATH_REG_LONG_VARIABLE "ArchivoDeRLV.txt"
+#define PATH_ARBOL "Arbol.txt"
 #define PATH_ESPACIO_LIBRE_RLV "controlEspaciosLibresRLV.txt"
 #define PATH_STOPWORDS "stopWords.txt"
 #define PATH_FRONT_CODING "frontCoding.txt"

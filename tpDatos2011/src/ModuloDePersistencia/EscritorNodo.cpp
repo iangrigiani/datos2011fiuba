@@ -5,7 +5,6 @@ EscritorNodo::EscritorNodo() {
 }
 
 EscritorNodo::EscritorNodo(std::string path){
-
 	this->path  = path;
 	this->handler = new HandlerDeBloques(this->path);
 }

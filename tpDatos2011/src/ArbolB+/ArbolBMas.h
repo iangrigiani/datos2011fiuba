@@ -179,7 +179,7 @@ private:
 	int obtenerNumeroNodo();
 	bool insertarRecursivamente(Nodo* nodoCorriente, Clave& claveNum, Elementos* dato, Clave* clavePromocion, Nodo** nuevoNodo);
 	void persistirNodo(Nodo* nodo);
-	void toString(Nodo* nodo, int tab);
+	void toString(Nodo* nodo, int tab, ofstream& fo);
 	void liberarMemoriaNodo(Nodo* nodo);
 	int obtenerPosicion(Nodo *unNodo, Clave clave);
 	Nodo* hidratarNodo(int nroNodo);
