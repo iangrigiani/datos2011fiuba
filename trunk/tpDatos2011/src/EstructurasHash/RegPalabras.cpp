@@ -5,29 +5,28 @@
  *      Author: angeles
  */
 
-#include "Reg.h"
+#include "RegPalabras.h"
 
-Reg::Reg() : clave(-1), bloque_sig(-1) {}
 
-Reg::Reg(int clave) : clave(clave), bloque_sig(-1) {}
-
-void Reg::set_clave(int clave) {
-	this->clave = clave;
-}
-
-void Reg::set_bloque_sig(int bloque_sig) {
-	this->bloque_sig = bloque_sig;
-}
-
-int Reg::get_tam() const {
+int RegPalabras::get_tam() const {
 	return (sizeof(int) + sizeof(int) + this->offsets.size() * sizeof(int));
 }
 
-void Reg::agregar_nuevo_offset(int offset) {
-	this->offsets.push_back(offset);
+void RegPalabras::set_bloque_sig(int bloque_sig) {
+	this->bloque_sig = bloque_sig;
 }
 
-bool Reg::eliminar_offset(int offset) {
+void RegPalabras::set_offsets(list < int > & offsets) {
+	this->offsets = offsets;
+}
+
+void RegPalabras::agregar_nuevos_offsets(list < int > & offsets) {
+	list < int > ::iterator it;
+	for (it = offsets.begin(); it != offsets.end(); ++ it)
+		this->offsets.push_back(*it);
+}
+
+bool RegPalabras::eliminar_offset(int offset) {
 	list < int > ::iterator it;
 
 	it = this->offsets.begin();
@@ -41,14 +40,7 @@ bool Reg::eliminar_offset(int offset) {
 	return false;
 }
 
-void Reg::incorporar_offsets(list < int > offsets) {
-	list < int > ::iterator it;
-
-	for (it = offsets.begin(); it != offsets.end(); ++ it)
-		this->offsets.push_back(*it);
-}
-
-void Reg::serializar(char* buffer, unsigned int& offset) {
+void RegPalabras::serializar(char* buffer, unsigned int& offset) {
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->clave);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->bloque_sig);
 
@@ -58,7 +50,7 @@ void Reg::serializar(char* buffer, unsigned int& offset) {
 		Persistencia::PonerEnteroEnChar(buffer, offset, (*it));
 }
 
-void Reg::hidratar(char* buffer, unsigned int& offset) {
+void RegPalabras::hidratar(char* buffer, unsigned int& offset) {
 	this->clave = Persistencia::getEnteroDesdeBuffer(buffer, offset);
 	this->bloque_sig = Persistencia::getEnteroDesdeBuffer(buffer, offset);
 
@@ -67,7 +59,7 @@ void Reg::hidratar(char* buffer, unsigned int& offset) {
 		this->offsets.push_back(Persistencia::getEnteroDesdeBuffer(buffer,offset));
 }
 
-void Reg::toString() {
+void RegPalabras::toString() {
 	cout << " Registro --> " << endl;
 	cout << " Clave:   " << this->clave << endl;
 	cout << " Bloque siguiente:   " << this->bloque_sig << endl;
@@ -80,4 +72,8 @@ void Reg::toString() {
 		++ i;
 	}
 */
+}
+
+void RegPalabras::agregar_nuevo_offset(int offset) {
+	this->offsets.push_back(offset);
 }
