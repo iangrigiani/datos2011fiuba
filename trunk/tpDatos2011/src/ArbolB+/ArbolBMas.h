@@ -14,7 +14,6 @@
 #include "../ModuloDePersistencia/EscritorNodo.h"
 #include "../ModuloDePersistencia/RecuperadorNodos.h"
 #include "../ModuloDePersistencia/RecuperadorNodosLibres.h"
-#include "FrontCoding.h"
 
 #include <fstream>
 #include <vector>
@@ -40,7 +39,6 @@ private:
 
 	int tipo;
 	int primeraHoja;
-	FrontCoding* frontCoding;
 	RecuperadorNodos* recuperador_Nodos;
 	EscritorNodo* escritor_Nodos;
 	RecuperadorNodosLibres* recuperador_Datos_Configuracion;
@@ -183,6 +181,7 @@ private:
 	void persistirNodo(Nodo* nodo);
 	void toString(Nodo* nodo, int tab);
 	void liberarMemoriaNodo(Nodo* nodo);
+	void aplicarFrontCoding(NodoHoja* nodo);
 	int obtenerPosicion(Nodo *unNodo, Clave clave);
 	Nodo* hidratarNodo(int nroNodo);
 	void dividirNodoInterior(NodoInterior* unNodoInterior, Clave* clavePromocion, Nodo** nuevoNodoInterior, int nuevaPosicion);
