@@ -9,7 +9,7 @@
 #define HASHTITULO_H_
 
 #define NOM_ARCH_REGS_FIJOS "RegsFijosHash"
-#define NOM_ARCH_ESP_LIBRE "EspLibreHash"
+
 
 #include "Hash.h"
 #include "../EstructurasHash/Ranura.h"
