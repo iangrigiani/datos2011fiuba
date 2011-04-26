@@ -8,22 +8,12 @@ HandlerComandos::HandlerComandos() {
 	fstream ff ;
 	ff.open(PATH_ARCHIVO_LOG, ios_base::out);
 	ff.close();
-/*	this-> arbol_autores     = new ArbolBMas();
-	this-> arbol_editoriales = new ArbolBMas();
-	this-> hash_titulos		 = new Hash();
-	this-> hash_palabras	 = new Hash();*/
-
 }
 
 HandlerComandos::~HandlerComandos() {
 	delete this-> parser;
 	delete this-> handler;
 	delete this-> log;
-
-/*	delete this-> arbol_autores    	= new ArbolBMas();
-	delete this-> arbol_editoriales	= new ArbolBMas();
-	delete this-> hash_titulos		= new Hash();
-	delete this-> hash_palabras		= new Hash();*/
 }
 
 void HandlerComandos::guardarLibroEnArchivoMaestro(const string& path_nuevo_libro){
@@ -39,7 +29,7 @@ void HandlerComandos::indexar(int parametro){
 	// En esta lista obtengo los offset de todos los archivos que debo indexar.
 	list<int> listaDeIds;
 	// Obtengo todos los offsets
-	obtenerListaIDs(parametro, listaDeIds);
+	this->log->obtenerListaIDsAIndexar(parametro,listaDeIds);
 	list<int>::iterator it = listaDeIds.begin();
 
 	// Para cada offset segun que parametro recibi inserto.
@@ -61,7 +51,8 @@ void HandlerComandos::indexar(int parametro){
 	        	ff.close();
 	        	ff.open(PATH_STOPWORDS, ios_base::out);
 	        	ff.close();
-	        	insertarEnArbol (1, (*it));	break;}
+	        	insertarEnArbol (1, (*it));
+	        	this->log->setearIndexado(*it,'a');break;}
 
 	        case 'e':{
 	        	fstream ff ;
@@ -79,16 +70,20 @@ void HandlerComandos::indexar(int parametro){
 	        	ff.close();
 	        	ff.open(PATH_STOPWORDS, ios_base::out);
 	        	ff.close();
-	        	insertarEnArbol (2, (*it));	break;}
+	        	insertarEnArbol (2, (*it));
+	        	this->log->setearIndexado(*it,'e'); break;}
 
 	        case 't':{ // TODO HASH
-	        	break;}
+
+	        	this->log->setearIndexado(*it,'t'); break;}
 	        case 'p':{ // TODO HASH
-	        	break;}
+	        	this->log->setearIndexado(*it,'p'); break;}
 	    }
 		++it;
 	}
 }
+
+
 void HandlerComandos::insertarEnArbol (int tipoArbol, int offset){
 	ArbolBMas* arbol = new ArbolBMas(tipoArbol, PATH_NODOS, 20);
 	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
@@ -96,82 +91,48 @@ void HandlerComandos::insertarEnArbol (int tipoArbol, int offset){
 	if (tipoArbol == 1){
 		Elementos* elemento = new Elementos(new Clave(reg->getAutor()), offset);
 		if(elemento->getTamanio() > (TAM_EFECTIVO_NODO * PORC_TAMANIO_NODO / 100) ){
-			cout<<"Elemento demasiado grande"<<endl;
+			cout<<"Elemento demasiado grande.\n"<<endl;
 		}else{
 			if(arbol->insertar(elemento))
-				cout<<"Elemento Insertado"<<endl;
+				cout<<"ID:"<<offset<<".Libro indexado por autor.\n"<<endl;
 		}
 		delete elemento;
 	}else{
 		Elementos* elemento2 = new Elementos(new Clave(reg->getEditorial()), offset);
 		if(elemento2->getTamanio() > (TAM_EFECTIVO_NODO * PORC_TAMANIO_NODO / 100) ){
-			cout<<"Elemento demasiado grande"<<endl;
+			cout<<"Elemento demasiado grande.\n"<<endl;
 		}else{
 			if(arbol->insertar(elemento2))
-				cout<<"Elemento Insertado"<<endl;
-		}
+				cout<<"ID:"<<offset<<".Libro indexado por editorial.\n"<<endl;
 		delete elemento2;
+		}
 	}
 	delete reg;
 	delete arbol;
 }
 
 
-void HandlerComandos::obtenerListaIDs (int parametro,list<int>& listaDeIds){
-	fstream archivoLog;
-    int IDActual = 0, ind1=0 , ind2=0, ind3=0, ind4=0;
-    string cad;
-    char* cadena = (char*)calloc(100, sizeof(char));
-	bool indexado = false;
-	archivoLog.open(PATH_ARCHIVO_LOG, std::ios_base::in | std::ios_base::out);
-	archivoLog.seekg(0);
-	while (!archivoLog.eof() ){
-		archivoLog.getline (cadena, 100);
-		cad = cadena;
-		if (cad.length() > 0 ) {
-			IDActual = atoi(strtok(cadena,"|"));
-		    ind1 = atoi ( strtok(NULL,"|") );
-		    ind2 = atoi ( strtok(NULL,"|") );
-		    ind3 = atoi ( strtok(NULL,"|") );
-		    ind4 = atoi ( strtok(NULL,"\n") );
-		    switch (parametro){
-		        case 'a':{
-		        	if (ind1 == 1)
-		        		indexado = true;
-		        	break;}
-		        case 'e':{
-		        	if (ind2 == 1)
-		        		indexado = true;
-		        	break;}
-		        case 't':{
-		        	if (ind3 == 1)
-		        		indexado = true;
-		        	break;}
-		        case 'p':{
-		        	if (ind4 == 1)
-		        		indexado = true;
-		        	break;}
-		    }
-			if (!indexado){
-				listaDeIds.push_back(IDActual);
-			}
-
-		}
-		indexado = false;
-	}
-}
 void HandlerComandos::listarLibrosIngresados(){
-	//this->mostrarLog();TODO
+	list<int> listaDeIds;
+	this->log->obtenerListaIDs(listaDeIds);
+	list<int>::iterator it = listaDeIds.begin();
+	while ( it != listaDeIds.end()){
+		printf("%d", *it);
+	}
+
 }
 
 void HandlerComandos::obtenerLibro(int IDArchivo){
-	//TODO
+	char* libro = this->handler->buscarRegistro(IDArchivo);
+	printf("Bookerio: Libro %d \n", IDArchivo);
+	printf("%s", libro);
+
 }
 
 void HandlerComandos::quitarLibro(int IDArchivo){
 	//TODO Borrar del archivo maestro
 	//TODO Borrar de todos los índices
-	//¿TODO Borrar del log?
+	//TODO Borrar del log?
 }
 
 void HandlerComandos::verEstructura(int parametro){
@@ -179,12 +140,12 @@ void HandlerComandos::verEstructura(int parametro){
 	switch (parametro){
 	case 'a':{
 			printf("Viendo estructura del árbol de autores. \n");
-			//this.arbol_autores->MostrarArbol();
+			//this->arbol_autores->MostrarArbol();
 			break;
 			}
 	case 'e':{
 			printf("Viendo estructura del árbol de editoriales. \n");
-			//this.arbol_editoriales->MostrarArbol();
+			//this->arbol_editoriales->MostrarArbol();
 			break;
 			}
 	case 't':{
@@ -197,6 +158,9 @@ void HandlerComandos::verEstructura(int parametro){
 			//this.hash_palabras->MostrarHash(); TODO
 			break;
 			}
-
 	}
 }
+
+
+
+

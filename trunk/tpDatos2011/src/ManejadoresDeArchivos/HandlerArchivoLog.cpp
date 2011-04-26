@@ -16,6 +16,7 @@
 #include "../EstructurasEnComun/Constantes.h"
 
 
+
 HandlerArchivoLog::HandlerArchivoLog() {
 	// TODO Auto-generated constructor stub
 }
@@ -97,6 +98,68 @@ void HandlerArchivoLog::setearIndexado(int IDArchivo, int parametro){
 
 }
 
+
+void HandlerArchivoLog::obtenerListaIDs(list<int>& listaDeIds){
+	fstream archivoLog;
+    int IDActual=0 , puntero=0;
+    char* cadena = (char*)calloc(100, sizeof(char));
+    string cad;
+
+	archivoLog.open(PATH_ARCHIVO_LOG, std::ios_base::in | std::ios_base::out);
+	archivoLog.seekg(0);
+	while (!archivoLog.eof() ){
+        puntero = archivoLog.tellg();
+		archivoLog.getline (cadena, 100);
+		cad = cadena;
+		IDActual = atoi(strtok(cadena,"|"));
+		listaDeIds.push_back(IDActual);
+	}
+}
+
+
+void HandlerArchivoLog::obtenerListaIDsAIndexar (int parametro,list<int>& listaDeIds){
+	fstream archivoLog;
+    int IDActual = 0, ind1=0 , ind2=0, ind3=0, ind4=0;
+    string cad;
+    char* cadena = (char*)calloc(100, sizeof(char));
+	bool indexado = false;
+	archivoLog.open(PATH_ARCHIVO_LOG, std::ios_base::in | std::ios_base::out);
+	archivoLog.seekg(0);
+	while (!archivoLog.eof() ){
+		archivoLog.getline (cadena, 100);
+		cad = cadena;
+		if (cad.length() > 0 ) {
+			IDActual = atoi(strtok(cadena,"|"));
+		    ind1 = atoi ( strtok(NULL,"|") );
+		    ind2 = atoi ( strtok(NULL,"|") );
+		    ind3 = atoi ( strtok(NULL,"|") );
+		    ind4 = atoi ( strtok(NULL,"\n") );
+		    switch (parametro){
+		        case 'a':{
+		        	if (ind1 == 1)
+		        		indexado = true;
+		        	break;}
+		        case 'e':{
+		        	if (ind2 == 1)
+		        		indexado = true;
+		        	break;}
+		        case 't':{
+		        	if (ind3 == 1)
+		        		indexado = true;
+		        	break;}
+		        case 'p':{
+		        	if (ind4 == 1)
+		        		indexado = true;
+		        	break;}
+		    }
+			if (!indexado){
+				listaDeIds.push_back(IDActual);
+			}
+
+		}
+		indexado = false;
+	}
+}
 
 string HandlerArchivoLog::crearStringAInsertar(int numero, int ind1, int ind2, int ind3, int ind4){
    stringstream ss;
