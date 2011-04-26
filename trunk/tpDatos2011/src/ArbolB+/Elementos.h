@@ -16,7 +16,6 @@ using namespace std;
 class Elementos : public Serializable {
 private:
 	Clave* clave;
-	Clave* claveEnFC;
 	int transformada;
 	unsigned int offset;
 public:
@@ -24,7 +23,7 @@ public:
 	Elementos(Clave* clave, unsigned int offset);
 	virtual ~Elementos();
 	int getTamanio() const{
-		return (sizeof(int) + this->clave->getTamanio() + sizeof(int) + this->claveEnFC->getTamanio());
+		return (sizeof(int) + this->clave->getTamanio() + sizeof(int));
 	}
 	void toString();
 	void transformarAFrontCoding(string primera);
@@ -34,11 +33,15 @@ public:
     Clave *getClave() const{
         return clave;
     }
-    Clave *getClaveFC() const{
-            return claveEnFC;
-    }
     unsigned int getOffset() const{
         return offset;
+    }
+    int getTransformada () const{
+    	return transformada;
+    }
+
+    void setTransformada ( int i){
+    	this->transformada = i;
     }
 };
 
