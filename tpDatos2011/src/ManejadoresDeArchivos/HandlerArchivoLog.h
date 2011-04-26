@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <list>
 #include "../EstructurasEnComun/Constantes.h"
 
 using namespace std;
@@ -35,6 +36,18 @@ public:
 	 *POST: Guarda en el archivo log la línea con los flags cambiados
 	 **/
 	void setearIndexado(int IDArchivo, int parametro);
+
+	/*
+	 * PRE: Recibe por parámetro listaDeIds donde guarda los IDs de los libros almacenados
+	 * POS: Guarda en listaDeIDs los IDs de todos los libros cargados hasta el momento.
+	 */
+	void obtenerListaIDs(list<int>& listaDeIds);
+
+	/*
+	 * PRE: Recibe parametro para filtrar entre los libros almacenados
+	 * POS: Guarda en listaDeIDs (por referencia) los IDs que deben ser indexados
+	 */
+	void obtenerListaIDsAIndexar(int parametro, list<int>& listaDeIds);
 
 
 private:
