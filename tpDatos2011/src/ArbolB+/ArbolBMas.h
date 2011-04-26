@@ -174,6 +174,8 @@ public:
 	}
 private:
 	void grabarDatosConfiguracion();
+	void refactorizarNodoFrontCoding(NodoHoja** nodoHojaCorriente);
+	void refactorizarNodoNoHojaFrontCoding(Nodo** nodo);
 	NodoHoja* obtenerNodoHoja();
 	NodoInterior* obtenerNodoInterior(int nivel);
 	int obtenerNumeroNodo();

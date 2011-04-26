@@ -96,9 +96,7 @@ bool ArbolBMas::insertar(Elementos* elemento){
 	} else {
 
 		if (raiz->nivel == 0){
-			raiz->espacioOcupado -= (static_cast <NodoHoja*> (raiz))->datos[0].getTamanio();
-			(static_cast <NodoHoja*> (raiz))->datos[0].sacarElFrontCoding((static_cast <NodoHoja*> (raiz))->datos[0].getClaveFC()->getClave());
-			raiz->espacioOcupado += (static_cast <NodoHoja*> (raiz))->datos[0].getTamanio();
+			refactorizarNodoNoHojaFrontCoding(&raiz);
 		}
 		persistirNodo(raiz);
 	}
@@ -189,6 +187,10 @@ bool ArbolBMas::insertarRecursivamente(Nodo* nodoCorriente, Clave& clave, Elemen
 				posicion -= nodoHojaCorriente->cantidadClaves;
 				nodoHojaCorriente = static_cast<NodoHoja*> (*nuevoNodo);
 			}
+		}else{
+			if (nodoHojaCorriente->nivel == 0){
+				refactorizarNodoFrontCoding(&nodoHojaCorriente);
+			}
 		}
 		if (nuevoNodo && nodoHojaCorriente != *nuevoNodo && posicion == nodoHojaCorriente->cantidadClaves - 1) {
 			*clavePromocion = clave;
@@ -196,6 +198,38 @@ bool ArbolBMas::insertarRecursivamente(Nodo* nodoCorriente, Clave& clave, Elemen
 
 		return true;
 	}
+}
+
+void ArbolBMas::refactorizarNodoFrontCoding(NodoHoja** nodo){
+//	(*nodo)->espacioOcupado = 0;
+//	int ocupado = 0;
+//	(*nodo)->datos[0].sacarElFrontCoding((*nodo)->datos[0].getClave()->getClave());
+//	ocupado += (*nodo)->datos[0].getTamanio();
+//	string primera = (*nodo)->datos[0].getClave()->getClave();
+//	for (int i = 1; i < (*nodo)->cantidadClaves ; i++){
+//		(*nodo)->datos[i].transformarAFrontCoding(primera);
+//		ocupado += (*nodo)->datos[i].getTamanio();
+//	}
+//	(*nodo)->espacioOcupado = ocupado;
+    (*nodo)->espacioOcupado -= ((*nodo))->datos[0].getTamanio();
+    (*nodo)->datos[0].sacarElFrontCoding(((*nodo))->datos[0].getClave()->getClave());
+    (*nodo)->espacioOcupado += (*nodo)->datos[0].getTamanio();
+}
+
+void ArbolBMas::refactorizarNodoNoHojaFrontCoding(Nodo** nodo){
+//	(*nodo)->espacioOcupado = 0;
+//	int ocupado = 0;
+//	static_cast<NodoHoja*>(*nodo)->datos[0].sacarElFrontCoding(static_cast<NodoHoja*>(*nodo)->datos[0].getClave()->getClave());
+//	ocupado += static_cast<NodoHoja*>(*nodo)->datos[0].getTamanio();
+//	string primera = static_cast<NodoHoja*>(*nodo)->datos[0].getClave()->getClave();
+//	for (int i = 1; i < (*nodo)->cantidadClaves ; i++){
+//		static_cast<NodoHoja*>(*nodo)->datos[i].transformarAFrontCoding(primera);
+//		ocupado += static_cast<NodoHoja*>(*nodo)->datos[i].getTamanio();
+//	}
+//	(*nodo)->espacioOcupado = ocupado;
+    (*nodo)->espacioOcupado -= (static_cast <NodoHoja*> (*nodo))->datos[0].getTamanio();
+    (static_cast <NodoHoja*> (*nodo))->datos[0].sacarElFrontCoding((static_cast <NodoHoja*> (*nodo))->datos[0].getClave()->getClave());
+    (*nodo)->espacioOcupado += (static_cast <NodoHoja*> (*nodo))->datos[0].getTamanio();
 }
 
 int ArbolBMas::obtenerNumeroNodo(){
@@ -302,17 +336,23 @@ void ArbolBMas::dividirNodoHoja(NodoHoja* unNodoHoja, Clave* clavePromocion, Nod
 	unNodoHoja->cantidadClaves = cantidadClaves;
 	unNodoHoja->hojaSiguiente = auxNuevoNodoHoja->numero;
 	if (unNodoHoja->nivel == 0){
-		unNodoHoja->espacioOcupado -= unNodoHoja->datos[0].getTamanio();
-		unNodoHoja->datos[0].sacarElFrontCoding(unNodoHoja->datos[0].getClaveFC()->getClave());
-		unNodoHoja->espacioOcupado += unNodoHoja->datos[0].getTamanio();
+		refactorizarNodoFrontCoding(&unNodoHoja);
 	}
-	*clavePromocion = unNodoHoja->claves[unNodoHoja->cantidadClaves - 1];
+//	*clavePromocion = unNodoHoja->claves[unNodoHoja->cantidadClaves - 1];
+	int convertida = unNodoHoja->datos[unNodoHoja->cantidadClaves].getTransformada();
+	if (convertida == 1){
+		FrontCoding* fc = new FrontCoding();
+		string clave = fc->interpretarFrontCoding(unNodoHoja->datos[unNodoHoja->cantidadClaves].getClave()->getClave());
+		delete fc;
+		Clave* claveFinal = new Clave(clave);
+		*clavePromocion = *claveFinal;
+		delete claveFinal;
+	}else{
+		*clavePromocion = unNodoHoja->claves[unNodoHoja->cantidadClaves - 1];;
+	}
 	*nuevoNodoHoja = auxNuevoNodoHoja;
-
 	if ((*nuevoNodoHoja)->nivel == 0){
-		(*nuevoNodoHoja)->espacioOcupado -= (static_cast <NodoHoja*> (*nuevoNodoHoja))->datos[0].getTamanio();
-		(static_cast <NodoHoja*> (*nuevoNodoHoja))->datos[0].sacarElFrontCoding((static_cast <NodoHoja*> (*nuevoNodoHoja))->datos[0].getClaveFC()->getClave());
-		(*nuevoNodoHoja)->espacioOcupado += (static_cast <NodoHoja*> (*nuevoNodoHoja))->datos[0].getTamanio();
+		refactorizarNodoNoHojaFrontCoding(&(*nuevoNodoHoja));
 	}
 }
 
@@ -363,9 +403,6 @@ void ArbolBMas::toString(Nodo* nodoAmostrar, int tab, ofstream& fo){
 				fo << "(";
 				Clave clave = (*nodo->datos[posicion].getClave());
 				fo << clave.getClave();
-				fo << "  ,  " ;
-				Clave clave2 = (*nodo->datos[posicion].getClaveFC());
-				fo << clave2.getClave();
 				fo << ")";
 			}
 			fo << endl;
