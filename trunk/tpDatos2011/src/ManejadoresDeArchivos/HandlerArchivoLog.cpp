@@ -1,10 +1,3 @@
-/*
- * HandlerArchivoLog.cpp
- *
- *  Created on: 22/04/2011
- *      Author: andrea
- */
-
 
 #include "HandlerArchivoLog.h"
 #include <sstream>

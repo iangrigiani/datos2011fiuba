@@ -448,7 +448,7 @@ void ArbolBMas::hidratarDatosConfiguracion(){
 }
 
 
-bool ArbolBMas::borrar(Clave clave) {
+bool ArbolBMas::borrar(Clave clave){
 	if (!raiz)
 		return false;
 	Resultado resultado = ArbolBMas::borrarRecursivo(clave, raiz, NULL, NULL, NULL, NULL, NULL, 0);
