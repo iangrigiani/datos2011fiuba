@@ -7,12 +7,6 @@
 
 #include "Reg.h"
 
-
-Reg::Reg() : clave(-1) {}
-
-Reg::Reg(int clave): clave(clave){}
-
-
 void Reg::set_clave(int clave) {
 	this->clave = clave;
 }

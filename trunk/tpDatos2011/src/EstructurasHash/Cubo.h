@@ -4,7 +4,7 @@
 class HandlerTabla;
 
 #include "Bloque.h"
-#include "RegPalabras.h"
+#include "RegPalabra.h"
 #include "../EstructurasEnComun/Constantes.h"
 #include "../Hash/HandlerTabla.h"
 
@@ -13,7 +13,7 @@ class Cubo : public Bloque {
 private:
 
 	int esp_libre;
-	list < RegPalabras > regs;
+	list < RegPalabra > regs;
 
 public:
 
@@ -21,20 +21,20 @@ public:
 	virtual ~Cubo() {};
 
 	bool esta_vacio() const;
-	bool entra_en_bloque(const RegPalabras& reg) const;
+	bool entra_en_bloque(const RegPalabra& reg) const;
 	bool entra_en_bloque(list < int > & offsets) const;
 
 	void aumentar_esp_libre(int diferencial);
 	void disminuir_esp_libre(int diferencial);
 
-	void agregar_nuevo_reg(const RegPalabras& reg);
+	void agregar_nuevo_reg(const RegPalabra& reg);
 	bool eliminar_reg(int clave);
 	bool existe_reg(int clave);
-	RegPalabras& buscar_reg(int clave);
-	list < RegPalabras > & get_regs() { return this->regs; }
+	RegPalabra& buscar_reg(int clave);
+	list < RegPalabra > & get_regs() { return this->regs; }
 
-	void incorporar_regs(list < RegPalabras > & regs);
-	list < RegPalabras > actualizar_regs(int num_bloque, HandlerTabla& handler);
+	void incorporar_regs(list < RegPalabra > & regs);
+	list < RegPalabra > actualizar_regs(int num_bloque, HandlerTabla& handler);
 
 	void vaciar();
 

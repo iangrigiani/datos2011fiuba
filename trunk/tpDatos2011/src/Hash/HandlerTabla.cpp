@@ -20,6 +20,15 @@ HandlerTabla::HandlerTabla() {
 	ss >> hex >> this->tam_tabla;
 }
 
+void HandlerTabla::set_ruta_arch_tabla(const string& ruta_arch_tabla) {
+	this->ruta_arch_tabla = ruta_arch_tabla;
+}
+
+void HandlerTabla::set_ruta_arch_temporal(const string& ruta_arch_temporal) {
+	this->ruta_arch_temporal = ruta_arch_temporal;
+}
+
+
 bool HandlerTabla::tabla_vacia() {
 	ifstream arch;
 	string s;
@@ -154,7 +163,7 @@ bool HandlerTabla::mitades_iguales() const {
 	return igual;
 }
 
-int HandlerTabla::get_num_bloque(int clave, int& pos_tabla) const {
+int HandlerTabla::get_num_bloque(int clave) const {
 	ifstream arch;
 	string s;
 	int num_bloque;
@@ -168,11 +177,15 @@ int HandlerTabla::get_num_bloque(int clave, int& pos_tabla) const {
 		arch >> num_bloque;
 		++ contador;
 	}
-
 	arch >> num_bloque;
-	pos_tabla = contador;
+
+	arch.close();
 
 	return num_bloque;
+}
+
+int HandlerTabla::get_pos_tabla(int clave) const {
+	return (clave % this->tam_tabla);
 }
 
 void HandlerTabla::reemplazar_referencia(int num_bloque_a_reemplazar, int num_nuevo_bloque) {
@@ -322,7 +335,7 @@ int HandlerTabla::puedo_liberar_bloque(const Bloque& bloque_a_liberar, int pos_a
 		}
 	}
 	else {
-		if (pos_anterior < pos_siguiente) {
+		if (pos_anterior > pos_siguiente) {
 			while (contador != pos_siguiente) {
 				arch >> bloque_siguiente;
 				++ contador;
@@ -349,15 +362,3 @@ void HandlerTabla::liberar_referencias(int pos_inicial, int num_bloque_por_reemp
 		const Bloque& bloque_por_reemplazar) {
 	this->reemplazar_referencias(pos_inicial, num_bloque_por_reemplazar, bloque_por_reemplazar);
 }
-
-void HandlerTabla::set_ruta_arch_tabla(const string& ruta_arch_tabla)
-{
-	this->ruta_arch_tabla = ruta_arch_tabla;
-}
-
-void HandlerTabla::set_ruta_arch_temporal(const string& ruta_arch_temporal)
-{
-	this->ruta_arch_temporal = ruta_arch_temporal;
-}
-
-

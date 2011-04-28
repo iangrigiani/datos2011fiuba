@@ -5,28 +5,27 @@
  *      Author: angeles
  */
 
-#include "RegPalabras.h"
+#include "RegPalabra.h"
 
-
-int RegPalabras::get_tam() const {
+int RegPalabra::get_tam() const {
 	return (sizeof(int) + sizeof(int) + this->offsets.size() * sizeof(int));
 }
 
-void RegPalabras::set_bloque_sig(int bloque_sig) {
+void RegPalabra::set_bloque_sig(int bloque_sig) {
 	this->bloque_sig = bloque_sig;
 }
 
-void RegPalabras::set_offsets(list < int > & offsets) {
+void RegPalabra::set_offsets(list < int > & offsets) {
 	this->offsets = offsets;
 }
 
-void RegPalabras::agregar_nuevos_offsets(list < int > & offsets) {
+void RegPalabra::agregar_nuevos_offsets(list < int > & offsets) {
 	list < int > ::iterator it;
 	for (it = offsets.begin(); it != offsets.end(); ++ it)
 		this->offsets.push_back(*it);
 }
 
-bool RegPalabras::eliminar_offset(int offset) {
+bool RegPalabra::eliminar_offset(int offset) {
 	list < int > ::iterator it;
 
 	it = this->offsets.begin();
@@ -40,7 +39,7 @@ bool RegPalabras::eliminar_offset(int offset) {
 	return false;
 }
 
-void RegPalabras::serializar(char* buffer, unsigned int& offset) {
+void RegPalabra::serializar(char* buffer, unsigned int& offset) {
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->clave);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->bloque_sig);
 
@@ -50,7 +49,7 @@ void RegPalabras::serializar(char* buffer, unsigned int& offset) {
 		Persistencia::PonerEnteroEnChar(buffer, offset, (*it));
 }
 
-void RegPalabras::hidratar(char* buffer, unsigned int& offset) {
+void RegPalabra::hidratar(char* buffer, unsigned int& offset) {
 	this->clave = Persistencia::getEnteroDesdeBuffer(buffer, offset);
 	this->bloque_sig = Persistencia::getEnteroDesdeBuffer(buffer, offset);
 
@@ -59,7 +58,7 @@ void RegPalabras::hidratar(char* buffer, unsigned int& offset) {
 		this->offsets.push_back(Persistencia::getEnteroDesdeBuffer(buffer,offset));
 }
 
-void RegPalabras::toString() {
+void RegPalabra::toString() {
 	cout << " Registro --> " << endl;
 	cout << " Clave:   " << this->clave << endl;
 	cout << " Bloque siguiente:   " << this->bloque_sig << endl;
@@ -74,6 +73,6 @@ void RegPalabras::toString() {
 */
 }
 
-void RegPalabras::agregar_nuevo_offset(int offset) {
+void RegPalabra::agregar_nuevo_offset(int offset) {
 	this->offsets.push_back(offset);
 }

@@ -7,7 +7,6 @@
 
 #include "HashTitulo.h"
 
-
 void HashTitulo::crear_condiciones_iniciales() {
 	if (this->handler_tabla.tabla_vacia() == true) {
 		Ranura bloque;
@@ -20,13 +19,13 @@ void HashTitulo::crear_condiciones_iniciales() {
 	}
 }
 
-void HashTitulo::insertar_reg(const RegTitulo& reg) {
-	int pos_tabla_bloque;
+bool HashTitulo::insertar_reg(const RegTitulo& reg) {
 	Ranura bloque;
 	unsigned int offset = 0;
 	char buffer[this->handler_bloques.get_tam_bloque()];
 
-	int num_bloque = this->handler_tabla.get_num_bloque(reg.get_clave(), pos_tabla_bloque);
+	int pos_tabla_bloque = this->handler_tabla.get_pos_tabla(reg.get_clave());
+	int num_bloque = this->handler_tabla.get_num_bloque(reg.get_clave());
 	this->handler_bloques.recuperar_bloque(buffer, num_bloque);
 	bloque.hidratar(buffer, offset);
 
@@ -37,7 +36,9 @@ void HashTitulo::insertar_reg(const RegTitulo& reg) {
 		this->handler_bloques.guardar_bloque(buffer, num_bloque);
 	}
 	else {
-		int num_nuevo_bloque;
+		if (bloque.get_reg().get_clave() == reg.get_clave())
+			return false;
+
 		RegTitulo reg_aux;
 
 		int tam_disp_inicial = bloque.get_tam_disp();
@@ -46,7 +47,7 @@ void HashTitulo::insertar_reg(const RegTitulo& reg) {
 
 		offset = 0;
 		nuevo_bloque.serializar(buffer, offset);
-		num_nuevo_bloque = this->handler_bloques.guardar_bloque(buffer);
+		int num_nuevo_bloque = this->handler_bloques.guardar_bloque(buffer);
 
 		if (tam_disp_inicial == this->handler_tabla.get_tam_tabla()) {
 			this->handler_tabla.duplicar_tabla();
@@ -67,15 +68,16 @@ void HashTitulo::insertar_reg(const RegTitulo& reg) {
 
 		this->insertar_reg(reg);
 	}
+	return true;
 }
 
 bool HashTitulo::eliminar_reg(int clave) {
-	int pos_tabla_bloque;
 	Ranura bloque;
 	unsigned int offset = 0;
 	char buffer[this->handler_bloques.get_tam_bloque()];
 
-	int num_bloque = this->handler_tabla.get_num_bloque(clave, pos_tabla_bloque);
+	int pos_tabla_bloque = this->handler_tabla.get_pos_tabla(clave);
+	int num_bloque = this->handler_tabla.get_num_bloque(clave);
 	this->handler_bloques.recuperar_bloque(buffer, num_bloque);
 	bloque.hidratar(buffer, offset);
 
@@ -107,4 +109,21 @@ bool HashTitulo::eliminar_reg(int clave) {
 	}
 
 	return true;
+}
+
+void HashTitulo::mostrar() {
+	Ranura bloque;
+	char buffer[TAM_RANURA];
+	unsigned int offset;
+	int cant_bloques = this->handler_bloques.get_tam_arch_bloques() / TAM_RANURA;
+
+	cout << endl;
+	for (int i = 0; i < cant_bloques; ++ i) {
+		cout << "N° " << i << ":" << endl;
+		offset = 0;
+		this->handler_bloques.recuperar_bloque(buffer, i);
+		bloque.hidratar(buffer, offset);
+		bloque.toString();
+		cout << endl;
+	}
 }

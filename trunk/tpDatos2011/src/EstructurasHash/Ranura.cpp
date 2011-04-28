@@ -35,9 +35,7 @@ bool Ranura::eliminar_reg(int clave) {
 }
 
 bool Ranura::actualizar_reg(int num_bloque, HandlerTabla& handler, RegTitulo& reg) {
-	int pos_tabla;
-
-	if (num_bloque != handler.get_num_bloque(this->reg.get_clave(), pos_tabla)) {
+	if (num_bloque != handler.get_num_bloque(this->reg.get_clave())) {
 		reg = this->reg;
 		this->eliminar_reg(this->reg.get_clave());
 		return true;
