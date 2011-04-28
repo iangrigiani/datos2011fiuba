@@ -44,7 +44,6 @@ private:
 	RecuperadorNodosLibres* recuperador_Datos_Configuracion;
 	EscritorNodosLibres* escritor_Datos_Configuracion;
 	int cantidadNodos;
-	int maxTamanioClave;
 	vector<int> nodosLibres;
 //	Persistor* persistor;
 
@@ -55,7 +54,7 @@ public:
 	 * Recibe ruta del archivo donde voy a guardar el arbol y el tamanio
 	 * maximo de clave que puede almacenar y el tipo de arbol.
 	 */
-	ArbolBMas(int tipo, std::string ruta_archivo, int tamanioMaximoClave);
+	ArbolBMas(int tipo, std::string ruta_archivo);
 	~ArbolBMas();
 
 	/*
@@ -185,6 +184,8 @@ private:
 	void liberarMemoriaNodo(Nodo* nodo);
 	int obtenerPosicion(Nodo *unNodo, Clave clave);
 	Nodo* hidratarNodo(int nroNodo);
+	void sacarFrontCodingNodo (Nodo ** nodo);
+	void sacarFrontCodingNodoHoja (NodoHoja ** nodo);
 	void dividirNodoInterior(NodoInterior* unNodoInterior, Clave* clavePromocion, Nodo** nuevoNodoInterior, int nuevaPosicion);
 	void dividirNodoHoja(NodoHoja* unNodoHoja, Clave* clavePromocion, Nodo** nuevoNodoHoja);
 	void hidratarDatosConfiguracion();

@@ -17,6 +17,7 @@ void Elementos::transformarAFrontCoding(string primera){
 		string modificada = fc->pasarAFrontCoding(primera, this->clave->getClave());
 		this->clave->setValorClave(modificada);
 		this->transformada = 1;
+		modificada.clear();
 		delete fc;
 	}
 }
@@ -27,6 +28,7 @@ void Elementos::sacarElFrontCoding(string palabra){
 		string modificada = fc->interpretarFrontCoding(palabra);
 		this->clave->setValorClave(modificada);
 		this->transformada = 0;
+		modificada.clear();
 		delete fc;
 	}
 }

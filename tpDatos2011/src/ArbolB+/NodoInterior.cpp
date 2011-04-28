@@ -3,11 +3,13 @@
 
 
 NodoInterior::NodoInterior(int nivel) : Nodo(nivel) {
-	this->hijos = new int[(TAM_EFECTIVO_NODO/(TAM_CONTROL_REGISTRO)) + 2];
+//	this->hijos = new int[(TAM_EFECTIVO_NODO/(TAM_CONTROL_REGISTRO)) + 2];
+	this->hijos = new int[TAM_EFECTIVO_NODO + 2];
 }
 
 NodoInterior::NodoInterior() : Nodo(0){
-	this->hijos = new int[(TAM_EFECTIVO_NODO/(TAM_CONTROL_REGISTRO)) + 2];
+//	this->hijos = new int[(TAM_EFECTIVO_NODO/(TAM_CONTROL_REGISTRO)) + 2];
+	this->hijos = new int[TAM_EFECTIVO_NODO + 2];
 }
 
 NodoInterior::~NodoInterior() {

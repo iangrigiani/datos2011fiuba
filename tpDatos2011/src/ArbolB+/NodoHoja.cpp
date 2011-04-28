@@ -4,7 +4,8 @@
 
 NodoHoja::NodoHoja() : Nodo(0) {
 	hojaSiguiente = 0;
-	this->datos = new Elementos[(TAM_EFECTIVO_NODO/(TAM_CONTROL_REGISTRO)) + 2];
+//	this->datos = new Elementos[(TAM_EFECTIVO_NODO/(TAM_CONTROL_REGISTRO)) + 2];
+	this->datos = new Elementos[TAM_EFECTIVO_NODO + 2];
 }
 
 NodoHoja::~NodoHoja() {
