@@ -117,7 +117,6 @@ void HandlerComandos::quitarLibro(int IDArchivo) {
 	this->eliminar_de_hash_palabra(IDArchivo);
 	eliminarEnArbol(1, IDArchivo);
 	eliminarEnArbol(2, IDArchivo);
-
 	//Borrar el registro del archivo maestro
 	this->handler->quitarRegistro(IDArchivo);
 	printf("Bookerio: Libro ID  %d : Borrado con éxito. \n", IDArchivo);
@@ -270,11 +269,17 @@ void HandlerComandos::insertarEnArbol (int tipoArbol, int offset){
 	delete arbol;
 }
 
-//TODO Arreglar
+//TODO Ver cómo obtengo clave
 bool HandlerComandos::eliminarEnArbol(int tipoArbol, int offset) {
 	ArbolBMas* arbol = new ArbolBMas(tipoArbol, PATH_NODOS);
 	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
-	//arbol->borrar(reg->getClave());
+	Clave clave;
+	if (tipoArbol == 1){
+		//convertir autor a clave
+	}else{
+		//convertir editorial a clave
+	}
+	arbol->borrar(clave);
 	delete reg;
 	delete arbol;
 	return true;
