@@ -1,6 +1,5 @@
 #include "HandlerComandos.h"
 
-
 HandlerComandos::HandlerComandos() {
 	this-> handler 			= new HandlerArchivoRLV();
 	this-> parser 			= new ParserDeLibros();
@@ -18,16 +17,13 @@ void HandlerComandos::guardarLibroEnArchivoMaestro(const string& path_nuevo_libr
 	ID_Archivo = this->handler->insertarRegistro(path_nuevo_libro);
 	this-> log->insertarRegistro(ID_Archivo);
 	printf("Bookerio: Libro guardado con éxito. \n");
+	printf("		  ID Libro: %d \n", ID_Archivo);
 }
 
 void HandlerComandos::indexar(int parametro){
-	//Obtener del log una Lista de quintuplas (o como se diga) que contega los 5 campos
-	//guardados en el log (ID_Archivo, ind1, ind2, ind3, ind4).
-
-	// En esta lista obtengo los offset de todos los archivos que debo indexar.
+	// Lista de IDs de libros a Indexar
 	list<int> listaDeIds;
-	// Obtengo todos los offsets
-	this->log->obtenerListaIDsAIndexar(parametro,listaDeIds);
+	this->log->obtenerListaIDsAIndexar(parametro,listaDeIds); // Obtengo todos los offsets
 	list<int>::iterator it = listaDeIds.begin();
 
 	// Para cada offset segun que parametro recibi inserto.
@@ -88,7 +84,6 @@ void HandlerComandos::indexar(int parametro){
 	}
 }
 
-
 //TODO Revisar
 void HandlerComandos::listarLibrosIngresados(){
 	list<int> listaDeIds;
@@ -111,13 +106,13 @@ void HandlerComandos::obtenerLibro(int IDArchivo){
 
 //TODO Probar!
 void HandlerComandos::quitarLibro(int IDArchivo) {
-	//Borrar de todos los índices
+	//Borrar libro de todos los índices
 	if (this->eliminar_de_hash_titulo(IDArchivo) == false)
 		cout << "Error: no existe un archivo con ese ID" << endl;
 	this->eliminar_de_hash_palabra(IDArchivo);
 	eliminarEnArbol(1, IDArchivo);
 	eliminarEnArbol(2, IDArchivo);
-	//Borrar el registro del archivo maestro
+	//Borrar libro del archivo maestro
 	this->handler->quitarRegistro(IDArchivo);
 	printf("Bookerio: Libro ID  %d : Borrado con éxito. \n", IDArchivo);
 }
@@ -282,5 +277,5 @@ bool HandlerComandos::eliminarEnArbol(int tipoArbol, int offset) {
 	arbol->borrar(clave);
 	delete reg;
 	delete arbol;
-	return true;
+	return true; //TODO ver si es necesario retornar bool
 }
