@@ -10,27 +10,25 @@
 
 #define NOM_ARCH_REGS_FIJOS "RegsFijosHash"
 
-
 #include "Hash.h"
 #include "../EstructurasHash/Ranura.h"
 
 class HashTitulo : public virtual Hash {
 
-
-
 public:
 
-	HashTitulo() : Hash(TAM_RANURA,PATH_BLOQUES_TITULO,PATH_ESPACIO_LIBRE_TITULO,
-								PATH_TABLA_TITULO,PATH_TMP_TITULO){}
-
+	HashTitulo() : Hash(TAM_RANURA, PATH_BLOQUES_TITULO, PATH_ESP_LIBRE_TITULO,
+								PATH_TABLA_TITULO, PATH_TMP_TITULO) {}
 
 	virtual ~HashTitulo() {};
 
 	void crear_condiciones_iniciales();
 
-	void insertar_reg(const RegTitulo& reg);
+	bool insertar_reg(const RegTitulo& reg);
 
 	bool eliminar_reg(int clave);
+
+	void mostrar();
 
 };
 

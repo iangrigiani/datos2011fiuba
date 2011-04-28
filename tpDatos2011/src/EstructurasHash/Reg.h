@@ -13,15 +13,21 @@
 
 class Reg : public Serializable{
 
-	protected:
-				int clave;
+protected:
 
-	public:
-				Reg();
-				Reg(int clave);
-				virtual ~Reg() {};
-				void set_clave(int clave);
-				int get_clave() const { return this->clave; }
+	int clave;
+
+public:
+
+	Reg() : clave(-1) {}
+
+	Reg(int clave) : clave(clave) {}
+
+	virtual ~Reg() {};
+
+	void set_clave(int clave);
+
+	int get_clave() const { return this->clave; }
 
 };
 

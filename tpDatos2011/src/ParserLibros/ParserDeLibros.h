@@ -54,19 +54,16 @@ private:
 	 */
 	bool esStopWords(char* pch);
 	/*
-	 * Transforma la palabra a solo minusculas y sin acento
-	 * pre: pasar la palabra
-	 * post: palabra convertida
-	 */
-	string caseFolding(char* pch);
-	/*
 	 * Obtiene desde archivo la lista de stopWords
 	 * pre: -
 	 * post: lista obtenida
 	 */
 	void obtenerListaStopWords();
 
+	void downCase(string& str);
+
 public:
+
 	ParserDeLibros();
 	virtual ~ParserDeLibros();
 	/*
@@ -84,6 +81,9 @@ public:
 			++it;
 		}
 	}
+
+	list < string > obtenerDatos(char* cadena);
+
 };
 
 #endif /* PARSERDELIBROS_H_ */

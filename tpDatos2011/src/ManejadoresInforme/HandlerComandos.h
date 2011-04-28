@@ -1,7 +1,8 @@
 #ifndef HANDLERARBOL_H_
 #define HANDLERARBOL_H_
 #include "../ArbolB+/ArbolBMas.h"
-#include "../Hash/Hash.h"
+#include "../Hash/HashTitulo.h"
+#include "../Hash/HashPalabra.h"
 #include "../ParserLibros/ParserDeLibros.h"
 #include "../ManejadoresDeArchivos/HandlerArchivoRLV.h"
 #include "../ManejadoresDeArchivos/HandlerArchivoLog.h"
@@ -14,14 +15,23 @@ private:
 	HandlerArchivoRLV* handler;
 	HandlerArchivoLog* log;
 
-
 	/*
 	 * Crea un arbol del tipo autor o editorial e inserta el elemento
 	 * que obtiene del handler de reg de LV correspondiente.
 	 */
 	void insertarEnArbol (int tipoArbol, int offset);
 
+	int funcion_hash_titulo(const string& str);
 
+	bool insertar_en_hash_titulo(int offset);
+
+	bool eliminar_de_hash_titulo(int offset);
+
+	int funcion_hash_palabra(const string& str);
+
+	void insertar_en_hash_palabra(int offset);
+
+	void eliminar_de_hash_palabra(int offset);
 
 public:
 
@@ -65,7 +75,6 @@ public:
 
 
 	virtual ~HandlerComandos();
-
 
 	/*
 	void insertar(string path, ArbolBMas &arbol, Hash& hash);

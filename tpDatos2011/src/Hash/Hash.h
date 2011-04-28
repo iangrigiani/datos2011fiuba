@@ -12,8 +12,7 @@
 #include "../ManejadoresDeArchivos/HandlerBloques.h"
 #include "../EstructurasEnComun/Constantes.h"
 
-
-class Hash{
+class Hash {
 
 protected:
 
@@ -30,7 +29,11 @@ public:
 
 		HandlerBloques& get_handler_bloques() { return this->handler_bloques; }
 
+		int get_posicion_tabla(int clave);
+
 		virtual void crear_condiciones_iniciales() = 0;
+
+		virtual void mostrar() = 0;
 
 };
 

@@ -18,57 +18,76 @@ char * ParserDeLibros::obtenerTitulo(){
 }
 
 char * ParserDeLibros::obtenerEditorial(){
-        char EditorialtPatron[] = "Editorial:\\s*([^\n\r\t]*)";
-        return obtenerPrimerMatch(this->libroActual, EditorialtPatron);
+        char EditorialPatron[] = "Editorial:\\s*([^\n\r\t]*)";
+        return obtenerPrimerMatch(this->libroActual, EditorialPatron);
 }
 
 char * ParserDeLibros::obtenerPalabras(){
-        char PalabrasPatron[]= "Palabras:\\s*([^FINPALABRA/]*)";
+        char PalabrasPatron[] = "Palabras:\\s*([^|/]*)";
         return obtenerPrimerMatch(this->libroActual, PalabrasPatron);
 }
 
 char * ParserDeLibros::obtenerPrimerMatch(char * string, char *patronDeFiltro) {
-        regex_t preg;
-        regmatch_t pmatch[2];
-        char* pom = (char*)calloc(STRING_BUFFER, sizeof(char));
-        /* it's possible something won't compile like  ./regexp '*' abc */
-        regcomp (&preg, patronDeFiltro, REG_EXTENDED);
-        regexec (&preg, string, 2, pmatch, 0);
-        strncpy (pom, string + pmatch[1].rm_so,
-                        pmatch[1].rm_eo - pmatch[1].rm_so);
-        pom[pmatch[1].rm_eo - pmatch[1].rm_so] = '\0';
-        regfree (&preg);
-        return pom;
+    regex_t preg;
+    regmatch_t pmatch[2];
+    char* pom = (char*)calloc(STRING_BUFFER, sizeof(char));
+    /* it's possible something won't compile like  ./regexp '*' abc */
+    regcomp (&preg, patronDeFiltro, REG_EXTENDED);
+    regexec (&preg, string, 2, pmatch, 0);
+    strncpy (pom, string + pmatch[1].rm_so,
+                    pmatch[1].rm_eo - pmatch[1].rm_so);
+    pom[pmatch[1].rm_eo - pmatch[1].rm_so] = '\0';
+    regfree (&preg);
+    return pom;
 }
 
-Registro * ParserDeLibros::obtenerRegistroDeLibro (char * libro){
-        this->libroActual = libro;
-        Registro* nuevoRegistro = new Registro();
-        nuevoRegistro->setAutor(this->obtenerAutor());
-        nuevoRegistro->setEditorial(this->obtenerEditorial());
-        nuevoRegistro->setTitulo(this->obtenerTitulo());
+list < string > ParserDeLibros::obtenerDatos(char* cadena) {
+	list < string > elementos;
+	char* pch = strtok(cadena, "¿?¡!:;., \n\t\r");
+	string str;
 
-        char * str = this->obtenerPalabras();
-        char * pch;
-		pch = strtok (str," \n");
-		list<string> listaAux;
-		listaAux.push_back(pch);
-		while (pch != NULL)
-		{
-			pch = strtok (NULL, " \n");
-			if (pch) {
-				if (!esStopWords(pch)){
-					listaAux.push_back(caseFolding(pch));
-				}
+	while (pch != NULL) {
+		str = pch;
+		this->downCase(str);
+		if (!esStopWords(pch)) {
+			elementos.push_back(str);
+		}
+		str.clear();
+		pch = strtok(NULL, "¿?¡!:;., \n\t\r");
+	}
+	return elementos;
+}
+
+Registro * ParserDeLibros::obtenerRegistroDeLibro(char* libro) {
+	this->libroActual = libro;
+	Registro* nuevoRegistro = new Registro();
+	nuevoRegistro->setAutor(this->obtenerAutor());
+	nuevoRegistro->setEditorial(this->obtenerEditorial());
+	nuevoRegistro->setTitulo(this->obtenerTitulo());
+
+	list < string > palabras = this->obtenerDatos(this->obtenerPalabras());
+	nuevoRegistro->setPalabras(palabras);
+
+	return nuevoRegistro;
+}
+
+void ParserDeLibros::downCase(string& str) {
+	char c;
+	for (unsigned int i = 0; i < str.size(); ++ i) {
+		if (isalnum(str[i])) {
+			if (!islower(str[i])) {
+				c = tolower(str[i]);
+				str[i] = c;
 			}
 		}
-		nuevoRegistro->setPalabras(listaAux);
-        return nuevoRegistro;
+		else str[i] = 'z';
+	}
 }
 
 bool ParserDeLibros::esStopWords(char* palabra){
 
 	// @Nacho: IMPLEMENTACION CON BUSQUEDA BINARIA
+
 	int totalElem = this->listaStopWords.size();
 	int medio, pivotDer, pivotIzq;
 	pivotIzq=0;
@@ -90,16 +109,6 @@ bool ParserDeLibros::esStopWords(char* palabra){
 
 	return false;
 
-}
-
-
-
-
-string ParserDeLibros::caseFolding(char* pch){
-	// TODO Aplicar el case folding a la palabra antes de almacenarla
-	// habria que ver si esto se aplica a todos los parametros y no solo
-	// a las palabras, sino que tambien, autor, editorial, etc.
-	return pch;
 }
 
 void ParserDeLibros::obtenerListaStopWords(){

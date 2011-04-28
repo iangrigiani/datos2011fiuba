@@ -7,7 +7,6 @@
 
 #include "RegTitulo.h"
 
-
 int RegTitulo::get_tam() const {
 	return (sizeof(clave) + sizeof(offset));
 }

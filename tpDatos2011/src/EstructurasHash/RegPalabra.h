@@ -5,15 +5,15 @@
  *      Author: angeles
  */
 
-#ifndef REGPALABRAS_H_
-#define REGPALABRAS_H_
+#ifndef REGPALABRA_H_
+#define REGPALABRA_H_
 
 #include <list>
 #include "Reg.h"
 
 using namespace std;
 
-class RegPalabras: public Reg {
+class RegPalabra: public Reg {
 
 private:
 
@@ -22,9 +22,9 @@ private:
 
 public:
 
-	RegPalabras() : Reg(),bloque_sig(-1) {}
-	RegPalabras(int clave): Reg(clave),bloque_sig(-1){}
-	virtual ~RegPalabras() {};
+	RegPalabra() : Reg(), bloque_sig(-1) {}
+	RegPalabra(int clave): Reg(clave), bloque_sig(-1) {}
+	virtual ~RegPalabra() {};
 
 	int get_tam() const;
 
@@ -46,4 +46,4 @@ public:
 
 };
 
-#endif /* REGPALABRAS_H_ */
+#endif /* REGPALABRA_H_ */

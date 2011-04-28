@@ -20,8 +20,8 @@ private:
 
 public:
 
-	RegTitulo() : offset(-1) {}
-	RegTitulo(int clave, int offset) : Reg(clave),offset(offset){}
+	RegTitulo() : Reg(), offset(-1) {}
+	RegTitulo(int clave, int offset) : Reg(clave), offset(offset) {}
 	virtual ~RegTitulo() {};
 
 	int get_tam() const;
