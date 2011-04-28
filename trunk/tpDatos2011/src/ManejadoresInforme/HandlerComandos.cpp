@@ -17,6 +17,7 @@ void HandlerComandos::guardarLibroEnArchivoMaestro(const string& path_nuevo_libr
 	int ID_Archivo =  0;
 	ID_Archivo = this->handler->insertarRegistro(path_nuevo_libro);
 	this-> log->insertarRegistro(ID_Archivo);
+	printf("Bookerio: Libro guardado con éxito. \n");
 }
 
 void HandlerComandos::indexar(int parametro){
@@ -87,39 +88,15 @@ void HandlerComandos::indexar(int parametro){
 	}
 }
 
-void HandlerComandos::insertarEnArbol (int tipoArbol, int offset){
-	ArbolBMas* arbol = new ArbolBMas(tipoArbol, PATH_NODOS, 20);
-	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
 
-	if (tipoArbol == 1){
-		Elementos* elemento = new Elementos(new Clave(reg->getAutor()), offset);
-		if(elemento->getTamanio() > (TAM_EFECTIVO_NODO * PORC_TAMANIO_NODO / 100) ){
-			cout<<"Elemento demasiado grande.\n"<<endl;
-		}else{
-			if(arbol->insertar(elemento))
-				cout<<"ID:"<<offset<<".Libro indexado por autor.\n"<<endl;
-		}
-		delete elemento;
-	}else{
-		Elementos* elemento2 = new Elementos(new Clave(reg->getEditorial()), offset);
-		if(elemento2->getTamanio() > (TAM_EFECTIVO_NODO * PORC_TAMANIO_NODO / 100) ){
-			cout<<"Elemento demasiado grande.\n"<<endl;
-		}else{
-			if(arbol->insertar(elemento2))
-				cout<<"ID:"<<offset<<".Libro indexado por editorial.\n"<<endl;
-		delete elemento2;
-		}
-	}
-	delete reg;
-	delete arbol;
-}
-
+//TODO Revisar
 void HandlerComandos::listarLibrosIngresados(){
 	list<int> listaDeIds;
 	this->log->obtenerListaIDs(listaDeIds);
 	list<int>::iterator it = listaDeIds.begin();
 	while ( it != listaDeIds.end()){
 		printf("%d", *it);
+		it++;
 	}
 
 }
@@ -131,12 +108,18 @@ void HandlerComandos::obtenerLibro(int IDArchivo){
 
 }
 
+//TODO Probar!
 void HandlerComandos::quitarLibro(int IDArchivo) {
+	//Borrar de todos los índices
 	if (this->eliminar_de_hash_titulo(IDArchivo) == false)
 		cout << "Error: no existe un archivo con ese ID" << endl;
 	this->eliminar_de_hash_palabra(IDArchivo);
-	//TODO Borrar de todos los índices
-	//TODO Borrar del log?
+	eliminarEnArbol(1, IDArchivo);
+	eliminarEnArbol(2, IDArchivo);
+
+	//Borrar el registro del archivo maestro
+	this->handler->quitarRegistro(IDArchivo);
+	printf("Bookerio: Libro ID  %d : Borrado con éxito. \n", IDArchivo);
 }
 
 void HandlerComandos::verEstructura(int parametro){
@@ -144,6 +127,7 @@ void HandlerComandos::verEstructura(int parametro){
 	switch (parametro) {
 	case 'a': {
 			printf("Viendo estructura del árbol de autores. \n");
+
 			//this->arbol_autores->MostrarArbol();
 			break; }
 	case 'e': {
@@ -252,4 +236,41 @@ void HandlerComandos::eliminar_de_hash_palabra(int offset) {
 		hash.eliminacion(clave, offset);
 	}
 	//hash.mostrar();
+}
+
+
+void HandlerComandos::insertarEnArbol (int tipoArbol, int offset){
+	ArbolBMas* arbol = new ArbolBMas(tipoArbol, PATH_NODOS, 20);
+	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
+
+	if (tipoArbol == 1){
+		Elementos* elemento = new Elementos(new Clave(reg->getAutor()), offset);
+		if(elemento->getTamanio() > (TAM_EFECTIVO_NODO * PORC_TAMANIO_NODO / 100) ){
+			cout<<"Elemento demasiado grande.\n"<<endl;
+		}else{
+			if(arbol->insertar(elemento))
+				cout<<"ID:"<<offset<<".Libro indexado por autor.\n"<<endl;
+		}
+		delete elemento;
+	}else{
+		Elementos* elemento2 = new Elementos(new Clave(reg->getEditorial()), offset);
+		if(elemento2->getTamanio() > (TAM_EFECTIVO_NODO * PORC_TAMANIO_NODO / 100) ){
+			cout<<"Elemento demasiado grande.\n"<<endl;
+		}else{
+			if(arbol->insertar(elemento2))
+				cout<<"ID:"<<offset<<".Libro indexado por editorial.\n"<<endl;
+		delete elemento2;
+		}
+	}
+	delete reg;
+	delete arbol;
+}
+
+bool HandlerComandos::eliminarEnArbol(int tipoArbol, int offset) {
+	ArbolBMas* arbol = new ArbolBMas(tipoArbol, PATH_NODOS, 20);
+	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
+	arbol->borrar(reg->getClave());
+	delete reg;
+	delete arbol;
+	return r;
 }
