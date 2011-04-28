@@ -20,6 +20,7 @@ private:
 	 * que obtiene del handler de reg de LV correspondiente.
 	 */
 	void insertarEnArbol (int tipoArbol, int offset);
+	bool eliminarEnArbol(int tipoArbol, int offset);
 
 	int funcion_hash_titulo(const string& str);
 
