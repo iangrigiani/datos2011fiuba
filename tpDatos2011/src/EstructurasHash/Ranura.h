@@ -30,6 +30,7 @@ public:
 	void modificar_estado();
 	bool esta_ocupada();
 
+	RegTitulo get_reg() const { return this->reg; }
 	void agregar_nuevo_reg(const RegTitulo& reg);
 	bool eliminar_reg(int clave);
 
