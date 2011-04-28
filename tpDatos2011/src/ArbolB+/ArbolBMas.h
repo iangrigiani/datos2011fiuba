@@ -53,6 +53,7 @@ public:
 	 * Constructor
 	 * Recibe ruta del archivo donde voy a guardar el arbol y el tamanio
 	 * maximo de clave que puede almacenar y el tipo de arbol.
+	 * tipo puede ser: 1 para árbol de autores, sino árbol de editoriales
 	 */
 	ArbolBMas(int tipo, std::string ruta_archivo);
 	~ArbolBMas();
@@ -78,13 +79,17 @@ public:
 	list<Elementos*> buscar(Clave clave);
 
 	/*
-	 * Metodo recursivo que se encarga de borrar un elemento del arbol, y realizar los balanceos o fusiones correspondientes.
+	 * Metodo recursivo que se encarga de borrar un elemento del arbol, y realizar los balanceos o
+	 * fusiones correspondientes.
 	 * clave es la clave del elemento a borrar.
 	 * nodoCorriente es el nodo que se esta procesado.
-	 * nodoIzquierda y nodoDerecha son los nodos que se encuentran al los lados del corriente, NULL en caso de no existir ninguno.
-	 * nodoPadreIzquierda y nodoPadreDerecha representan al nodoPadre en la mayoria de los casos, y en los casos en que el nodo en cuestion
-	 * se encuentra en alguno de los extremos, representan al padre del padre, segun se encuentre en el extremo izquierdo o derecho.
-	 * nodoPadre representa al padre del corriente y posicionPadre la ubicacion del nodoCorriente en el padre.
+	 * nodoIzquierda y nodoDerecha son los nodos que se encuentran al los lados del corriente, NULL
+	 * en caso de no existir ninguno.
+	 * nodoPadreIzquierda y nodoPadreDerecha representan al nodoPadre en la mayoria de los casos, y
+	 * en los casos en que el nodo en cuestion se encuentra en alguno de los extremos, representan
+	 * al padre del padre, segun se encuentre en el extremo izquierdo o derecho.
+	 * nodoPadre representa al padre del corriente y posicionPadre la ubicacion del nodoCorriente en
+	 * el padre.
 	 * Puede devolver OK, NO_ENCONTRADO, ACTUALIZAR_ULTIMA_CLAVE o FUSION_NODOS segun sea el caso.
 	 */
 	Resultado borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nodoIzquierda, Nodo *nodoDerecha,
@@ -93,7 +98,8 @@ public:
 
 	/*
 	 * Se encarga de fusionar dos nodos hoja.
-	 * hojaIzquierda y hojaDerecha son los nodos en cuestion. En hoja izquierda se pasan todos los elementos de hojaDerecha.
+	 * hojaIzquierda y hojaDerecha son los nodos en cuestion. En hoja izquierda se pasan todos los
+	 * elementos de hojaDerecha.
 	 * Devuelve Resultado::FUSION_NODOS.
 	 */
 	Resultado fusionarHojas(NodoHoja* hojaIzquierda, NodoHoja* hojaDerecha);
@@ -101,33 +107,36 @@ public:
 
 	/*
 	 * Se encarga de fusionar dos nodos interiores.
-	 * nodoIzquierda y nodoDerecha son los nodos en cuestion. En nodoIzquierda se pasan todos los elementos de nodoDerecha.
+	 * nodoIzquierda y nodoDerecha son los nodos en cuestion. En nodoIzquierda se pasan todos los
+	 * elementos de nodoDerecha.
 	 * Si se produce la fusion devuelve Resultado::FUSION_NODOS, sino Resultado::OK
 	 */
 	Resultado fusionarNodosInteriores(NodoInterior* nodoIzquierda, NodoInterior* nodoDerecha, NodoInterior* nodoPadre, int posicionPadre);
 
 
 	/*
-	 * Se encarga de balancear un nodo interior derecho, con su izquierdo, pasando elementos a este ultimo.
-	 * nodoIzquierda y nodoDerecha son los nodos en cuestion, nodoPadre es el padre de ambos y posicionPadre es la ubicacion en el
-	 * padre, del nodo actual.
+	 * Se encarga de balancear un nodo interior derecho, con su izquierdo, pasando elementos a este
+	 * ultimo.
+	 * nodoIzquierda y nodoDerecha son los nodos en cuestion, nodoPadre es el padre de ambos y
+	 * posicionPadre es la ubicacion en el padre, del nodo actual.
 	 */
 	void pasarElementosNodoInteriorIzquierdo(NodoInterior *nodoIzquierda, NodoInterior *nodoDerecha, NodoInterior *nodoPadre, int posicionPadre);
 
 
 	/*
 	 * Se encarga de balancear un nodo interior izquierdo, con su derecho, pasando elementos a este ultimo.
-	 * nodoIzquierda y nodoDerecha son los nodos en cuestion, nodoPadre es el padre de ambos y posicionPadre es la ubicacion en el
-	 * padre, del nodo actual.
+	 * nodoIzquierda y nodoDerecha son los nodos en cuestion, nodoPadre es el padre de ambos y
+	 * posicionPadre es la ubicacion en el padre, del nodo actual.
 	 */
 	void pasarElementosNodoInteriorDerecho(NodoInterior *nodoIzquierda, NodoInterior *nodoDerecha, NodoInterior *nodoPadre, int posicionPadre);
 
 
 	/*
 	 * Se encarga de balancear un nodo hoja derecho, con su izquierdo, pasando elementos a este ultimo.
-	 * hojaIzquierda y hojaDerecha son los nodos en cuestion, nodoPadre es el padre de ambos y posicionPadre es la ubicacion en el
-	 * padre, del nodo que contiene al elemento a ser borrado.
-	 * Si cambia la ultima clave del padre (lo que implicaria cambiar la clave tambien en el padre del padre) se devuelve
+	 * hojaIzquierda y hojaDerecha son los nodos en cuestion, nodoPadre es el padre de ambos y
+	 * posicionPadre es la ubicacion en el padre, del nodo que contiene al elemento a ser borrado.
+	 * Si cambia la ultima clave del padre (lo que implicaria cambiar la clave tambien en el padre
+	 * del padre) se devuelve
 	 * Resultado::ACTUALIZAR_ULTIMA_CLAVE, caso contrario se devuelve Resultado::OK
 	 */
 	Resultado pasarElementosHojaIzquierda(NodoHoja *hojaIzquierda, NodoHoja *hojaDerecha, NodoInterior *nodoPadre, int posicionPadre);
@@ -135,8 +144,8 @@ public:
 
 	/*
 	 * Se encarga de balancear un nodo hoja izquierdo, con su derecho, pasando elementos a este ultimo.
-	 * hojaIzquierda y hojaDerecha son los nodos en cuestion, nodoPadre es el padre de ambos y posicionPadre es la ubicacion en el
-	 * padre, del nodo que contiene al elemento a ser borrado.
+	 * hojaIzquierda y hojaDerecha son los nodos en cuestion, nodoPadre es el padre de ambos y
+	 * posicionPadre es la ubicacion en el padre, del nodo que contiene al elemento a ser borrado.
 	 */
 	void pasarElementosHojaDerecha(NodoHoja *hojaIzquierda, NodoHoja *hojaDerecha, NodoInterior *nodoPadre, int posicionPadre);
 
@@ -144,8 +153,7 @@ public:
 
 	/*
 	 * Modifico un registro
-	 * Pos: Devuelve TRUE si se modifico correctamente y FALSE en caso de que no exista
-	 * 	el mismo.
+	 * Pos: Devuelve TRUE si se modifico correctamente y FALSE en caso de que no exista	el mismo.
 	 */
 	bool modificar(Registro* registro);
 
