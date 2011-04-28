@@ -1,9 +1,3 @@
-/*
- * HandlerArchivoLog.h
- *
- *  Created on: 22/04/2011
- *      Author: andrea
- */
 
 #ifndef HANDLERARCHIVOLOG_H_
 #define HANDLERARCHIVOLOG_H_

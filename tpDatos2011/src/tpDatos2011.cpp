@@ -87,7 +87,7 @@ void borrarNodos(ArbolBMas *a){
 
 }
 
-int main() {
+//int main() {
 //
 //	HandlerDeBloques* h = new HandlerDeBloques("Archivo_Nodos.txt");
 //
@@ -153,12 +153,12 @@ int main() {
 //	delete(e2);
 //	delete(e3);
 //
-	limpiarArchivos();
-	ArbolBMas* a = new ArbolBMas(1, PATH_ARBOL, 20);
+//	limpiarArchivos();
+//	ArbolBMas* a = new ArbolBMas(1, PATH_ARBOL, 20);
 
-	llenarArbol(a);
+//	llenarArbol(a);
 	//borrarNodos(a);
 
 
-	delete a;
-}
+//	delete a;
+//}

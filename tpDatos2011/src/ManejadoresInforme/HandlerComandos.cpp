@@ -94,18 +94,19 @@ void HandlerComandos::listarLibrosIngresados(){
 	list<int> listaDeIds;
 	this->log->obtenerListaIDs(listaDeIds);
 	list<int>::iterator it = listaDeIds.begin();
+	printf("Bookerio: Libros Ingresados:\n");
 	while ( it != listaDeIds.end()){
-		printf("%d", *it);
+		printf("%d \n", *it);
 		it++;
 	}
-
+	printf("Bookerio: Fin de libros Ingresados:\n");
 }
 
 void HandlerComandos::obtenerLibro(int IDArchivo){
 	char* libro = this->handler->buscarRegistro(IDArchivo);
 	printf("Bookerio: Libro %d \n", IDArchivo);
 	printf("%s", libro);
-
+	printf("Bookerio: Fin de libro %d \n", IDArchivo);
 }
 
 //TODO Probar!
@@ -122,17 +123,20 @@ void HandlerComandos::quitarLibro(int IDArchivo) {
 	printf("Bookerio: Libro ID  %d : Borrado con éxito. \n", IDArchivo);
 }
 
+//TODO Probar
 void HandlerComandos::verEstructura(int parametro){
-	//TODO enlazar con los métodos que tiene cada índice para mostrarse
 	switch (parametro) {
 	case 'a': {
 			printf("Viendo estructura del árbol de autores. \n");
-
-			//this->arbol_autores->MostrarArbol();
+			ArbolBMas* arbol = new ArbolBMas(1, PATH_NODOS);
+			arbol->MostrarArbol();
+			delete arbol;
 			break; }
 	case 'e': {
 			printf("Viendo estructura del árbol de editoriales. \n");
-			//this->arbol_editoriales->MostrarArbol();
+			ArbolBMas* arbol = new ArbolBMas(2, PATH_NODOS);
+			arbol->MostrarArbol();
+			delete arbol;
 			break; }
 	case 't': {
 			printf("Viendo estructura del hash de títulos. \n");
@@ -240,7 +244,7 @@ void HandlerComandos::eliminar_de_hash_palabra(int offset) {
 
 
 void HandlerComandos::insertarEnArbol (int tipoArbol, int offset){
-	ArbolBMas* arbol = new ArbolBMas(tipoArbol, PATH_NODOS, 20);
+	ArbolBMas* arbol = new ArbolBMas(tipoArbol, PATH_NODOS);
 	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
 
 	if (tipoArbol == 1){
@@ -266,11 +270,12 @@ void HandlerComandos::insertarEnArbol (int tipoArbol, int offset){
 	delete arbol;
 }
 
+//TODO Arreglar
 bool HandlerComandos::eliminarEnArbol(int tipoArbol, int offset) {
-	ArbolBMas* arbol = new ArbolBMas(tipoArbol, PATH_NODOS, 20);
+	ArbolBMas* arbol = new ArbolBMas(tipoArbol, PATH_NODOS);
 	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
-	arbol->borrar(reg->getClave());
+	//arbol->borrar(reg->getClave());
 	delete reg;
 	delete arbol;
-	return r;
+	return true;
 }

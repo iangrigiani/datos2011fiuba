@@ -164,7 +164,7 @@ public:
 	bool borrar(Clave clave);
 
 	/*
-	 * Devuelve el nodo con n�mero "numeroDeNodo".
+	 * Devuelve el nodo con número "numeroDeNodo".
 	 * Pos: Devuelve un puntero al Nodo buscado. Si el numero de nodo es invalido
 	 * 		devuelve NULL.
 	 */
@@ -177,8 +177,8 @@ public:
 	int getCantidadBloques();
 
 	int getTipo(){
-		return this->tipo;
-	}
+		return this->tipo;}
+
 private:
 	void grabarDatosConfiguracion();
 	void refactorizarNodoFrontCoding(NodoHoja** nodoHojaCorriente);
