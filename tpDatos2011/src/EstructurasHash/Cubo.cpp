@@ -1,10 +1,10 @@
 
 #include "Cubo.h"
 
-Cubo::Cubo(int tam_disp) : Bloque(tam_disp), esp_libre(TAM_BLOQUE) {}
+Cubo::Cubo(int tam_disp) : Bloque(tam_disp), esp_libre(TAM_CUBO - sizeof(int)) {}
 
 bool Cubo::esta_vacio() const {
-	if (this->esp_libre == TAM_BLOQUE)
+	if (this->esp_libre == (TAM_CUBO - sizeof(int)))
 		return true;
 	return false;
 }
@@ -75,7 +75,7 @@ RegPalabra& Cubo::buscar_reg(int clave) {
 
 void Cubo::vaciar() {
 	this->set_tam_disp(1);
-	this->esp_libre = TAM_BLOQUE;
+	this->esp_libre = TAM_CUBO - sizeof(int);
 	this->regs.clear();
 }
 
