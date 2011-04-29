@@ -192,6 +192,21 @@ bool HandlerComandos::eliminar_de_hash_titulo(int offset) {
 	return r;
 }
 
+list < int > HandlerComandos::eliminar_repeticion_y_falso_positivo(list < int > & elementos) {
+	list < int > filtrados;
+	list < int > ::iterator it_1;
+	list < int > ::iterator it_2;
+
+	for (it_1 = elementos.begin(); it_1 != elementos.end(); ++ it_1) {
+		it_2 = filtrados.begin();
+		while ((*it_2) != (*it_1) && it_2 != filtrados.end())
+			++ it_2;
+		if ((*it_2) != (*it_1) && it_2 == filtrados.end())
+			filtrados.push_back(*it_1);
+	}
+	return filtrados;
+}
+
 int HandlerComandos::funcion_hash_palabra(const string& str) {
 	int clave = 0;
 	for (unsigned int i = 0; i < str.size(); ++ i)
@@ -207,14 +222,26 @@ void HandlerComandos::insertar_en_hash_palabra(int offset) {
 	HashPalabra hash;
 	hash.crear_condiciones_iniciales();
 
+	string str;
 	int clave;
-	list < int > offsets;
+	list < int > claves, offsets;
+	list < string > ::iterator it_1;
+	list < int > ::iterator it_2;
+
 	list < string > palabras = reg->getPalabras();
-	list < string > ::iterator it;
-	for (it = palabras.begin(); it != palabras.end(); ++ it) {
-		clave = this->funcion_hash_palabra(*it);
+
+	for (it_1 = palabras.begin(); it_1 != palabras.end(); ++ it_1) {
+		str = *it_1;
+		clave = this->funcion_hash_palabra(str);
+		str.clear();
+		claves.push_back(clave);
+	}
+
+	list < int > filtrados = this->eliminar_repeticion_y_falso_positivo(claves);
+
+	for (it_2 = filtrados.begin(); it_2 != filtrados.end(); ++ it_2) {
 		offsets.push_back(offset);
-		hash.insercion(clave, offsets);
+		hash.insercion((*it_2), offsets);
 		offsets.clear();
 	}
 	//hash.mostrar();
@@ -235,7 +262,6 @@ void HandlerComandos::eliminar_de_hash_palabra(int offset) {
 	}
 	//hash.mostrar();
 }
-
 
 void HandlerComandos::insertarEnArbol (int tipoArbol, int offset){
 	ArbolBMas* arbol = new ArbolBMas(tipoArbol, PATH_NODOS);

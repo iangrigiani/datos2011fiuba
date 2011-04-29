@@ -28,6 +28,8 @@ private:
 
 	bool eliminar_de_hash_titulo(int offset);
 
+	list < int > eliminar_repeticion_y_falso_positivo(list < int > & elementos);
+
 	int funcion_hash_palabra(const string& str);
 
 	void insertar_en_hash_palabra(int offset);
