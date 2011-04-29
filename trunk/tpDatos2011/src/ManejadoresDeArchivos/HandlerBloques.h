@@ -13,13 +13,6 @@ private:
 
 	HandlerEspLibre handler_esp_libre;
 
-	/*
-	 * Obtiene el tamanio del archivo de bloques.
-	 * Pre: -
-	 * Pos: devuelve dicho tamanio.
-	 */
-	int get_tam_arch_bloques() const;
-
 public:
 
 	HandlerBloques();
@@ -41,13 +34,11 @@ public:
 	const HandlerEspLibre& get_handler_esp_libre() const { return this->handler_esp_libre; }
 
 	/*
-	 * Obtiene la posicion en la que sera insertado el bloque en caso de que la operacion a llevar
-	 * a cabo se trate de una insercion.
+	 * Obtiene el tamanio del archivo de bloques.
 	 * Pre: -
-	 * Pos: o bien devuelve la posicion de un espacio libre en el archivo de bloques o la posicion
-	 * siguiente a la ultima posicion del ultimo bloque del archivo de bloques.
+	 * Pos: devuelve dicho tamanio.
 	 */
-	//int get_pos_insercion() const;
+	int get_tam_arch_bloques() const;
 
 	/*
 	 * Carga el bloque que se encuentra en la posicion pasada por parametro desde el archivo de
