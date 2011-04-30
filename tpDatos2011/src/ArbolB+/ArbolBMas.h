@@ -7,8 +7,6 @@
 #include "../ModuloDePersistencia/Persistencia.h"
 #include "NodoInterior.h"
 #include "NodoHoja.h"
-#include "IteradorArbol.h"
-#include "Resultado.h"
 #include "../EstructurasEnComun/Constantes.h"
 #include "../ModuloDePersistencia/EscritorNodosLibres.h"
 #include "../ModuloDePersistencia/EscritorNodo.h"
@@ -45,7 +43,9 @@ private:
 	EscritorNodosLibres* escritor_Datos_Configuracion;
 	int cantidadNodos;
 	vector<int> nodosLibres;
-//	Persistor* persistor;
+
+	Clave ultimaClave;
+	enum enumReturn {RESULTADO_OK = 0, NO_ENCONTRADO = 1, ACTUALIZAR_ULTIMA_CLAVE = 2, FUSION = 4} flags;
 
 public:
 
@@ -63,13 +63,6 @@ public:
 	 * Pos: Devuelve TRUE si se inserto correctamente y FALSE en caso contrario.
 	 */
 	bool insertar(Elementos* elemento);
-
-	/*
-	 * Devuelve un IteradorArbol al primer nodo hoja del arbol.
-	 * Pos: Devuelve el iterador en caso de que exista algun registro en el arbol.
-	 */
-	IteradorArbol* obtenerIterador();
-
 
 	/*
 	 * Buscar una clave en el archivo
@@ -92,7 +85,7 @@ public:
 	 * el padre.
 	 * Puede devolver OK, NO_ENCONTRADO, ACTUALIZAR_ULTIMA_CLAVE o FUSION_NODOS segun sea el caso.
 	 */
-	Resultado borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nodoIzquierda, Nodo *nodoDerecha,
+	int borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nodoIzquierda, Nodo *nodoDerecha,
 			NodoInterior *nodoPadreIzquierda, NodoInterior *nodoPadreDerecha, NodoInterior *nodoPadre, int posicionPadre);
 
 
@@ -102,16 +95,16 @@ public:
 	 * elementos de hojaDerecha.
 	 * Devuelve Resultado::FUSION_NODOS.
 	 */
-	Resultado fusionarHojas(NodoHoja* hojaIzquierda, NodoHoja* hojaDerecha);
+	int fusionarHojas(NodoHoja* hojaIzquierda, NodoHoja* hojaDerecha);
 
 
 	/*
 	 * Se encarga de fusionar dos nodos interiores.
 	 * nodoIzquierda y nodoDerecha son los nodos en cuestion. En nodoIzquierda se pasan todos los
 	 * elementos de nodoDerecha.
-	 * Si se produce la fusion devuelve Resultado::FUSION_NODOS, sino Resultado::OK
+	 * Si se produce la fusion devuelve FUSION, sino RESULTADO_OK
 	 */
-	Resultado fusionarNodosInteriores(NodoInterior* nodoIzquierda, NodoInterior* nodoDerecha, NodoInterior* nodoPadre, int posicionPadre);
+	int fusionarNodosInteriores(NodoInterior* nodoIzquierda, NodoInterior* nodoDerecha, NodoInterior* nodoPadre, int posicionPadre);
 
 
 	/*
@@ -139,7 +132,7 @@ public:
 	 * del padre) se devuelve
 	 * Resultado::ACTUALIZAR_ULTIMA_CLAVE, caso contrario se devuelve Resultado::OK
 	 */
-	Resultado pasarElementosHojaIzquierda(NodoHoja *hojaIzquierda, NodoHoja *hojaDerecha, NodoInterior *nodoPadre, int posicionPadre);
+	int pasarElementosHojaIzquierda(NodoHoja *hojaIzquierda, NodoHoja *hojaDerecha, NodoInterior *nodoPadre, int posicionPadre);
 
 
 	/*
@@ -186,7 +179,7 @@ private:
 	NodoHoja* obtenerNodoHoja();
 	NodoInterior* obtenerNodoInterior(int nivel);
 	int obtenerNumeroNodo();
-	bool insertarRecursivamente(Nodo* nodoCorriente, Clave& claveNum, Elementos* dato, Clave* clavePromocion, Nodo** nuevoNodo);
+	bool insertarRecursivo(Nodo* nodoCorriente, Clave& claveNum, Elementos* dato, Clave* clavePromocion, Nodo** nuevoNodo);
 	void persistirNodo(Nodo* nodo);
 	void toString(Nodo* nodo, int tab, ofstream& fo);
 	void liberarMemoriaNodo(Nodo* nodo);

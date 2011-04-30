@@ -1,4 +1,3 @@
-
 #include "ArbolBMas.h"
 #include <iostream>
 
@@ -52,7 +51,8 @@ void ArbolBMas::grabarDatosConfiguracion(){
 }
 bool ArbolBMas::insertar(Elementos* elemento){
 	Nodo* nuevoNodoHijo = NULL;
-	Clave clavePromocion;
+
+	Clave nuevaClaveRaiz;
 	if (raiz == NULL) {
 		raiz = obtenerNodoHoja();
 		raiz->numero = primeraHoja = 0;
@@ -61,14 +61,18 @@ bool ArbolBMas::insertar(Elementos* elemento){
 		this->cantidadNodos = 1;
 	}
 	string palabra = elemento->getClave()->getClave();
+
+	// Saco el frontcoding antes de insertar recursivamente
 	elemento->sacarElFrontCoding(palabra);
+
 	Clave* clave = new Clave(elemento->getClave()->getClave());
-	bool resultado = insertarRecursivamente(raiz,*(clave) , elemento, &clavePromocion, &nuevoNodoHijo);
+	// Inserto recursivamente
+	bool resultado = insertarRecursivo(raiz,*(clave) , elemento, &nuevaClaveRaiz, &nuevoNodoHijo);
 
 	if (nuevoNodoHijo){
 		persistirNodo(nuevoNodoHijo);
-//		this->MostrarArbol(nuevoNodoHijo);
 		NodoInterior *nuevaRaiz = obtenerNodoInterior(raiz->nivel + 1);
+
 		// Muevo la raiz a otra posicion y persisto la nueva raiz en la posicion cero
 		raiz->numero = obtenerNumeroNodo();
 		if (raiz->isNodoHoja()) {
@@ -77,62 +81,61 @@ bool ArbolBMas::insertar(Elementos* elemento){
 		}
 		persistirNodo(raiz);
 
-//		this->MostrarArbol(raiz);
-		nuevaRaiz->claves[0] = clavePromocion;
+		nuevaRaiz->claves[0] = nuevaClaveRaiz;
 		nuevaRaiz->hijos[0] = raiz->numero;
 		nuevaRaiz->hijos[1] = nuevoNodoHijo->numero;
 		nuevaRaiz->cantidadClaves = 1;
-		nuevaRaiz->espacioOcupado += clavePromocion.getTamanio() + TAM_CONTROL_REGISTRO;
+		nuevaRaiz->espacioOcupado += nuevaClaveRaiz.getTamanio() + TAM_CONTROL_REGISTRO;
 		nuevaRaiz->numero = 0;
 		persistirNodo(nuevaRaiz);
 
-//		this->MostrarArbol(nuevaRaiz);
+		// Libero memoria
 		liberarMemoriaNodo(raiz);
 		liberarMemoriaNodo(nuevoNodoHijo);
+
+		// Asigno la nueva raiz
 		raiz = nuevaRaiz;
 	} else {
-//
-//		if (raiz->nivel == 0){
-//			refactorizarNodoNoHojaFrontCoding(&raiz);
-//		}
 		persistirNodo(raiz);
 	}
 	return resultado;
 }
 
-//list<Elementos*> ArbolBMas::buscar(Clave clave) {
-//
-//}
 
-
-bool ArbolBMas::insertarRecursivamente(Nodo* nodoCorriente, Clave& clave, Elementos* dato, Clave* clavePromocion, Nodo** nuevoNodo){
+bool ArbolBMas::insertarRecursivo(Nodo* nodoCorriente, Clave& clave, Elementos* dato, Clave* nuevaClaveRaiz, Nodo** nuevoNodo){
 	if (!nodoCorriente->isNodoHoja()) {
+		// Si no es nodo hoja, casteo a nodo interior
 		NodoInterior *nodoInteriorCorriente = static_cast<NodoInterior*> (nodoCorriente);
 		Clave nuevaClave;
 		Nodo* nuevoNodoHijo = NULL;
+		// Obtengo la posicion a insertar
 		int posicion = obtenerPosicion(nodoInteriorCorriente, clave);
 		Nodo* nodoHijo = hidratarNodo(nodoInteriorCorriente->hijos[posicion]);
 
-		bool resultado = insertarRecursivamente(nodoHijo, clave, dato, &nuevaClave, &nuevoNodoHijo);
+		// Vuelvo a insertar recursivamente
+		bool resultado = insertarRecursivo(nodoHijo, clave, dato, &nuevaClave, &nuevoNodoHijo);
 
 		if (nuevoNodoHijo) {
 
 			if (nodoInteriorCorriente->isOverflow(nuevaClave.getTamanio() + TAM_CONTROL_REGISTRO + TAM_CONTROL_NODO)) {
 
-				dividirNodoInterior(nodoInteriorCorriente, clavePromocion, nuevoNodo, posicion);
+				// Si hay overflow, tengo que hacer split del nodo interior
+				dividirNodoInterior(nodoInteriorCorriente, nuevaClaveRaiz, nuevoNodo, posicion);
 
 				if (posicion == nodoInteriorCorriente->cantidadClaves + 1
 						&& nodoInteriorCorriente->cantidadClaves < (*nuevoNodo)->cantidadClaves) {
 
 					NodoInterior *nuevoNodoInterior = static_cast<NodoInterior*> (*nuevoNodo);
-					nodoInteriorCorriente->claves[nodoInteriorCorriente->cantidadClaves] = *clavePromocion;
+					nodoInteriorCorriente->claves[nodoInteriorCorriente->cantidadClaves] = *nuevaClaveRaiz;
 					nodoInteriorCorriente->hijos[nodoInteriorCorriente->cantidadClaves + 1] = nuevoNodoInterior->hijos[0];
 					nodoInteriorCorriente->cantidadClaves++;
-					nodoInteriorCorriente->espacioOcupado += (*clavePromocion).getTamanio() + TAM_CONTROL_REGISTRO;
+					nodoInteriorCorriente->espacioOcupado += (*nuevaClaveRaiz).getTamanio() + TAM_CONTROL_REGISTRO;
 					nuevoNodoInterior->hijos[0] = nuevoNodoHijo->numero;
-					*clavePromocion = nuevaClave;
+					*nuevaClaveRaiz = nuevaClave;
+					// Persisto el nodo y libero memoria
 					persistirNodo(nuevoNodoHijo);
 					liberarMemoriaNodo(nuevoNodoHijo);
+					// Persisto el nodo y libero memoria
 					persistirNodo(nodoHijo);
 					liberarMemoriaNodo(nodoHijo);
 					return resultado;
@@ -154,15 +157,20 @@ bool ArbolBMas::insertarRecursivamente(Nodo* nodoCorriente, Clave& clave, Elemen
 			nodoInteriorCorriente->hijos[posicion + 1] = nuevoNodoHijo->numero;
 			nodoInteriorCorriente->cantidadClaves++;
 			nodoInteriorCorriente->espacioOcupado += nuevaClave.getTamanio() + TAM_CONTROL_REGISTRO;
+			// Persisto el nodo y libero memoria
 			persistirNodo(nuevoNodoHijo);
 			liberarMemoriaNodo(nuevoNodoHijo);
 		}
+
+		// Persisto el nodo y libero memoria
 		persistirNodo(nodoHijo);
 		liberarMemoriaNodo(nodoHijo);
 		return resultado;
 
 	} else {
 		NodoHoja *nodoHojaCorriente = static_cast<NodoHoja*> (nodoCorriente);
+
+		// Saco el frontcoding antes de calcular la posicion
 		sacarFrontCodingNodoHoja(&nodoHojaCorriente);
 		int posicion = obtenerPosicion(nodoHojaCorriente, clave);
 
@@ -177,6 +185,7 @@ bool ArbolBMas::insertarRecursivamente(Nodo* nodoCorriente, Clave& clave, Elemen
 		nodoHojaCorriente->datos[i + 1] = *dato;
 		nodoHojaCorriente->claves[i + 1] = clave;
 		nodoHojaCorriente->cantidadClaves++;
+
 		if (nodoHojaCorriente->cantidadClaves > 1){
 			refactorizarNodoFrontCoding(&nodoHojaCorriente);
 		}
@@ -184,7 +193,7 @@ bool ArbolBMas::insertarRecursivamente(Nodo* nodoCorriente, Clave& clave, Elemen
 
 		if (nodoHojaCorriente->isOverflow(TAM_CONTROL_NODO)) {
 
-			dividirNodoHoja(nodoHojaCorriente, clavePromocion, nuevoNodo);
+			dividirNodoHoja(nodoHojaCorriente, nuevaClaveRaiz, nuevoNodo);
 			refactorizarNodoFrontCoding(&nodoHojaCorriente);
 			refactorizarNodoNoHojaFrontCoding(&(*nuevoNodo));
 			if (posicion >= nodoHojaCorriente->cantidadClaves) {
@@ -198,7 +207,7 @@ bool ArbolBMas::insertarRecursivamente(Nodo* nodoCorriente, Clave& clave, Elemen
 			}
 		}
 		if (nuevoNodo && nodoHojaCorriente != *nuevoNodo && posicion == nodoHojaCorriente->cantidadClaves - 1) {
-			*clavePromocion = clave;
+			*nuevaClaveRaiz = clave;
 		}
 
 		return true;
@@ -206,10 +215,15 @@ bool ArbolBMas::insertarRecursivamente(Nodo* nodoCorriente, Clave& clave, Elemen
 }
 
 void ArbolBMas::refactorizarNodoFrontCoding(NodoHoja** nodo){
+	// Resto el tamaño del 1er dato
     (*nodo)->espacioOcupado -= ((*nodo))->datos[0].getTamanio();
+    // Le saco el frontcoding a esa clave
     (*nodo)->datos[0].sacarElFrontCoding(((*nodo))->datos[0].getClave()->getClave());
+    // Le sumo al nodo el tamaño del dato con la clave nueva
     (*nodo)->espacioOcupado += (*nodo)->datos[0].getTamanio();
 	string primera = (*nodo)->datos[0].getClave()->getClave();
+
+	// Hago lo mismo con el resto de las claves, pasandolas a frontcoding con respecto a la primera
 	for (int i = 1; i < (*nodo)->cantidadClaves ; i++){
 		(*nodo)->espacioOcupado -= ((*nodo))->datos[i].getTamanio();
 		(*nodo)->datos[i].transformarAFrontCoding(primera);
@@ -218,10 +232,15 @@ void ArbolBMas::refactorizarNodoFrontCoding(NodoHoja** nodo){
 }
 
 void ArbolBMas::refactorizarNodoNoHojaFrontCoding(Nodo** nodo){
+	// Resto el tamaño del 1er dato
 	static_cast<NodoHoja*>(*nodo)->espacioOcupado -= (static_cast<NodoHoja*>(*nodo))->datos[0].getTamanio();
+	// Le saco el frontcoding a esa clave
 	static_cast<NodoHoja*>(*nodo)->datos[0].sacarElFrontCoding((static_cast<NodoHoja*>(*nodo))->datos[0].getClave()->getClave());
+	// Le sumo al nodo el tamaño del dato con la clave nueva
 	static_cast<NodoHoja*>(*nodo)->espacioOcupado += static_cast<NodoHoja*>(*nodo)->datos[0].getTamanio();
 	string primera = static_cast<NodoHoja*>(*nodo)->datos[0].getClave()->getClave();
+
+	// Hago lo mismo con el resto de las claves, pasandolas a frontcoding con respecto a la primera
 	for (int i = 1; i < static_cast<NodoHoja*>(*nodo)->cantidadClaves ; i++){
 		static_cast<NodoHoja*>(*nodo)->espacioOcupado -= (static_cast<NodoHoja*>(*nodo))->datos[i].getTamanio();
 		static_cast<NodoHoja*>(*nodo)->datos[i].transformarAFrontCoding(primera);
@@ -231,6 +250,8 @@ void ArbolBMas::refactorizarNodoNoHojaFrontCoding(Nodo** nodo){
 
 int ArbolBMas::obtenerNumeroNodo(){
 	int numeroDeNodo;
+
+	// Si no hay nodos libres en la lista nodosLibres, devuelvo el siguiente de los que estan siendo usados
 	if (nodosLibres.empty()) {
 		this->cantidadNodos++;
 		numeroDeNodo = this->cantidadNodos-1;
@@ -259,28 +280,28 @@ void ArbolBMas::liberarMemoriaNodo(Nodo* nodo){
 	}
 }
 
-int ArbolBMas::obtenerPosicion(Nodo *unNodo, Clave clave) {
+int ArbolBMas::obtenerPosicion(Nodo *nodo, Clave clave) {
 
-	if (unNodo->cantidadClaves == 0)
+	if (nodo->cantidadClaves == 0)
 		return 0;
 	int inferior = 0;
-	int superior = (unNodo->cantidadClaves) - 1;
+	int superior = (nodo->cantidadClaves) - 1;
 
 	while (inferior < superior) {
 		int medio = (inferior + superior) / 2;
-		if (clave.getClave() <= unNodo->claves[medio].getClave()) {
+		if (clave.getClave() <= nodo->claves[medio].getClave()) {
 			superior = medio - 1;
 		} else {
 			inferior = medio + 1;
 		}
 	}
-	if (superior < 0 || (unNodo->claves[superior].getClave() < clave.getClave()))
+	if (superior < 0 || (nodo->claves[superior].getClave() < clave.getClave()))
 		superior++;
 
 	return superior;
 }
 
-void ArbolBMas::dividirNodoInterior(NodoInterior* nodoInteriorActual, Clave* clavePromocion, Nodo** nuevoNodoInterior, int nuevaPosicion){
+void ArbolBMas::dividirNodoInterior(NodoInterior* nodoInteriorActual, Clave* nuevaClaveRaiz, Nodo** nuevoNodoInterior, int nuevaPosicion){
 
 	int medio = nodoInteriorActual->cantidadClaves / 2;
 
@@ -300,14 +321,19 @@ void ArbolBMas::dividirNodoInterior(NodoInterior* nodoInteriorActual, Clave* cla
 	auxNuevoNodoInterior->hijos[auxNuevoNodoInterior->cantidadClaves] = nodoInteriorActual->hijos[nodoInteriorActual->cantidadClaves];
 	nodoInteriorActual->cantidadClaves = medio;
 	nodoInteriorActual->espacioOcupado -= auxNuevoNodoInterior->espacioOcupado;
-	*clavePromocion = nodoInteriorActual->claves[medio];
+	*nuevaClaveRaiz = nodoInteriorActual->claves[medio];
 	*nuevoNodoInterior = auxNuevoNodoInterior;
 }
 
 void ArbolBMas::sacarFrontCodingNodo (Nodo ** nodo){
+	// Resto el tamaño original en el nodo
 	static_cast<NodoHoja*>(*nodo)->espacioOcupado -= (static_cast<NodoHoja*>(*nodo))->datos[0].getTamanio();
+	// Le saco el frontcoding
 	static_cast<NodoHoja*>(*nodo)->datos[0].sacarElFrontCoding((static_cast<NodoHoja*>(*nodo))->datos[0].getClave()->getClave());
+	// Sumo el nuevo tamaño sin el frontcoding en el nodo
 	static_cast<NodoHoja*>(*nodo)->espacioOcupado += static_cast<NodoHoja*>(*nodo)->datos[0].getTamanio();
+
+	// Hago lo mismo con el resto de las claves
 	for (int i = 1; i < static_cast<NodoHoja*>(*nodo)->cantidadClaves ; i++){
 		static_cast<NodoHoja*>(*nodo)->espacioOcupado -= (static_cast<NodoHoja*>(*nodo))->datos[i].getTamanio();
 		static_cast<NodoHoja*>(*nodo)->datos[i].sacarElFrontCoding(static_cast<NodoHoja*>(*nodo)->datos[i].getClave()->getClave());
@@ -316,9 +342,14 @@ void ArbolBMas::sacarFrontCodingNodo (Nodo ** nodo){
 }
 
 void ArbolBMas::sacarFrontCodingNodoHoja (NodoHoja ** nodo){
+	// Resto el tamaño original en el nodo
     (*nodo)->espacioOcupado -= ((*nodo))->datos[0].getTamanio();
+    // Le saco el frontcoding
     (*nodo)->datos[0].sacarElFrontCoding(((*nodo))->datos[0].getClave()->getClave());
+    // Sumo el nuevo tamaño sin el frontcoding en el nodo
     (*nodo)->espacioOcupado += (*nodo)->datos[0].getTamanio();
+
+    // Hago lo mismo con el resto de las claves
 	for (int i = 1; i < (*nodo)->cantidadClaves ; i++){
 		(*nodo)->espacioOcupado -= ((*nodo))->datos[i].getTamanio();
 		(*nodo)->datos[i].sacarElFrontCoding((*nodo)->datos[i].getClave()->getClave());
@@ -451,11 +482,12 @@ void ArbolBMas::hidratarDatosConfiguracion(){
 bool ArbolBMas::borrar(Clave clave){
 	if (!raiz)
 		return false;
-	Resultado resultado = ArbolBMas::borrarRecursivo(clave, raiz, NULL, NULL, NULL, NULL, NULL, 0);
-	return !resultado.contiene(Resultado::NO_ENCONTRADO);
+	int resultado = ArbolBMas::borrarRecursivo(clave, raiz, NULL, NULL, NULL, NULL, NULL, 0);
+	return resultado != NO_ENCONTRADO;
+	//return !resultado.contiene(Resultado::NO_ENCONTRADO);
 }
 
-Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nodoIzquierda, Nodo *nodoDerecha,
+int ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nodoIzquierda, Nodo *nodoDerecha,
 		NodoInterior *nodoPadreIzquierda, NodoInterior *nodoPadreDerecha, NodoInterior *nodoPadre, int posicionPadre) {
 	if (nodoCorriente->isNodoHoja()) {
 		sacarFrontCodingNodo(&nodoCorriente);
@@ -464,7 +496,7 @@ Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nod
 		NodoHoja *nodoHojaDerecha = static_cast<NodoHoja*> (nodoDerecha);
 		int posicion = obtenerPosicion(nodoHojaCorriente, clave);
 		if (posicion >= nodoHojaCorriente->cantidadClaves || clave.getClave() != nodoHojaCorriente->claves[posicion].getClave()) {
-			return Resultado::NO_ENCONTRADO;
+			return NO_ENCONTRADO;
 		}
 
 		nodoHojaCorriente->espacioOcupado -= (nodoHojaCorriente->datos[posicion].getTamanio() + nodoHojaCorriente->claves[posicion].getTamanio() + TAM_CONTROL_REGISTRO);
@@ -474,7 +506,7 @@ Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nod
 			nodoHojaCorriente->datos[i] = nodoHojaCorriente->datos[i + 1];
 		}
 
-		Resultado resultado = Resultado::OK;
+		int resultado = RESULTADO_OK;
 
 		// si se borro el elemento de la ultima posicion y no es la raiz
 		if (posicion == nodoHojaCorriente->cantidadClaves && nodoPadre) {
@@ -486,9 +518,11 @@ Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nod
 				}
 			} else {
 				if (nodoHojaCorriente->cantidadClaves >= 1) {
-					resultado |= Resultado (Resultado::ACTUALIZAR_ULTIMA_CLAVE, nodoHojaCorriente->claves[nodoHojaCorriente->cantidadClaves - 1]);
+					resultado = ACTUALIZAR_ULTIMA_CLAVE;
+					ultimaClave = nodoHojaCorriente->claves[nodoHojaCorriente->cantidadClaves - 1];
 				} else {
-					resultado |= Resultado (Resultado::ACTUALIZAR_ULTIMA_CLAVE, nodoHojaIzquierda->claves[nodoHojaIzquierda->cantidadClaves - 1]);
+					resultado = ACTUALIZAR_ULTIMA_CLAVE;
+					ultimaClave = nodoHojaIzquierda->claves[nodoHojaIzquierda->cantidadClaves - 1];
 				}
 			}
 		}
@@ -502,25 +536,25 @@ Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nod
 				primeraHoja = 0;
 				string archivoConfiguracion = PATH_CONFIGURACION_AUTORES;
 				remove(archivoConfiguracion.c_str());
-				return Resultado::OK;
+				return RESULTADO_OK;
 
 			} else if (((nodoHojaIzquierda == NULL || !nodoHojaIzquierda->puedeCederElementos())
 					&& (nodoHojaDerecha == NULL || !nodoHojaDerecha->puedeCederElementos()))
 					|| nodoHojaCorriente->cantidadClaves == 0) {
 
 				if (nodoPadreIzquierda == nodoPadre) {
-					resultado |= fusionarHojas(nodoHojaIzquierda, nodoHojaCorriente);
+					resultado = fusionarHojas(nodoHojaIzquierda, nodoHojaCorriente);
 				} else {
-					resultado |= fusionarHojas(nodoHojaCorriente, nodoHojaDerecha);
+					resultado = fusionarHojas(nodoHojaCorriente, nodoHojaDerecha);
 				}
 
 			} else if ((nodoHojaIzquierda != NULL && !nodoHojaIzquierda->puedeCederElementos())
 					&& (nodoHojaDerecha != NULL && nodoHojaDerecha->puedeCederElementos())) {
 
 				if (nodoPadreDerecha == nodoPadre) {
-					resultado |= pasarElementosHojaIzquierda(nodoHojaCorriente, nodoHojaDerecha, nodoPadreDerecha, posicionPadre);
+					resultado = pasarElementosHojaIzquierda(nodoHojaCorriente, nodoHojaDerecha, nodoPadreDerecha, posicionPadre);
 				} else {
-					resultado |= fusionarHojas(nodoHojaIzquierda, nodoHojaCorriente);
+					resultado = fusionarHojas(nodoHojaIzquierda, nodoHojaCorriente);
 				}
 
 			} else if ((nodoHojaIzquierda != NULL && nodoHojaIzquierda->puedeCederElementos())
@@ -529,12 +563,12 @@ Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nod
 				if (nodoPadreIzquierda == nodoPadre) {
 					pasarElementosHojaDerecha(nodoHojaIzquierda, nodoHojaCorriente, nodoPadreIzquierda, posicionPadre - 1);
 				} else {
-					resultado |= fusionarHojas(nodoHojaCorriente, nodoHojaDerecha);
+					resultado = fusionarHojas(nodoHojaCorriente, nodoHojaDerecha);
 				}
 
 			} else if (nodoPadreIzquierda == nodoPadreDerecha) {
 				if (nodoHojaIzquierda->espacioOcupado <= nodoHojaDerecha->espacioOcupado) {
-					resultado |= pasarElementosHojaIzquierda(nodoHojaCorriente, nodoHojaDerecha, nodoPadreDerecha, posicionPadre);
+					resultado = pasarElementosHojaIzquierda(nodoHojaCorriente, nodoHojaDerecha, nodoPadreDerecha, posicionPadre);
 				} else {
 					pasarElementosHojaDerecha(nodoHojaIzquierda, nodoHojaCorriente, nodoPadreIzquierda, posicionPadre - 1);
 				}
@@ -543,7 +577,7 @@ Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nod
 				if (nodoPadreIzquierda == nodoPadre) {
 					pasarElementosHojaDerecha(nodoHojaIzquierda, nodoHojaCorriente, nodoPadreIzquierda, posicionPadre	- 1);
 				} else {
-					resultado |= pasarElementosHojaIzquierda(nodoHojaCorriente, nodoHojaDerecha, nodoPadreDerecha, posicionPadre);
+					resultado = pasarElementosHojaIzquierda(nodoHojaCorriente, nodoHojaDerecha, nodoPadreDerecha, posicionPadre);
 				}
 			}
 		} else {
@@ -559,10 +593,7 @@ Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nod
 		NodoInterior *nodoInteriorDerecha = static_cast<NodoInterior*> (nodoDerecha);
 		Nodo *auxNodoIzquierda, *auxNodoDerecha;
 		NodoInterior *auxPadreIzquierda, *auxPadreDerecha;
-//		cout << "Cantidad de claves del padre: " << nodoInteriorCorriente->cantidadClaves << endl;
-//		for ( int i = 0; i <= nodoInteriorCorriente->cantidadClaves ; i++){
-//			cout << "Hijo " << i << ": " << nodoInteriorCorriente->hijos[i] << endl;
-//		}
+
 		int posicion = obtenerPosicion(nodoInteriorCorriente, clave);
 		if (posicion == 0) {
 			auxNodoIzquierda = (nodoIzquierda == NULL) ? NULL : hidratarNodo((static_cast<NodoInterior*> (nodoIzquierda))->hijos[nodoIzquierda->cantidadClaves]);
@@ -580,8 +611,8 @@ Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nod
 			auxPadreDerecha = nodoInteriorCorriente;
 		}
 		Nodo* auxNodoCorriente = hidratarNodo(nodoInteriorCorriente->hijos[posicion]);
-		Resultado resultadoParcial = borrarRecursivo(clave, auxNodoCorriente, auxNodoIzquierda, auxNodoDerecha, auxPadreIzquierda, auxPadreDerecha, nodoInteriorCorriente, posicion);
-		Resultado resultado = Resultado::OK;
+		int resultadoParcial = borrarRecursivo(clave, auxNodoCorriente, auxNodoIzquierda, auxNodoDerecha, auxPadreIzquierda, auxPadreDerecha, nodoInteriorCorriente, posicion);
+		int resultado = RESULTADO_OK;
 
 		if (auxNodoIzquierda)
 			liberarMemoriaNodo(auxNodoIzquierda);
@@ -590,21 +621,19 @@ Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nod
 		if (auxNodoCorriente)
 			liberarMemoriaNodo(auxNodoCorriente);
 
-		if (resultadoParcial.contiene(Resultado::NO_ENCONTRADO)) {
+		if (resultadoParcial == NO_ENCONTRADO) {
 			return resultadoParcial;
 		}
 
-		if (resultadoParcial.contiene(Resultado::ACTUALIZAR_ULTIMA_CLAVE)) {
+		if ( resultadoParcial == ACTUALIZAR_ULTIMA_CLAVE ) {
 			if (nodoPadre && posicionPadre < nodoPadre->cantidadClaves) {
 				nodoPadre->espacioOcupado -= nodoPadre->claves[posicionPadre].getTamanio();
-				nodoPadre->espacioOcupado += resultadoParcial.ultimaClave.getTamanio();
-				nodoPadre->claves[posicionPadre] = resultadoParcial.ultimaClave;
-			} else {
-				resultado |= Resultado(Resultado::ACTUALIZAR_ULTIMA_CLAVE, resultadoParcial.ultimaClave);
+				nodoPadre->espacioOcupado += ultimaClave.getTamanio();
+				nodoPadre->claves[posicionPadre] = ultimaClave;
 			}
 		}
 
-		if (resultadoParcial.contiene(Resultado::FUSION_NODOS)) {
+		if (resultadoParcial == FUSION) {
 			Nodo* nodoHijo = hidratarNodo(nodoInteriorCorriente->hijos[posicion]);
 			if (nodoHijo->cantidadClaves != 0)
 				posicion++;
@@ -631,7 +660,7 @@ Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nod
 			}
 		}
 
-		if (resultadoParcial.contiene(Resultado::FUSION_NODOS)
+		if (resultadoParcial == FUSION
 				&& nodoInteriorCorriente->isUnderflow()
 				&& !(nodoInteriorCorriente == raiz && nodoInteriorCorriente->cantidadClaves >= 1)) {
 
@@ -641,15 +670,15 @@ Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nod
 				persistirNodo(raiz);
 				nodosLibres.push_back(nodoInteriorCorriente->hijos[0]);
 				grabarDatosConfiguracion();
-				return Resultado::OK;
+				return RESULTADO_OK;
 
 			} else if ((nodoInteriorIzquierda == NULL || !nodoInteriorIzquierda->puedeCederElementos())
 					&& (nodoInteriorDerecha == NULL || !nodoInteriorDerecha->puedeCederElementos())) {
 
 				if (nodoPadreIzquierda == nodoPadre) {
-					resultado |= fusionarNodosInteriores(nodoInteriorIzquierda, nodoInteriorCorriente, nodoPadreIzquierda, posicionPadre - 1);
+					resultado = fusionarNodosInteriores(nodoInteriorIzquierda, nodoInteriorCorriente, nodoPadreIzquierda, posicionPadre - 1);
 				} else {
-					resultado |= fusionarNodosInteriores(nodoInteriorCorriente, nodoInteriorDerecha, nodoPadreDerecha, posicionPadre);
+					resultado = fusionarNodosInteriores(nodoInteriorCorriente, nodoInteriorDerecha, nodoPadreDerecha, posicionPadre);
 				}
 
 			} else if ((nodoInteriorIzquierda != NULL && !nodoInteriorIzquierda->puedeCederElementos())
@@ -658,7 +687,7 @@ Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nod
 				if (nodoPadreDerecha == nodoPadre) {
 					pasarElementosNodoInteriorIzquierdo(nodoInteriorCorriente, nodoInteriorDerecha, nodoPadreDerecha, posicionPadre);
 				} else {
-					resultado |= fusionarNodosInteriores(nodoInteriorIzquierda, nodoInteriorCorriente, nodoPadreIzquierda, posicionPadre - 1);
+					resultado = fusionarNodosInteriores(nodoInteriorIzquierda, nodoInteriorCorriente, nodoPadreIzquierda, posicionPadre - 1);
 				}
 
 			} else if ((nodoInteriorIzquierda != NULL && nodoInteriorIzquierda->puedeCederElementos())
@@ -667,7 +696,7 @@ Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nod
 				if (nodoPadreIzquierda == nodoPadre) {
 					pasarElementosNodoInteriorDerecho(nodoInteriorIzquierda, nodoInteriorCorriente, nodoPadreIzquierda, posicionPadre - 1);
 				} else {
-					resultado |= fusionarNodosInteriores(nodoInteriorCorriente, nodoInteriorDerecha, nodoPadreDerecha, posicionPadre);
+					resultado = fusionarNodosInteriores(nodoInteriorCorriente, nodoInteriorDerecha, nodoPadreDerecha, posicionPadre);
 				}
 
 			} else if (nodoPadreIzquierda == nodoPadreDerecha) {
@@ -696,7 +725,7 @@ Resultado ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nod
 }
 
 
-Resultado ArbolBMas::fusionarHojas(NodoHoja* hojaIzquierda, NodoHoja* hojaDerecha) {
+int ArbolBMas::fusionarHojas(NodoHoja* hojaIzquierda, NodoHoja* hojaDerecha) {
 	sacarFrontCodingNodoHoja(&hojaIzquierda);
 	sacarFrontCodingNodoHoja(&hojaDerecha);
 	for (int i = 0; i < hojaDerecha->cantidadClaves; i++) {
@@ -718,17 +747,17 @@ Resultado ArbolBMas::fusionarHojas(NodoHoja* hojaIzquierda, NodoHoja* hojaDerech
 	persistirNodo(hojaIzquierda);
 	persistirNodo(hojaDerecha);
 
-	return Resultado::FUSION_NODOS;
+	return FUSION;
 }
 
 
-Resultado ArbolBMas::fusionarNodosInteriores(NodoInterior* nodoIzquierda, NodoInterior* nodoDerecha, NodoInterior* nodoPadre, int posicionPadre) {
+int ArbolBMas::fusionarNodosInteriores(NodoInterior* nodoIzquierda, NodoInterior* nodoDerecha, NodoInterior* nodoPadre, int posicionPadre) {
 
-	Resultado resultado;
 	int espacioOcupadoTotal = (nodoIzquierda->espacioOcupado + nodoDerecha->espacioOcupado + nodoPadre->claves[posicionPadre].getTamanio() + TAM_CONTROL_REGISTRO);
 
+	enumReturn resultado;
 	if (espacioOcupadoTotal > TAM_EFECTIVO_NODO) {
-		resultado = Resultado::OK;
+		resultado = RESULTADO_OK;
 	} else {
 		nodoIzquierda->claves[nodoIzquierda->cantidadClaves] = nodoPadre->claves[posicionPadre];
 		nodoIzquierda->cantidadClaves++;
@@ -746,7 +775,7 @@ Resultado ArbolBMas::fusionarNodosInteriores(NodoInterior* nodoIzquierda, NodoIn
 		nodosLibres.push_back(nodoDerecha->numero);
 		grabarDatosConfiguracion();
 
-		resultado = Resultado::FUSION_NODOS;
+		resultado = FUSION;
 	}
 	persistirNodo(nodoIzquierda);
 	persistirNodo(nodoDerecha);
@@ -755,7 +784,7 @@ Resultado ArbolBMas::fusionarNodosInteriores(NodoInterior* nodoIzquierda, NodoIn
 }
 
 
-Resultado ArbolBMas::pasarElementosHojaIzquierda(NodoHoja *hojaIzquierda, NodoHoja *hojaDerecha, NodoInterior *nodoPadre, int posicionPadre) {
+int ArbolBMas::pasarElementosHojaIzquierda(NodoHoja *hojaIzquierda, NodoHoja *hojaDerecha, NodoInterior *nodoPadre, int posicionPadre) {
 
 	int tamanioMedio = (hojaDerecha->espacioOcupado - hojaIzquierda->espacioOcupado) / 2;
 	int espacioDesplazado = 0;
@@ -799,12 +828,13 @@ Resultado ArbolBMas::pasarElementosHojaIzquierda(NodoHoja *hojaIzquierda, NodoHo
 			nodoPadre->espacioOcupado -= nodoPadre->claves[posicionPadre].getTamanio();
 			nodoPadre->espacioOcupado += hojaIzquierda->claves[hojaIzquierda->cantidadClaves - 1].getTamanio();
 			nodoPadre->claves[posicionPadre] = hojaIzquierda->claves[hojaIzquierda->cantidadClaves - 1];
-			return Resultado::OK;
+			return RESULTADO_OK;
 		} else {
-			return Resultado(Resultado::ACTUALIZAR_ULTIMA_CLAVE, hojaIzquierda->claves[hojaIzquierda->cantidadClaves - 1]);
+			ultimaClave = hojaIzquierda->claves[hojaIzquierda->cantidadClaves - 1];
+			return ACTUALIZAR_ULTIMA_CLAVE;
 		}
 	} else {
-		return Resultado::OK;
+		return RESULTADO_OK;
 	}
 }
 
