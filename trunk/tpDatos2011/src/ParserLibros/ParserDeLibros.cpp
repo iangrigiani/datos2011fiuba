@@ -62,7 +62,11 @@ Registro * ParserDeLibros::obtenerRegistroDeLibro(char* libro) {
 	this->libroActual = libro;
 	Registro* nuevoRegistro = new Registro();
 	nuevoRegistro->setAutor(this->obtenerAutor());
-	nuevoRegistro->setEditorial(this->obtenerEditorial());
+	if (this->obtenerEditorial()){
+		nuevoRegistro->setEditorial(this->obtenerEditorial());
+	}else{
+		nuevoRegistro->setEditorial(EDITORIAL);
+	}
 	nuevoRegistro->setTitulo(this->obtenerTitulo());
 
 	list < string > palabras = this->obtenerDatos(this->obtenerPalabras());

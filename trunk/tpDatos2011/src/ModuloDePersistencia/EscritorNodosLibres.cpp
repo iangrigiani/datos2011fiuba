@@ -6,7 +6,7 @@ EscritorNodosLibres::EscritorNodosLibres() {
 
 EscritorNodosLibres::EscritorNodosLibres(std::string path) {
 	this->path  = path;
-	this->handler = new HandlerDeBloques(this->path);
+	this->handler = new HandlerBloques(TAMANIO_BUFFER, this->path);
 }
 
 void EscritorNodosLibres::GrabarDatosConfig(int primeraHoja , vector<int> nodosLibres){
@@ -14,7 +14,7 @@ void EscritorNodosLibres::GrabarDatosConfig(int primeraHoja , vector<int> nodosL
 	unsigned int offset = 0;
 	serializarPrimeraHoja(primeraHoja, this->buffer, offset);
 	serializarNodosLibres(nodosLibres, this->buffer, offset);
-	this->handler->guardar_bloque(this->buffer, 0);
+	this->handler->guardar_bloque_arbol(this->buffer, 0);
 }
 
 void EscritorNodosLibres::serializarPrimeraHoja(int primeraHoja, char * buffer, unsigned int &offset){

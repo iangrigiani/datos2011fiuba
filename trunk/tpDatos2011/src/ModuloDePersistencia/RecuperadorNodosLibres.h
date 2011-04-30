@@ -6,7 +6,7 @@
 #include <iostream>
 #include "../ArbolB+/Nodo.h"
 #include "../ArbolB+/NodoHoja.h"
-#include "../ManejadoresDeArchivos/HandlerDeBloques.h"
+#include "../ManejadoresDeArchivos/HandlerBloques.h"
 #include "../ArbolB+/NodoInterior.h"
 #include "../EstructurasEnComun/Constantes.h"
 class RecuperadorNodosLibres {
@@ -14,7 +14,7 @@ class RecuperadorNodosLibres {
 private:
 	std::string path;
 	char* buffer;
-	HandlerDeBloques* handler;
+	HandlerBloques* handler;
 	void hidratarPrimeraHoja(char* readData, unsigned int &offset, int& primeraHoja);
 	void hidratarNodosLibres(char* readData, unsigned int &offset, vector<int>& nodosLibres);
 public:

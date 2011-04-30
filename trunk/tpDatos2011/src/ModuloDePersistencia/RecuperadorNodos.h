@@ -9,14 +9,14 @@
 #include "../ArbolB+/NodoHoja.h"
 #include "../ArbolB+/NodoInterior.h"
 #include "../EstructurasEnComun/Constantes.h"
-#include "../ManejadoresDeArchivos/HandlerDeBloques.h"
+#include "../ManejadoresDeArchivos/HandlerBloques.h"
 
 class RecuperadorNodos {
 
 private:
 	std::string path;
 	char* buffer;
-	HandlerDeBloques* handler;
+	HandlerBloques* handler;
 public:
 	RecuperadorNodos();
 	RecuperadorNodos (std::string path);

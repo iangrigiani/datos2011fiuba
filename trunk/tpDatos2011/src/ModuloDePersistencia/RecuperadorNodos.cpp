@@ -6,19 +6,19 @@ RecuperadorNodos::RecuperadorNodos() {
 
 RecuperadorNodos::RecuperadorNodos (std::string path){
 	this->path = path;
-	this->handler = new HandlerDeBloques(this->path);
+	this->handler = new HandlerBloques(TAMANIO_BUFFER, this->path);
 }
 
 Nodo * RecuperadorNodos::obtenerNodo(int nroNodo){
 	this->buffer = (char*)calloc(TAMANIO_BUFFER, sizeof(char));
 	char* buffer_aux = (char*)calloc(TAMANIO_BUFFER, sizeof(char));
 	unsigned int offset = 0;
-	this->buffer = this->handler->recuperar_bloque(nroNodo);
+	this->buffer = this->handler->recuperar_bloque_arbol(nroNodo);
 	std::stringstream ss;
 	ss << this->buffer;
 	string cadena = ss.str();
 	if (cadena.length() > 0){
-		buffer_aux = this->handler->recuperar_bloque(nroNodo);
+		buffer_aux = this->handler->recuperar_bloque_arbol(nroNodo);
 		NodoInterior* aux = new NodoInterior();
 		int nivel = aux->obtenerNivel(buffer_aux);
 		free(buffer_aux);
