@@ -45,7 +45,7 @@ private:
 	 * pre: pasar patrón de match
 	 * post: genera la cadena obtenida
 	 */
-	char * obtenerPrimerMatch(char * string, char * patronDeFiltro);
+	char * obtenerPrimerMatch(char * string, char * patronDeFiltro, int size);
 	/*
 	 * Se fija en la lista de stopWords si la palabra correspondiente
 	 * es o no un stopWord

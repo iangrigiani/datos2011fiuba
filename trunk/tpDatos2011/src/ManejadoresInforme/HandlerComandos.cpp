@@ -2,7 +2,9 @@
 
 HandlerComandos::HandlerComandos() {
 	this-> handler 			= new HandlerArchivoRLV();
+	cout << "dp";
 	this-> parser 			= new ParserDeLibros();
+	cout << "dp2";
 	this-> log 				= new HandlerArchivoLog();
 }
 
@@ -30,40 +32,10 @@ void HandlerComandos::indexar(int parametro){
 	while ( it != listaDeIds.end()){
 	    switch (parametro){
 	        case 'a':{
-	        	fstream ff ;
-	        	ff.open(PATH_CONFIGURACION_AUTORES, ios_base::out);
-	        	ff.close();
-	        	ff.open(PATH_NODOS, ios_base::out);
-	        	ff.close();
-	        	ff.open(PATH_FRONT_CODING, ios_base::out);
-	        	ff.close();
-	        	ff.open(PATH_ARBOL, ios_base::out);
-	        	ff.close();
-	        	ff.open(PATH_ESPACIO_LIBRE_RLV, ios_base::out);
-	        	ff.close();
-	        	ff.open(PATH_REG_LONG_VARIABLE, ios_base::out);
-	        	ff.close();
-	        	ff.open(PATH_STOPWORDS, ios_base::out);
-	        	ff.close();
 	        	insertarEnArbol (1, (*it));
 	        	this->log->setearIndexado(*it,'a');break;}
 
 	        case 'e':{
-	        	fstream ff ;
-	        	ff.open(PATH_CONFIGURACION_EDITORIAL, ios_base::out);
-	        	ff.close();
-	        	ff.open(PATH_NODOS, ios_base::out);
-	        	ff.close();
-	        	ff.open(PATH_FRONT_CODING, ios_base::out);
-	        	ff.close();
-	        	ff.open(PATH_ARBOL, ios_base::out);
-	        	ff.close();
-	        	ff.open(PATH_ESPACIO_LIBRE_RLV, ios_base::out);
-	        	ff.close();
-	        	ff.open(PATH_REG_LONG_VARIABLE, ios_base::out);
-	        	ff.close();
-	        	ff.open(PATH_STOPWORDS, ios_base::out);
-	        	ff.close();
 	        	insertarEnArbol (2, (*it));
 	        	this->log->setearIndexado(*it,'e'); break;}
 
@@ -124,7 +96,8 @@ void HandlerComandos::verEstructura(int parametro){
 			printf("Viendo estructura del árbol de autores. \n");
 			ArbolBMas* arbol = new ArbolBMas(1, PATH_NODOS);
 			arbol->MostrarArbol();
-			delete arbol;
+			/*TODO: ARREGLAR ESTO POR DIOS!!!!! */
+			//delete arbol;
 			break; }
 	case 'e': {
 			printf("Viendo estructura del árbol de editoriales. \n");
@@ -265,7 +238,8 @@ void HandlerComandos::eliminar_de_hash_palabra(int offset) {
 
 void HandlerComandos::insertarEnArbol (int tipoArbol, int offset){
 	ArbolBMas* arbol = new ArbolBMas(tipoArbol, PATH_NODOS);
-	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
+	char * puntero = this->handler->buscarRegistro(offset);
+	Registro* reg = this->parser->obtenerRegistroDeLibro(puntero);
 
 	if (tipoArbol == 1){
 		Elementos* elemento = new Elementos(new Clave(reg->getAutor()), offset);

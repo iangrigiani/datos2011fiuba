@@ -410,11 +410,13 @@ void ArbolBMas::MostrarArbol (){
 	fo.open(PATH_ARBOL, ios_base::out);
 	fo << "*********************************************************************" << endl << endl;
 	if (this->tipo == 1){
-	fo << "*                       ARBOL B+ DE AUTORES                         *" << endl << endl;
+		fo << "*                       ARBOL B+ DE AUTORES                         *" << endl << endl;
+	}else{
+		fo << "*                       ARBOL B+ DE EDITORIALES                         *" << endl << endl;
+	}
 	fo << "*********************************************************************" << endl << endl;
 	fo << "Tamanio de Nodo:  " << TAM_TOTAL_NODO << endl;
 		fo << "Primer Hoja:  " << primeraHoja << endl;
-	}
 	fo << "---------------------------------------------------------------------" << endl << endl;
 	if (this->raiz){
 		toString(this->raiz,1, fo);
