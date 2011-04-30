@@ -407,7 +407,7 @@ void ArbolBMas::MostrarArbol (Nodo* nodo){
 }
 void ArbolBMas::MostrarArbol (){
 	ofstream fo;
-	fo.open(PATH_ARBOL, ios_base::app);
+	fo.open(PATH_ARBOL, ios_base::out);
 	fo << "*********************************************************************" << endl << endl;
 	if (this->tipo == 1){
 	fo << "*                       ARBOL B+ DE AUTORES                         *" << endl << endl;

@@ -8,13 +8,13 @@
 #include "../ArbolB+/Nodo.h"
 #include "../ArbolB+/NodoInterior.h"
 #include "../ArbolB+/NodoHoja.h"
-#include "../ManejadoresDeArchivos/HandlerDeBloques.h"
+#include "../ManejadoresDeArchivos/HandlerBloques.h"
 
 class EscritorNodo{
 private:
 	std::string path;
 	char* buffer;
-	HandlerDeBloques* handler;
+	HandlerBloques* handler;
 public:
 	EscritorNodo();
 	EscritorNodo (std::string path);

@@ -2,6 +2,12 @@
 #define HANDLERBLOQUES_H_
 
 #include "HandlerEspLibre.h"
+#include "../EstructurasEnComun/Constantes.h"
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <iostream>
+#include <sstream>
 
 class HandlerBloques {
 
@@ -18,6 +24,10 @@ public:
 	HandlerBloques();
 
 	HandlerBloques(int tam_bloque, const string& ruta_arch_bloques, const HandlerEspLibre& handler_esp_libre);
+
+	HandlerBloques(int tam_bloque, const string& ruta_arch_bloques);
+
+	HandlerBloques(int tam_bloque);
 
 	virtual ~HandlerBloques() {};
 
@@ -49,7 +59,14 @@ public:
 	 * permanece intacto).
 	 */
 	void recuperar_bloque(char* buffer, int pos_arch_bloques);
-
+	/*
+	 * Carga el bloque que se encuentra en la posicion pasada por parametro desde el archivo de
+	 * bloques a memoria principal para su posterior lectura o modificacion.
+	 * Pre: -
+	 * Pos: Devuelve en un buffer el bloque leído para su correcta hidratación luego por la estructura
+	 * que lo invocó.
+	 */
+	char* recuperar_bloque_arbol(int nro_bloque);
 	/*
 	 * Guarda el bloque pasado por referencia en el archivo de bloques. Si hay algun espacio libre,
 	 * el bloque se almacena alli, de lo contrario, se almacena al final del archivo. En caso de que
@@ -71,7 +88,13 @@ public:
 	 * Pos: -
 	 */
 	void guardar_bloque(char* buffer, int pos_arch_bloques);
-
+	/*
+	 * Guarda el bloque pasado por referencia en la posicion pasada por parametro en el archivo de
+	 * bloques.
+	 * Pre: -
+	 * Pos: -
+	 */
+	void guardar_bloque_arbol(char* buffer, int nro_bloque);
 	/*
 	 * Elimina el bloque que se encuentra almacenado en la posicion pasada por parametro del archivo de
 	 * bloques, con lo cual involucra la correspondiente actualizacion del archivo de espacios libres.
@@ -81,7 +104,12 @@ public:
 	 * bloques. Devuelve VERDADERO en caso contrario.
 	 */
 	bool eliminar_bloque(int pos_arch_bloques);
-
+	/*
+	 * Elimina el bloque que se encuentra en la posicion nro_bloque*TamanioBloque.
+	 * Pre: -
+	 * Post: Elimina el bloque solicitado.
+	 */
+	void eliminar_bloque_arbol(int nro_Bloque);
 };
 
 #endif /* HANDLERBLOQUES_H_ */

@@ -8,14 +8,14 @@
 #include <list>
 #include <string>
 #include <vector>
-#include "../ManejadoresDeArchivos/HandlerDeBloques.h"
+#include "../ManejadoresDeArchivos/HandlerBloques.h"
 using namespace  std;
 
 class EscritorNodosLibres {
 private:
 	char * buffer;
 	std::string path;
-	HandlerDeBloques* handler;
+	HandlerBloques* handler;
 	void serializarPrimeraHoja(int primeraHoja, char * buffer, unsigned int &offset);
 	void serializarNodosLibres(vector<int> nodosLibres, char * buffer, unsigned int &offset);
 public:

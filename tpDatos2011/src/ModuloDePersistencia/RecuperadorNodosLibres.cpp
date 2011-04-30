@@ -6,12 +6,12 @@ RecuperadorNodosLibres::RecuperadorNodosLibres() {
 
 RecuperadorNodosLibres::RecuperadorNodosLibres (std::string path){
 	this->path = path;
-	this->handler = new HandlerDeBloques(this->path);
+	this->handler = new HandlerBloques(TAMANIO_BUFFER, this->path);
 }
 
 void RecuperadorNodosLibres::obtenerDatos(int &primeraHoja, vector<int>& nodosLibres){
 	this->buffer = (char*)calloc(TAMANIO_BUFFER, sizeof(char));
-	this->buffer = this->handler->recuperar_bloque(0);
+	this->buffer = this->handler->recuperar_bloque_arbol(0);
 	unsigned int offset = 0;
 	hidratarPrimeraHoja(this->buffer,offset,primeraHoja);
 	hidratarNodosLibres(this->buffer,offset,nodosLibres);
