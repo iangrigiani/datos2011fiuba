@@ -29,47 +29,51 @@ int main (int argc , char *argv[]){
 						break;}
 
             case 'e':   {
-						printf("-e      Indexar por Editorial los libros agregados recientemente \n");
-						// handlerComandos.indexar('e');
+						printf("Bookerio: Indexando por Editorial los libros agregados recientemente \n");
+						handlerComandos->indexar('e');
+						printf("Bookerio: Fin de indexado por Editorial.\n");
 						break;}
 
             case 'a':   {
-						printf("-a      Indexar por Autor los libros agregados recientemente \n");
-						// handlerComandos.indexar('a');
+						printf("Bookerio: Indexando por Autor los libros agregados recientemente \n");
+						handlerComandos->indexar('a');
+						printf("Bookerio: Fin de indexado por Autor.\n");
 						break;}
 
             case 't':   {
-						printf("-t      Indexar por Título los libros agregados recientemente \n");
-						// handlerComandos.indexar('t');
+						printf("Bookerio: Indexando por Título los libros agregados recientemente \n");
+						handlerComandos->indexar('t');
+						printf("Bookerio: Fin de indexado por Título.\n");
 						break;}
 
             case 'p':   {
-						printf("-p      Indexar por Palabras los libros agregados recientemente \n");
-						// handlerComandos.indexar('p');
+						printf("Bookerio: Indexando por Palabras los libros agregados recientemente \n");
+						handlerComandos->indexar('p');
+						printf("Bookerio: Fin de indexado por Palabras.\n");
 						break;}
 
             case 'l':   {
-						printf("-l      Listar todos los archivos tomados recientemente \n");
-						// handlerComandos.listarLibrosIngresados();
+						printf("Bookerio: Listando todos los archivos tomados recientemente \n");
+						handlerComandos->listarLibrosIngresados();
+						printf("Bookerio: Fin de listado de libros tomados recientemente.\n");
 						break;}
 
             case 'o':   {
 						if (argv[2]) {
-							printf("-o <ID> Obtener archivo por ID \n");
-							// handlerComandos.obtenerLibro(argv[2]);
+							printf("Bookerio: Obtener Libro %s \n", argv[2]);
+							handlerComandos->obtenerLibro(atoi(argv[2]));
+							printf("Bookerio: Obtener Libro %s \n", argv[2]);
 						}else{
 							printf("Bookerio: No se puede procesar la orden: falta un parámetro.\n");}
-						break;
-						}
+						break;}
 
             case 'q':   {
 						if (argv[2]) {
 							printf("-q <ID> Quita un archivo por ID \n");
-							//handlerComandos.quitarLibro(argv[2]);
+							handlerComandos->quitarLibro(atoi(argv[2]));
 						}else{
 							printf("Bookerio: No se puede procesar la orden: falta un parámetro.\n");}
-						break;
-						}
+						break;}
 
             case 'v':   {
                         printf("-v -archivo         Ver archivos de índice\n");
@@ -77,23 +81,27 @@ int main (int argc , char *argv[]){
 							opcion2 = getopt(argc,argv, "eatp?:");
 							switch (opcion2){
 								case 'e': {
-									      printf("-e      Ver árbol de Editorial\n");
-										  //handlerComandos.verEstructura('e');
+									      printf("Bookerio: Viendo estructura de árbol de Editoriales.\n");
+										  handlerComandos->verEstructura('e');
+										  printf("Bookerio: Fin de estructura de árbol de Editoriales.\n");
 								          break;}
 
 								case 'a': {
-										  printf("-a      Ver árbol de Autor\n");
-										  //handlerComandos.verEstructura('a');
+										  printf("Bookerio: Viendo estructura de árbol de Autores.\n");
+										  handlerComandos->verEstructura('a');
+										  printf("Bookerio: Fin de estructura de árbol de Autores.\n");
 										  break;}
 
 								case 't': {
-										  printf("-t      Ver hash de Título\n");
-										  // handlerComandos.verEstructura('t');
+										  printf("Bookerio: Viendo estructura de hash de Títulos.\n");
+										  handlerComandos->verEstructura('t');
+										  printf("Bookerio: Fin de estructura de hash de Títulos.\n");
 										  break;}
 
 								case 'p': {
-									      printf("-p      Ver hash de Palabras\n");
-									      //handlerComandos.verEstructura('p');
+										  printf("Bookerio: Viendo estructura de hash de Palabras.\n");
+									      handlerComandos->verEstructura('p');
+									      printf("Bookerio: Fin de estructura de hash de Palabras.\n");
 									      break;}
 
 								case '?': {
@@ -127,6 +135,7 @@ int main (int argc , char *argv[]){
         }
 
     }
+    delete handlerComandos;
 }
 
 

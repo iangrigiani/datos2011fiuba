@@ -294,13 +294,16 @@ void HandlerComandos::insertarEnArbol (int tipoArbol, int offset){
 bool HandlerComandos::eliminarEnArbol(int tipoArbol, int offset) {
 	ArbolBMas* arbol = new ArbolBMas(tipoArbol, PATH_NODOS);
 	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
-	Clave clave;
+
 	if (tipoArbol == 1){
-		//convertir autor a clave
+		Clave* clave = new Clave (reg->getAutor());
+		arbol->borrar(*clave);
+		delete clave;
 	}else{
-		//convertir editorial a clave
+		Clave* clave = new Clave (reg->getEditorial());
+		arbol->borrar(*clave);
+		delete clave;
 	}
-	arbol->borrar(clave);
 	delete reg;
 	delete arbol;
 	return true; //TODO ver si es necesario retornar bool
