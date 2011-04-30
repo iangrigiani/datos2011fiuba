@@ -290,7 +290,6 @@ void HandlerComandos::insertarEnArbol (int tipoArbol, int offset){
 	delete arbol;
 }
 
-//TODO Ver cómo obtengo clave
 bool HandlerComandos::eliminarEnArbol(int tipoArbol, int offset) {
 	ArbolBMas* arbol = new ArbolBMas(tipoArbol, PATH_NODOS);
 	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
