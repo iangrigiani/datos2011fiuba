@@ -13,7 +13,7 @@ using namespace std;
 #include "ManejadoresDeArchivos/HandlerBloques.h"
 #include "ParserLibros/ParserDeLibros.h"
 #include "ArbolB+/ArbolBMas.h"
-int main(int argc, char **argv) {
+int mainn(int argc, char **argv) {
 	ArbolBMas* a = new ArbolBMas(1, PATH_ARBOL);
 	int i = 0;
 	while (i < 50){

@@ -9,6 +9,7 @@
 using namespace std;
 
 int main (int argc , char *argv[]){
+
 /* TODO cambiar printfs por métodos de HandlerComandos*/
 	HandlerComandos* handlerComandos = new HandlerComandos();
 
