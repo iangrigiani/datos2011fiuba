@@ -33,7 +33,7 @@ void Elementos::sacarElFrontCoding(string palabra){
 	}
 }
 Elementos::~Elementos() {
-//	delete this->clave;
+//	if (this->clave) delete this->clave;
 }
 void Elementos::serializar(char * buffer, unsigned int &offset){
 	this->clave->serializar(buffer, offset);

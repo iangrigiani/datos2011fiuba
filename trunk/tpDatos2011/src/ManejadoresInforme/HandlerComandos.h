@@ -14,7 +14,7 @@ private:
 	ParserDeLibros* parser;
 	HandlerArchivoRLV* handler;
 	HandlerArchivoLog* log;
-
+	ArbolBMas* arbol;
 	/*
 	 * Crea un arbol del tipo autor o editorial e inserta el elemento
 	 * que obtiene del handler de reg de LV correspondiente.
