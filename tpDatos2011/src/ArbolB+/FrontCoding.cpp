@@ -20,6 +20,11 @@ string FrontCoding::pasarAFrontCoding(string primerPalabraNodo, string palabra){
 void FrontCoding::obtenerOffset(string primerPalabraNodo){
 	fstream ifs;
 	ifs.open(PATH_FRONT_CODING, std::ios_base::in | std::ios_base::out);
+	if (!ifs.is_open()){
+		ifs.open(PATH_FRONT_CODING,std::ios_base::out);
+		ifs.close();
+		ifs.open(PATH_FRONT_CODING, std::ios_base::in | std::ios_base::out);
+	}
 	char* cadena = (char*)calloc(100, sizeof(char));
 	bool encontrado  = false;
 	string cad;
@@ -70,6 +75,11 @@ void FrontCoding::aplicarFrontCoding(string primerPalabraNodo , string palabra){
 void FrontCoding::grabarAlFinal(string primerPalabraNodo){
 	fstream ifs;
 	ifs.open(PATH_FRONT_CODING, ios_base::in | ios_base::out);
+	if (!ifs.is_open()){
+		ifs.open(PATH_FRONT_CODING,std::ios_base::out);
+		ifs.close();
+		ifs.open(PATH_FRONT_CODING, std::ios_base::in | std::ios_base::out);
+	}
 	ifs.seekg(0, ios_base::end);
 	int tamanio = ifs.tellg();
 	ifs.seekg(0, ios_base::beg);
@@ -87,6 +97,11 @@ string FrontCoding::obtenerPalabra(){
 	fstream ifs;
 	string retorno;
 	ifs.open(PATH_FRONT_CODING, ios_base::in | ios_base::out);
+	if (!ifs.is_open()){
+		ifs.open(PATH_FRONT_CODING,std::ios_base::out);
+		ifs.close();
+		return "";
+	}
 	ifs.seekg(this->offset);
 	char* cadena = (char*)calloc(100, sizeof(char));
 	ifs.getline(cadena, 100);

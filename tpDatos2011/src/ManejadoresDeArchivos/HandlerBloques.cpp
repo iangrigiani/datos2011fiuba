@@ -35,6 +35,11 @@ int HandlerBloques::get_tam_arch_bloques() const {
 	int tam;
 
 	arch.open(this->ruta_arch_bloques.c_str(), fstream::in);
+	if (!arch.is_open()){
+		arch.open(this->ruta_arch_bloques.c_str(), fstream::out);
+		arch.close();
+		arch.open(this->ruta_arch_bloques.c_str(), fstream::in);
+	}
 	arch.seekg(0, fstream::end);
 	tam = arch.tellg();
 	arch.close();
@@ -60,7 +65,11 @@ void HandlerBloques::recuperar_bloque(char* buffer, int pos_arch_bloques) {
 char* HandlerBloques::recuperar_bloque_arbol(int nro_bloque){
 	fstream ff;
 	ff.open(this->ruta_arch_bloques.c_str(), fstream::in);
-	if (ff.is_open()){
+	if (!ff.is_open()){
+		ff.open(this->ruta_arch_bloques.c_str(), fstream::out);
+		ff.close();
+		ff.open(this->ruta_arch_bloques.c_str(), fstream::in);
+	}
 		char * bloqueARetornoar = (char*)calloc(this->tam_bloque, sizeof(char));
 		int offset_bloque = nro_bloque * this->tam_bloque;
 		// Me posiciono en el archivo de bloques
@@ -68,10 +77,6 @@ char* HandlerBloques::recuperar_bloque_arbol(int nro_bloque){
 		ff.read(bloqueARetornoar, this->tam_bloque);
 		ff.close();
 		return bloqueARetornoar;
-	}else{
-		cout << "No se pudo abrir el archivo para recuperar bloque" << endl;
-		return NULL;
-	}
 }
 
 
@@ -99,7 +104,11 @@ int HandlerBloques::guardar_bloque(char* buffer) {
 void HandlerBloques::guardar_bloque_arbol(char* buffer, int nro_bloque){
 	fstream ff;
 	ff.open(this->ruta_arch_bloques.c_str(), fstream::in | fstream::out);
-	if (ff.is_open()){
+	if (!ff.is_open()){
+		ff.open(this->ruta_arch_bloques.c_str(), fstream::out);
+		ff.close();
+		ff.open(this->ruta_arch_bloques.c_str(), fstream::in | fstream::out);
+	}
 		int offset_bloque = nro_bloque * this->tam_bloque;
 		// Manejo sobre el archivo de bloques
 		stringstream ss;
@@ -110,9 +119,6 @@ void HandlerBloques::guardar_bloque_arbol(char* buffer, int nro_bloque){
 		ff.write(str.c_str(), str.length());
 		ff.flush();
 		ff.close();
-	}else{
-		cout << "No se pudo abrir el archivo para guardar bloque" << endl;
-	}
 }
 
 

@@ -22,6 +22,11 @@ void HandlerArchivoLog::insertarRegistro(int IDArchivo){
 	string linea = crearStringAInsertar(IDArchivo, 0, 0, 0, 0);
 	ofstream archivoLog;
 	archivoLog.open(PATH_ARCHIVO_LOG,std::ios_base::app);
+	if (!archivoLog.is_open()){
+		archivoLog.open(PATH_ARCHIVO_LOG,std::ios_base::out);
+		archivoLog.close();
+		archivoLog.open(PATH_ARCHIVO_LOG,std::ios_base::app);
+	}
 	archivoLog.write(linea.c_str(), linea.length());
 	archivoLog.close();
 }
@@ -36,6 +41,11 @@ int HandlerArchivoLog::buscarRegistro(int IDArchivo){
 
     fstream archivoLog;
 	archivoLog.open(PATH_ARCHIVO_LOG, std::ios_base::in | std::ios_base::out);
+	if (!archivoLog.is_open()){
+		archivoLog.open(PATH_ARCHIVO_LOG,std::ios_base::out);
+		archivoLog.close();
+		archivoLog.open(PATH_ARCHIVO_LOG,std::ios_base::in | std::ios_base::out);
+	}
     archivoLog.seekg(0);
 
 	while (!registroEncontrado && !archivoLog.eof() ){
@@ -65,6 +75,11 @@ void HandlerArchivoLog::setearIndexado(int IDArchivo, int parametro){
 
     fstream archivoLog;
 	archivoLog.open(PATH_ARCHIVO_LOG, std::ios_base::in | std::ios_base::out);
+	if (!archivoLog.is_open()){
+		archivoLog.open(PATH_ARCHIVO_LOG,std::ios_base::out);
+		archivoLog.close();
+		archivoLog.open(PATH_ARCHIVO_LOG,std::ios_base::in | std::ios_base::out);
+	}
     archivoLog.seekg(puntero);
     archivoLog.getline(cadena,100);
 
@@ -99,6 +114,11 @@ void HandlerArchivoLog::obtenerListaIDs(list<int>& listaDeIds){
     string cad;
 
 	archivoLog.open(PATH_ARCHIVO_LOG, std::ios_base::in | std::ios_base::out);
+	if (!archivoLog.is_open()){
+		archivoLog.open(PATH_ARCHIVO_LOG,std::ios_base::out);
+		archivoLog.close();
+		archivoLog.open(PATH_ARCHIVO_LOG,std::ios_base::in | std::ios_base::out);
+	}
 	archivoLog.seekg(0);
 	while (!archivoLog.eof() ){
         puntero = archivoLog.tellg();
@@ -117,6 +137,11 @@ void HandlerArchivoLog::obtenerListaIDsAIndexar (int parametro,list<int>& listaD
     char* cadena = (char*)calloc(100, sizeof(char));
 	bool indexado = false;
 	archivoLog.open(PATH_ARCHIVO_LOG, std::ios_base::in | std::ios_base::out);
+	if (!archivoLog.is_open()){
+		archivoLog.open(PATH_ARCHIVO_LOG,std::ios_base::out);
+		archivoLog.close();
+		archivoLog.open(PATH_ARCHIVO_LOG,std::ios_base::in | std::ios_base::out);
+	}
 	archivoLog.seekg(0);
 	while (!archivoLog.eof() ){
 		archivoLog.getline (cadena, 100);

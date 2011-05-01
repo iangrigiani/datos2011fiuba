@@ -12,14 +12,19 @@ HandlerComandos::~HandlerComandos() {
 	delete this-> parser;
 	delete this-> handler;
 	delete this-> log;
+	delete this-> arbol;
 }
 
 void HandlerComandos::guardarLibroEnArchivoMaestro(const string& path_nuevo_libro){
 	int ID_Archivo =  0;
 	ID_Archivo = this->handler->insertarRegistro(path_nuevo_libro);
-	this-> log->insertarRegistro(ID_Archivo);
-	printf("Bookerio: Libro guardado con éxito. \n");
-	printf("		  ID Libro: %d \n", ID_Archivo);
+	if ( ID_Archivo != ERROR){
+		this-> log->insertarRegistro(ID_Archivo);
+		printf("Bookerio: Libro guardado con éxito. \n");
+		printf("		  ID Libro: %d \n", ID_Archivo);
+	}else{
+		printf("Bookerio: Libro no pudo ser guardado con éxito. \n");
+	}
 }
 
 void HandlerComandos::indexar(int parametro){
@@ -32,10 +37,12 @@ void HandlerComandos::indexar(int parametro){
 	while ( it != listaDeIds.end()){
 	    switch (parametro){
 	        case 'a':{
+	        	this->arbol = new ArbolBMas(1, PATH_NODOS);
 	        	insertarEnArbol (1, (*it));
 	        	this->log->setearIndexado(*it,'a');break;}
 
 	        case 'e':{
+	        	this->arbol = new ArbolBMas(2, PATH_NODOS);
 	        	insertarEnArbol (2, (*it));
 	        	this->log->setearIndexado(*it,'e'); break;}
 
@@ -94,14 +101,15 @@ void HandlerComandos::verEstructura(int parametro){
 	switch (parametro) {
 	case 'a': {
 			printf("Viendo estructura del árbol de autores. \n");
-			ArbolBMas* arbol = new ArbolBMas(1, PATH_NODOS);
+			this->arbol = new ArbolBMas(1, PATH_NODOS);
 			arbol->MostrarArbol();
 			/*TODO: ARREGLAR ESTO POR DIOS!!!!! */
 			//delete arbol;
 			break; }
 	case 'e': {
 			printf("Viendo estructura del árbol de editoriales. \n");
-			ArbolBMas* arbol = new ArbolBMas(2, PATH_NODOS);
+			this->arbol = new ArbolBMas(2, PATH_NODOS);
+//			ArbolBMas* arbol = new ArbolBMas(2, PATH_NODOS);
 			arbol->MostrarArbol();
 			delete arbol;
 			break; }
@@ -237,7 +245,7 @@ void HandlerComandos::eliminar_de_hash_palabra(int offset) {
 }
 
 void HandlerComandos::insertarEnArbol (int tipoArbol, int offset){
-	ArbolBMas* arbol = new ArbolBMas(tipoArbol, PATH_NODOS);
+//	ArbolBMas* arbol = new ArbolBMas(tipoArbol, PATH_NODOS);
 	char * puntero = this->handler->buscarRegistro(offset);
 	Registro* reg = this->parser->obtenerRegistroDeLibro(puntero);
 
@@ -261,11 +269,11 @@ void HandlerComandos::insertarEnArbol (int tipoArbol, int offset){
 		}
 	}
 	delete reg;
-	delete arbol;
+//	delete arbol;
 }
 
 bool HandlerComandos::eliminarEnArbol(int tipoArbol, int offset) {
-	ArbolBMas* arbol = new ArbolBMas(tipoArbol, PATH_NODOS);
+//	ArbolBMas* arbol = new ArbolBMas(tipoArbol, PATH_NODOS);
 	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
 
 	if (tipoArbol == 1){
@@ -278,6 +286,6 @@ bool HandlerComandos::eliminarEnArbol(int tipoArbol, int offset) {
 		delete clave;
 	}
 	delete reg;
-	delete arbol;
+//	delete arbol;
 	return true; //TODO ver si es necesario retornar bool
 }

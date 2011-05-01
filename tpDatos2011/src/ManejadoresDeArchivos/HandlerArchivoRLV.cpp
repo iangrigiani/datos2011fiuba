@@ -19,52 +19,58 @@ HandlerArchivoRLV::HandlerArchivoRLV() {
 
 int HandlerArchivoRLV::insertarRegistro(const string& path_nuevo_libro)
 {
-// Manejo sobre el archivo del libro a ingresar
+	// Manejo sobre el archivo del libro a ingresar
 	std::ifstream f_ent;
 	f_ent.open(path_nuevo_libro.c_str(), std::ios_base::in);
-	f_ent.seekg(0,std::ios_base::end);
+	if (f_ent.is_open()){
 
-	// Obtengo tamanio de libro
-	int tamanioRegistro = f_ent.tellg();
-	f_ent.seekg(0);
-	char* buffer = (char*) calloc (tamanioRegistro-1 , sizeof(char));
-    f_ent.read(buffer, tamanioRegistro);
+		f_ent.seekg(0,std::ios_base::end);
 
-    f_ent.close();
+		// Obtengo tamanio de libro
+		int tamanioRegistro = f_ent.tellg();
+		f_ent.seekg(0);
+		char* buffer = (char*) calloc (tamanioRegistro-1 , sizeof(char));
+		f_ent.read(buffer, tamanioRegistro);
+
+		f_ent.close();
 
 
-// Obtengo ID del ultimo libro ingresado y seteo todos sus datos
-	int id_Archivo = buscarOffsetArchivoEspaciosLibres(tamanioRegistro);
-	if (id_Archivo == ERROR){
-		id_Archivo = this->obtenerTamanioMaestro();
+		// Obtengo ID del ultimo libro ingresado y seteo todos sus datos
+		int id_Archivo = buscarOffsetArchivoEspaciosLibres(tamanioRegistro);
+		if (id_Archivo == ERROR){
+			id_Archivo = this->obtenerTamanioMaestro();
+		}else{
+			/*
+			 *  Si lo voy a insertar en un espacio libre debo borrar ese dato
+			 *  del archivo de espacios libres
+			 */
+			borrarOffsetArchivoDeEspaciosLibres();
+		}
+		int indexado = 0;
+		int procesado = 1;
+
+		// Manejo sobre el archivo de RLV
+		std::fstream f_dst;
+		f_dst.open(PATH_REG_LONG_VARIABLE, std::ios_base::in | std::ios_base::out);
+		stringstream ss;
+
+		// Armo las cabecera para el libro
+		ss << id_Archivo << "|" << tamanioRegistro << "|" << procesado << "|" << indexado << "|" << "\n" << buffer << "\n" ;
+		string str = ss.str();
+		// Escribo libro en el archivo de RLV
+		f_dst.seekg(id_Archivo);
+		f_dst.write(str.c_str(), str.length());
+
+		f_dst.close();
+
+		free(buffer);
+
+		// Retorno el offset que se guardara en el arbol.
+		return id_Archivo;
 	}else{
-/*
- *  Si lo voy a insertar en un espacio libre debo borrar ese dato
- *  del archivo de espacios libres
- */
-	borrarOffsetArchivoDeEspaciosLibres();
+		cout << "Path de libro incorrecto" << endl;
+		return ERROR;
 	}
-    int indexado = 0;
-	int procesado = 1;
-
-// Manejo sobre el archivo de RLV
-	std::fstream f_dst;
-	f_dst.open(PATH_REG_LONG_VARIABLE, std::ios_base::in | std::ios_base::out);
-	stringstream ss;
-
-// Armo las cabecera para el libro
-	ss << id_Archivo << "|" << tamanioRegistro << "|" << procesado << "|" << indexado << "|" << "\n" << buffer << "\n" ;
-	string str = ss.str();
-	// Escribo libro en el archivo de RLV
-	f_dst.seekg(id_Archivo);
-	f_dst.write(str.c_str(), str.length());
-
-	f_dst.close();
-
-	free(buffer);
-
-// Retorno el offset que se guardara en el arbol.
-	return id_Archivo;
 }
 
 char* HandlerArchivoRLV::buscarRegistro(int offset)
@@ -72,32 +78,39 @@ char* HandlerArchivoRLV::buscarRegistro(int offset)
 	std::ifstream archivoMaestro;
 	char  cadenaDeDatos[100];
 	archivoMaestro.open(PATH_REG_LONG_VARIABLE, std::ios_base::in);
-	// Me posiciono en el archivo de RLV
-	archivoMaestro.seekg(offset);
+	if (archivoMaestro.is_open()){
+		// Me posiciono en el archivo de RLV
+		archivoMaestro.seekg(offset);
 
-	archivoMaestro.get(cadenaDeDatos,100);
-	string cad = cadenaDeDatos;
-	int longitudCadena = cad.length();
-	longitudCadena += offset;
-	//Obtengo el tamanio del libro a leer
-	int espacioOcupado = obtenerTamanioLibro(cadenaDeDatos);
+		archivoMaestro.get(cadenaDeDatos,100);
+		string cad = cadenaDeDatos;
+		int longitudCadena = cad.length();
+		longitudCadena += offset;
+		//Obtengo el tamanio del libro a leer
+		int espacioOcupado = obtenerTamanioLibro(cadenaDeDatos);
 
-	/*Le sumo a la longitud de la cadena de datos el offset para posicionarme nuevamente
-	 en el archivo*/
-	archivoMaestro.seekg(longitudCadena);
-	// obtengo el libro
-	char * libroLeido = (char*)calloc (espacioOcupado, sizeof(char));
-	archivoMaestro.read(libroLeido, espacioOcupado);
-	archivoMaestro.close();
+		/*Le sumo a la longitud de la cadena de datos el offset para posicionarme nuevamente
+		 en el archivo*/
+		archivoMaestro.seekg(longitudCadena);
+		// obtengo el libro
+		char * libroLeido = (char*)calloc (espacioOcupado, sizeof(char));
+		archivoMaestro.read(libroLeido, espacioOcupado);
+		archivoMaestro.close();
 
-	return libroLeido;
+		return libroLeido;
+	}else{
+		archivoMaestro.open(PATH_REG_LONG_VARIABLE, std::ios_base::out);
+		archivoMaestro.close();
+		return NULL;
+	}
 }
 
 int HandlerArchivoRLV::obtenerTamanioMaestro(){
 	FILE* fin;
 	if ((fin = fopen(PATH_REG_LONG_VARIABLE, "r")) == NULL){
-		cout << "Error al abrir el archivo de registro de longitud variable" << endl;
-		return -1;
+		fin = fopen(PATH_REG_LONG_VARIABLE, "w");
+		fclose(fin);
+		fin = fopen(PATH_REG_LONG_VARIABLE, "r");
 	}
 	fseek(fin, 0 , SEEK_END);
 	int retorno = ftell(fin);
@@ -141,6 +154,11 @@ int HandlerArchivoRLV::buscarOffsetArchivoEspaciosLibres(int tamanioRegistro){
 
 	std:: fstream ifs;
 	ifs.open(PATH_ESPACIO_LIBRE_RLV, std::ios_base::in | std::ios_base::out);
+	if (!ifs.is_open()){
+		ifs.open(PATH_ESPACIO_LIBRE_RLV, std::ios_base::out);
+		ifs.close();
+		ifs.open(PATH_ESPACIO_LIBRE_RLV, std::ios_base::in | std::ios_base::out);
+	}
 	char* cadena = (char*)calloc(100, sizeof(char));
 	bool encontrado  = false;
 	int tamanioLibro = 0;
