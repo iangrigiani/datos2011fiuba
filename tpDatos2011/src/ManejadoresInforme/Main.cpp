@@ -1,5 +1,5 @@
 
-#include "ManejadoresInforme/HandlerComandos.h"
+#include "HandlerComandos.h"
 #include <iostream>
 #include <stdio.h>
 #include <cstring>
