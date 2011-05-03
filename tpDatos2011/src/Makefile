@@ -1,17 +1,14 @@
 
-target = tp
+target = TpDatos
 
 extension = cpp
 
-CFLAGS = -Wall -pedantic -pedantic-errors
+CFLAGS = -Wall -pedantic -pedantic-errors -g
 
 LDFLAGS =  
 
-CXXSTD = c++98
 
 CXXFLAGS += $(CFLAGS)
-
-CXXFLAGS += -std=$(CXXSTD)
 
 LD = $(CXX)
 
@@ -29,7 +26,7 @@ LD =  @echo "  LD  $@"; $(old)
 fuentes_common += $(wildcard ArbolB+/*.$(extension))
 fuentes_common += $(wildcard EstructurasEnComun/*.$(extension))
 fuentes_common += $(wildcard EstructurasHash/*.$(extension))
-#fuentes_common += $(wildcard Hash/*.$(extension))
+fuentes_common += $(wildcard Hash/*.$(extension))
 fuentes_common += $(wildcard ManejadoresDeArchivos/*.$(extension))
 fuentes_common += $(wildcard ManejadoresInforme/*.$(extension))
 fuentes_common += $(wildcard ModuloDePersistencia/*.$(extension))
@@ -57,4 +54,4 @@ $(target): $(o_common_files)
 	$(LD) $(LDFLAGS) $(o_common_files) $(LOADLIBS) $(LDLIBS) -o $(target)
 
 clean:
-	$(RM) $(o_common_files) $(o_common_files:.o=.deps) $(target)
+	$(RM) $(o_common_files) $(o_common_files:.o=.deps)

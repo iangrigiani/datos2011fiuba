@@ -22,7 +22,7 @@ private:
 	 * pre: -
 	 * post: setea las variables offset+igual+distinto+cadena
 	 */
-	void aplicarFrontCoding(string primerPalabraNodo, string palabra);
+	void aplicarFrontCoding(string primerPalabraNodo, string palabra, string ruta);
 	/*
 	 * Se fija segun la palabra del primer nodo que offset debe usar en el front
 	 * coding.
@@ -30,19 +30,19 @@ private:
 	 * post: si la palabra ya existe retorna el offset, sino la agrega a la lista
 	 * 		 y retorna el offset
 	 */
-	void obtenerOffset(string primerPalabraNodo);
+	void obtenerOffset(string primerPalabraNodo, string ruta);
 	/*
 	 * Graba en la lista de palabras enteras para llevar el front codig Parcial
 	 * pre: no debe estar la palabra en la lista
 	 * post: graba el offset donde guardo la palabra
 	 */
-	void grabarAlFinal(string primerPalabraNodo);
+	void grabarAlFinal(string primerPalabraNodo, string ruta);
 	/*
 	 * Obtiene la palabra del archivo de front coding
 	 * pre: la palabra en el archivo de front coding debe existir
 	 * psot: palabra retornada
 	 */
-	string obtenerPalabra();
+	string obtenerPalabra(string ruta);
 public:
 	FrontCoding();
 
@@ -75,13 +75,18 @@ public:
      * pre: pasar la primer palabra del nodo para obtener el offset
      * post: palabra en codigo front coding
      */
-    string pasarAFrontCoding(string primerPalabraNodo, string palabra);
+    string pasarAFrontCoding(string primerPalabraNodo, string palabra, int tipo);
     /*
-     * Interpreta el codigo front Coding que se le pase y te duevle la palabra
+     * Interpreta el codigo front	string ruta;
+	if (tipo == 1 ){
+		ruta = PATH_FRONT_CODING_AUTOR;
+	}else{
+		ruta = PATH_FRONT_CODING_EDITORIAL;
+	} Coding que se le pase y te duevle la palabra
      * pre: busca la palabra contra la que compara en el archivo de front coding
      * post: devuelve la palabra
      */
-    string interpretarFrontCoding(string frontCoding);
+    string interpretarFrontCoding(string frontCoding, int tipo);
 };
 
 #endif /* FRONTCODING_H_ */

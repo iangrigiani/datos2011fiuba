@@ -19,14 +19,17 @@
 #define PORCENTAJE_NODO 50
 #define PATH_CONFIGURACION_AUTORES "ArchivoConfiguracionAutores.txt"
 #define PATH_CONFIGURACION_EDITORIAL "ArchivoConfiguracionEditorial.txt"
-#define PATH_NODOS "Archivo_Nodos.txt"
+#define PATH_NODOS_AUTORES "Archivo_Nodos_Autores.txt"
+#define PATH_NODOS_EDITORIAL "Archivo_Nodos_Editorial.txt"
 #define BUFFER_NODOS_LIBRES 128
 #define TAM_CONTROL_REGISTRO 5
 #define PATH_REG_LONG_VARIABLE "ArchivoDeRLV.txt"
-#define PATH_ARBOL "Arbol.txt"
+#define PATH_ARBOL_AUTOR "Arbol_Autor.txt"
+#define PATH_ARBOL_EDITORIAL "Arbol_Editorial.txt"
 #define PATH_ESPACIO_LIBRE_RLV "controlEspaciosLibresRLV.txt"
 #define PATH_STOPWORDS "stopWords.txt"
-#define PATH_FRONT_CODING "frontCoding.txt"
+#define PATH_FRONT_CODING_AUTOR "frontCodingAutor.txt"
+#define PATH_FRONT_CODING_EDITORIAL "frontCodingEditorial.txt"
 #define PATH_ARCHIVO_LOG "logBookerio.txt"
 #define PORC_TAMANIO_NODO 50
 

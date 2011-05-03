@@ -66,7 +66,29 @@ int HandlerArchivoLog::buscarRegistro(int IDArchivo){
     return puntero;
 }
 
+void HandlerArchivoLog::obtenerIDEstructuras(int IDArchivo, int& a,int& e,int& t,int& p){
+	 int puntero = buscarRegistro(IDArchivo);
+	 int ID = 0;
+	 char* cadena = (char*)calloc(100, sizeof(char));
+	 string linea;
 
+	 ifstream archivoLog;
+	 archivoLog.open(PATH_ARCHIVO_LOG, std::ios_base::in);
+	 if (!archivoLog.is_open()){
+		 archivoLog.open(PATH_ARCHIVO_LOG,std::ios_base::out);
+		 archivoLog.close();
+		 archivoLog.open(PATH_ARCHIVO_LOG,std::ios_base::in);
+	 }
+	 archivoLog.seekg(puntero);
+	 archivoLog.getline(cadena,100);
+
+	 ID = atoi(strtok(cadena,"|"));
+	 a = atoi ( strtok(NULL,"|") );
+	 e = atoi ( strtok(NULL,"|") );
+	 t = atoi ( strtok(NULL,"|") );
+	 p = atoi ( strtok(NULL,"\n") );
+
+}
 void HandlerArchivoLog::setearIndexado(int IDArchivo, int parametro){
     int puntero = buscarRegistro(IDArchivo);
     int ID= 0, ind1=0 , ind2=0, ind3=0, ind4=0;
