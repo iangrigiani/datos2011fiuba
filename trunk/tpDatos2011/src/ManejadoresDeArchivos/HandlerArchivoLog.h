@@ -38,6 +38,11 @@ public:
 	void obtenerListaIDs(list<int>& listaDeIds);
 
 	/*
+	 * PRE: Recibe por parámetro el id de archivo
+	 * POS: Devuelve los parametros del archivo de log.
+	 */
+	void obtenerIDEstructuras(int IDArchivo, int& a,int& e,int& t,int& p);
+	/*
 	 * PRE: Recibe parametro para filtrar entre los libros almacenados
 	 * POS: Guarda en listaDeIDs (por referencia) los IDs que deben ser indexados
 	 */

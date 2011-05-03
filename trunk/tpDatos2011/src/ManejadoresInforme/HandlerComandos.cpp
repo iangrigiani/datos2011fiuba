@@ -2,9 +2,7 @@
 
 HandlerComandos::HandlerComandos() {
 	this-> handler 			= new HandlerArchivoRLV();
-	cout << "dp";
 	this-> parser 			= new ParserDeLibros();
-	cout << "dp2";
 	this-> log 				= new HandlerArchivoLog();
 }
 
@@ -12,7 +10,7 @@ HandlerComandos::~HandlerComandos() {
 	delete this-> parser;
 	delete this-> handler;
 	delete this-> log;
-	delete this-> arbol;
+	//delete this-> arbol;
 }
 
 void HandlerComandos::guardarLibroEnArchivoMaestro(const string& path_nuevo_libro){
@@ -37,12 +35,12 @@ void HandlerComandos::indexar(int parametro){
 	while ( it != listaDeIds.end()){
 	    switch (parametro){
 	        case 'a':{
-	        	this->arbol = new ArbolBMas(1, PATH_NODOS);
+	        	this->arbol = new ArbolBMas(1, PATH_NODOS_AUTORES);
 	        	insertarEnArbol (1, (*it));
 	        	this->log->setearIndexado(*it,'a');break;}
 
 	        case 'e':{
-	        	this->arbol = new ArbolBMas(2, PATH_NODOS);
+	        	this->arbol = new ArbolBMas(2, PATH_NODOS_EDITORIAL);
 	        	insertarEnArbol (2, (*it));
 	        	this->log->setearIndexado(*it,'e'); break;}
 
@@ -86,11 +84,22 @@ void HandlerComandos::obtenerLibro(int IDArchivo){
 //TODO Probar!
 void HandlerComandos::quitarLibro(int IDArchivo) {
 	//Borrar libro de todos los índices
-	if (this->eliminar_de_hash_titulo(IDArchivo) == false)
-		cout << "Error: no existe un archivo con ese ID" << endl;
-	this->eliminar_de_hash_palabra(IDArchivo);
-	eliminarEnArbol(1, IDArchivo);
-	eliminarEnArbol(2, IDArchivo);
+	cout << "lalalal";
+	int a = 0, e = 0, t= 0, p = 0;
+	this->log->obtenerIDEstructuras(IDArchivo, a,e,t,p);
+	if (a == 1){
+		eliminarEnArbol(1, IDArchivo);
+	}
+	if (e == 1){
+		eliminarEnArbol(2, IDArchivo);
+	}
+	if (t == 1){
+		if (this->eliminar_de_hash_titulo(IDArchivo) == false)
+			cout << "Error: no existe un archivo con ese ID" << endl;
+	}
+	if (p == 1){
+		this->eliminar_de_hash_palabra(IDArchivo);
+	}
 	//Borrar libro del archivo maestro
 	this->handler->quitarRegistro(IDArchivo);
 	printf("Bookerio: Libro ID  %d : Borrado con éxito. \n", IDArchivo);
@@ -101,14 +110,14 @@ void HandlerComandos::verEstructura(int parametro){
 	switch (parametro) {
 	case 'a': {
 			printf("Viendo estructura del árbol de autores. \n");
-			this->arbol = new ArbolBMas(1, PATH_NODOS);
+			this->arbol = new ArbolBMas(1, PATH_NODOS_AUTORES);
 			arbol->MostrarArbol();
 			/*TODO: ARREGLAR ESTO POR DIOS!!!!! */
 			//delete arbol;
 			break; }
 	case 'e': {
 			printf("Viendo estructura del árbol de editoriales. \n");
-			this->arbol = new ArbolBMas(2, PATH_NODOS);
+			this->arbol = new ArbolBMas(2, PATH_NODOS_EDITORIAL);
 //			ArbolBMas* arbol = new ArbolBMas(2, PATH_NODOS);
 			arbol->MostrarArbol();
 			delete arbol;

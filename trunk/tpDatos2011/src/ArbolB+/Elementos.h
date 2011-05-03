@@ -26,8 +26,8 @@ public:
 		return (sizeof(int) + this->clave->getTamanio() + sizeof(int));
 	}
 	void toString();
-	void transformarAFrontCoding(string primera);
-	void sacarElFrontCoding(string palabra);
+	void transformarAFrontCoding(string primera, int tipo);
+	void sacarElFrontCoding(string palabra, int tipo);
 	void serializar(char * buffer, unsigned int &offset);
 	void hidratar(char * buffer, unsigned int &offset);
     Clave *getClave() const{

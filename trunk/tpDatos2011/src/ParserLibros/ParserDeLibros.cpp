@@ -139,7 +139,11 @@ void ParserDeLibros::obtenerListaStopWords(){
 	fd.read(lista, tamanio);
 	char * pch;
 	pch = strtok (lista,"\n");
-	this->listaStopWords.push_back(pch);
+
+	stringstream ss;
+	ss << pch;
+
+	this->listaStopWords.push_back(ss.str());
 	while (pch != NULL)
 	{
 		pch = strtok (NULL, "\n");
