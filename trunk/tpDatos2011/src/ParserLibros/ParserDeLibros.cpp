@@ -66,16 +66,38 @@ list < string > ParserDeLibros::obtenerDatos(char* cadena) {
 
 Registro * ParserDeLibros::obtenerRegistroDeLibro(char* libro) {
 	this->libroActual = libro;
+	string aux;
 	Registro* nuevoRegistro = new Registro();
-	nuevoRegistro->setAutor(this->obtenerAutor());
+
+	//Autor
+	aux.clear();
+	aux = this->obtenerAutor();
+	downCase(aux);
+	nuevoRegistro->setAutor(aux);
+
+	//Editorial
+
 	char * editorial = this->obtenerEditorial();
 	if (editorial){
-		nuevoRegistro->setEditorial(editorial);
+		aux.clear();
+		aux = editorial;
+		downCase(aux);
+		nuevoRegistro->setEditorial(aux);
 	}else{
-		nuevoRegistro->setEditorial(EDITORIAL);
+		aux.clear();
+		aux = EDITORIAL;
+		downCase(aux);
+		nuevoRegistro->setEditorial(aux);
 	}
-	nuevoRegistro->setTitulo(this->obtenerTitulo());
 
+	//Tittulo
+	aux.clear();
+	aux = this->obtenerTitulo();
+	downCase(aux);
+	nuevoRegistro->setTitulo(aux);
+
+
+	//Palabras
 	char * palabrasChar = this->obtenerPalabras();
 	list < string > palabras = this->obtenerDatos(palabrasChar);
 	delete palabrasChar;
