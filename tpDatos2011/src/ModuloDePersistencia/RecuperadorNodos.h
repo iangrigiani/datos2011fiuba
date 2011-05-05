@@ -15,7 +15,7 @@ class RecuperadorNodos {
 
 private:
 	std::string path;
-	char* buffer;
+//	char* buffer;
 	HandlerBloques* handler;
 public:
 	RecuperadorNodos();
@@ -25,6 +25,9 @@ public:
 		return this->handler->get_tam_arch_bloques();
 	}
 	virtual ~RecuperadorNodos();
+	void setPath(string path){
+		this->path = path;
+	}
 };
 
 #endif /* RECUPERADORNODOS_H_ */

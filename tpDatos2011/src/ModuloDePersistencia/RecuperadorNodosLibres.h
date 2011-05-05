@@ -13,7 +13,7 @@ class RecuperadorNodosLibres {
 
 private:
 	std::string path;
-	char* buffer;
+//	char* buffer;
 	HandlerBloques* handler;
 	void hidratarPrimeraHoja(char* readData, unsigned int &offset, int& primeraHoja);
 	void hidratarNodosLibres(char* readData, unsigned int &offset, vector<int>& nodosLibres);

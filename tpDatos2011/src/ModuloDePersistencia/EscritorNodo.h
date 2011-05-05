@@ -13,7 +13,7 @@
 class EscritorNodo{
 private:
 	std::string path;
-	char* buffer;
+//	char* buffer;
 	HandlerBloques* handler;
 public:
 	EscritorNodo();

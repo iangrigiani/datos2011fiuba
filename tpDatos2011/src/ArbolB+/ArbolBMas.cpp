@@ -1,11 +1,10 @@
 #include "ArbolBMas.h"
 #include <iostream>
 
-ArbolBMas::ArbolBMas(int tipo, string ruta_archivo){
-	this->tipo = tipo;
+ArbolBMas::ArbolBMas(string ruta_archivo){
 	this->primeraHoja = 0;
 	this->path = ruta_archivo;
-	inicializarPersistores();
+	inicializarPersistores(ruta_archivo);
 	this->raiz = hidratarNodo(0);
 	if (this->raiz) {
 		this->cantidadNodos = this->recuperador_Nodos->getTamanioArchivo() / TAM_TOTAL_NODO;
@@ -15,21 +14,13 @@ ArbolBMas::ArbolBMas(int tipo, string ruta_archivo){
 	hidratarDatosConfiguracion();
 }
 
-void ArbolBMas::inicializarPersistores(){
-
-
-	if(this->tipo == 1){
-		this->recuperador_Nodos = new RecuperadorNodos(PATH_NODOS_AUTORES);
-		this->escritor_Nodos = new EscritorNodo(PATH_NODOS_AUTORES);
-		this->escritor_Datos_Configuracion = new EscritorNodosLibres(PATH_CONFIGURACION_AUTORES);
-		this->recuperador_Datos_Configuracion = new RecuperadorNodosLibres(PATH_CONFIGURACION_AUTORES);
-	}else{
-		this->recuperador_Nodos = new RecuperadorNodos(PATH_NODOS_EDITORIAL);
-		this->escritor_Nodos = new EscritorNodo(PATH_NODOS_EDITORIAL);
-		this->escritor_Datos_Configuracion = new EscritorNodosLibres(PATH_CONFIGURACION_EDITORIAL);
-		this->recuperador_Datos_Configuracion = new RecuperadorNodosLibres(PATH_CONFIGURACION_EDITORIAL);
-	}
-
+void ArbolBMas::inicializarPersistores(string ruta){
+	string rutaAux = ruta + "_Nodos.txt";
+	this->recuperador_Nodos = new RecuperadorNodos(rutaAux);
+	this->escritor_Nodos = new EscritorNodo(rutaAux);
+	rutaAux = ruta + "_Config.txt";
+	this->escritor_Datos_Configuracion = new EscritorNodosLibres(rutaAux);
+	this->recuperador_Datos_Configuracion = new RecuperadorNodosLibres(rutaAux);
 }
 ArbolBMas::~ArbolBMas(){
 	if	(raiz){
@@ -66,7 +57,7 @@ bool ArbolBMas::insertar(Elementos* elemento){
 	string palabra = elemento->getClave()->getClave();
 
 	// Saco el frontcoding antes de insertar recursivamente
-	elemento->sacarElFrontCoding(palabra, this->tipo);
+	elemento->sacarElFrontCoding(palabra, this->path);
 
 	Clave* clave = new Clave(elemento->getClave()->getClave());
 	// Inserto recursivamente
@@ -221,7 +212,7 @@ void ArbolBMas::refactorizarNodoFrontCoding(NodoHoja** nodo){
 	// Resto el tamaño del 1er dato
     (*nodo)->espacioOcupado -= ((*nodo))->datos[0].getTamanio();
     // Le saco el frontcoding a esa clave
-    (*nodo)->datos[0].sacarElFrontCoding(((*nodo))->datos[0].getClave()->getClave(), this->tipo);
+    (*nodo)->datos[0].sacarElFrontCoding(((*nodo))->datos[0].getClave()->getClave(), this->path);
     // Le sumo al nodo el tamaño del dato con la clave nueva
     (*nodo)->espacioOcupado += (*nodo)->datos[0].getTamanio();
 	string primera = (*nodo)->datos[0].getClave()->getClave();
@@ -229,7 +220,7 @@ void ArbolBMas::refactorizarNodoFrontCoding(NodoHoja** nodo){
 	// Hago lo mismo con el resto de las claves, pasandolas a frontcoding con respecto a la primera
 	for (int i = 1; i < (*nodo)->cantidadClaves ; i++){
 		(*nodo)->espacioOcupado -= ((*nodo))->datos[i].getTamanio();
-		(*nodo)->datos[i].transformarAFrontCoding(primera, this->tipo);
+		(*nodo)->datos[i].transformarAFrontCoding(primera, this->path);
 		(*nodo)->espacioOcupado += ((*nodo))->datos[i].getTamanio();
 	}
 }
@@ -238,7 +229,7 @@ void ArbolBMas::refactorizarNodoNoHojaFrontCoding(Nodo** nodo){
 	// Resto el tamaño del 1er dato
 	static_cast<NodoHoja*>(*nodo)->espacioOcupado -= (static_cast<NodoHoja*>(*nodo))->datos[0].getTamanio();
 	// Le saco el frontcoding a esa clave
-	static_cast<NodoHoja*>(*nodo)->datos[0].sacarElFrontCoding((static_cast<NodoHoja*>(*nodo))->datos[0].getClave()->getClave(), this->tipo);
+	static_cast<NodoHoja*>(*nodo)->datos[0].sacarElFrontCoding((static_cast<NodoHoja*>(*nodo))->datos[0].getClave()->getClave(), this->path);
 	// Le sumo al nodo el tamaño del dato con la clave nueva
 	static_cast<NodoHoja*>(*nodo)->espacioOcupado += static_cast<NodoHoja*>(*nodo)->datos[0].getTamanio();
 	string primera = static_cast<NodoHoja*>(*nodo)->datos[0].getClave()->getClave();
@@ -246,7 +237,7 @@ void ArbolBMas::refactorizarNodoNoHojaFrontCoding(Nodo** nodo){
 	// Hago lo mismo con el resto de las claves, pasandolas a frontcoding con respecto a la primera
 	for (int i = 1; i < static_cast<NodoHoja*>(*nodo)->cantidadClaves ; i++){
 		static_cast<NodoHoja*>(*nodo)->espacioOcupado -= (static_cast<NodoHoja*>(*nodo))->datos[i].getTamanio();
-		static_cast<NodoHoja*>(*nodo)->datos[i].transformarAFrontCoding(primera, this->tipo);
+		static_cast<NodoHoja*>(*nodo)->datos[i].transformarAFrontCoding(primera, this->path);
 		static_cast<NodoHoja*>(*nodo)->espacioOcupado += (static_cast<NodoHoja*>(*nodo))->datos[i].getTamanio();
 	}
 }
@@ -332,14 +323,14 @@ void ArbolBMas::sacarFrontCodingNodo (Nodo ** nodo){
 	// Resto el tamaño original en el nodo
 	static_cast<NodoHoja*>(*nodo)->espacioOcupado -= (static_cast<NodoHoja*>(*nodo))->datos[0].getTamanio();
 	// Le saco el frontcoding
-	static_cast<NodoHoja*>(*nodo)->datos[0].sacarElFrontCoding((static_cast<NodoHoja*>(*nodo))->datos[0].getClave()->getClave(), this->tipo);
+	static_cast<NodoHoja*>(*nodo)->datos[0].sacarElFrontCoding((static_cast<NodoHoja*>(*nodo))->datos[0].getClave()->getClave(), this->path);
 	// Sumo el nuevo tamaño sin el frontcoding en el nodo
 	static_cast<NodoHoja*>(*nodo)->espacioOcupado += static_cast<NodoHoja*>(*nodo)->datos[0].getTamanio();
 
 	// Hago lo mismo con el resto de las claves
 	for (int i = 1; i < static_cast<NodoHoja*>(*nodo)->cantidadClaves ; i++){
 		static_cast<NodoHoja*>(*nodo)->espacioOcupado -= (static_cast<NodoHoja*>(*nodo))->datos[i].getTamanio();
-		static_cast<NodoHoja*>(*nodo)->datos[i].sacarElFrontCoding(static_cast<NodoHoja*>(*nodo)->datos[i].getClave()->getClave(), this->tipo);
+		static_cast<NodoHoja*>(*nodo)->datos[i].sacarElFrontCoding(static_cast<NodoHoja*>(*nodo)->datos[i].getClave()->getClave(), this->path);
 		static_cast<NodoHoja*>(*nodo)->espacioOcupado += (static_cast<NodoHoja*>(*nodo))->datos[i].getTamanio();
 	}
 }
@@ -348,14 +339,14 @@ void ArbolBMas::sacarFrontCodingNodoHoja (NodoHoja ** nodo){
 	// Resto el tamaño original en el nodo
     (*nodo)->espacioOcupado -= ((*nodo))->datos[0].getTamanio();
     // Le saco el frontcoding
-    (*nodo)->datos[0].sacarElFrontCoding(((*nodo))->datos[0].getClave()->getClave(), this->tipo);
+    (*nodo)->datos[0].sacarElFrontCoding(((*nodo))->datos[0].getClave()->getClave(), this->path);
     // Sumo el nuevo tamaño sin el frontcoding en el nodo
     (*nodo)->espacioOcupado += (*nodo)->datos[0].getTamanio();
 
     // Hago lo mismo con el resto de las claves
 	for (int i = 1; i < (*nodo)->cantidadClaves ; i++){
 		(*nodo)->espacioOcupado -= ((*nodo))->datos[i].getTamanio();
-		(*nodo)->datos[i].sacarElFrontCoding((*nodo)->datos[i].getClave()->getClave(), this->tipo);
+		(*nodo)->datos[i].sacarElFrontCoding((*nodo)->datos[i].getClave()->getClave(), this->path);
 		(*nodo)->espacioOcupado += ((*nodo))->datos[i].getTamanio();
 	}
 }
@@ -394,37 +385,30 @@ void ArbolBMas::dividirNodoHoja(NodoHoja* unNodoHoja, Clave* clavePromocion, Nod
 }
 
 void ArbolBMas::MostrarArbol (Nodo* nodo){
-	/*
-	ofstream fo;
-	fo.open(PATH_ARBOL, ios_base::app);
-	fo << "---------------------------------" << endl << endl;
-	if (this->tipo == 1){
-		fo << "-      ARBOL B+ DE AUTORES      -" << endl << endl;
-		fo << "Tamanio de Nodo:  " << TAM_TOTAL_NODO << "Bytes" << endl;
-		fo << "Primer Hoja, Nodo N°:  " << primeraHoja << endl;
-	}
-	if (nodo){
-		toString(nodo,1, fo);
-	}
-	fo.flush();
-	fo.close();
-	*/
+//	ofstream fo;
+//	fo.open(PATH_ARBOL, ios_base::app);
+//	fo << "---------------------------------" << endl << endl;
+//	if (this->tipo == 1){
+//		fo << "-      ARBOL B+ DE AUTORES      -" << endl << endl;
+//		fo << "Tamanio de Nodo:  " << TAM_TOTAL_NODO << "Bytes" << endl;
+//		fo << "Primer Hoja, Nodo N°:  " << primeraHoja << endl;
+//	}
+//	if (nodo){
+//		toString(nodo,1, fo);
+//	}
+//	fo.flush();
+//	fo.close();
 }
 void ArbolBMas::MostrarArbol (){
 	ofstream fo;
-	if (this->tipo == 1){
-		fo.open(PATH_ARBOL_AUTOR, ios_base::out);
-		fo << "*********************************************************************" << endl << endl;
-		fo << "*                       ARBOL B+ DE AUTORES                         *" << endl << endl;
-	}else{
-		fo.open(PATH_ARBOL_EDITORIAL, ios_base::out);
-		fo << "*********************************************************************" << endl << endl;
-		fo << "*                       ARBOL B+ DE EDITORIALES                         *" << endl << endl;
-	}
-	fo << "*********************************************************************" << endl << endl;
+	string ruta = this->path + ".txt";
+	fo.open(ruta.c_str(), ios_base::out);
+	fo << "********************************************************************************" << endl << endl;
+	fo << "		                     Arbol B+ de "; fo << this->path << "                    " << endl << endl;
+	fo << "********************************************************************************" << endl << endl;
 	fo << "Tamanio de Nodo:  " << TAM_TOTAL_NODO << endl;
 		fo << "Primer Hoja:  " << primeraHoja << endl;
-	fo << "---------------------------------------------------------------------" << endl << endl;
+	fo << "--------------------------------------------------------------------------------" << endl << endl;
 	if (this->raiz){
 		toString(this->raiz,1, fo);
 	}
@@ -446,6 +430,8 @@ void ArbolBMas::toString(Nodo* nodoAmostrar, int tab, ofstream& fo){
 				fo << "(";
 				Clave clave = (*nodo->datos[posicion].getClave());
 				fo << clave.getClave();
+				fo << " , ";
+				fo << "ID: " << nodo->datos[posicion].getOffset();
 				fo << ")";
 			}
 			fo << endl;
@@ -481,22 +467,21 @@ void ArbolBMas::toString(Nodo* nodoAmostrar, int tab, ofstream& fo){
 		}
 	}
 }
-
 void ArbolBMas::hidratarDatosConfiguracion(){
 	nodosLibres.clear();
 	recuperador_Datos_Configuracion->obtenerDatos(primeraHoja,nodosLibres);
 }
 
 
-bool ArbolBMas::borrar(Clave clave){
+bool ArbolBMas::borrar(Elementos elem){
 	if (!raiz)
 		return false;
-	int resultado = ArbolBMas::borrarRecursivo(clave, raiz, NULL, NULL, NULL, NULL, NULL, 0);
+	int resultado = ArbolBMas::borrarRecursivo(elem, (*elem.getClave()), raiz, NULL, NULL, NULL, NULL, NULL, 0);
 	return resultado != NO_ENCONTRADO;
 	//return !resultado.contiene(Resultado::NO_ENCONTRADO);
 }
 
-int ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nodoIzquierda, Nodo *nodoDerecha,
+int ArbolBMas::borrarRecursivo(Elementos elem, Clave clave, Nodo *nodoCorriente, Nodo *nodoIzquierda, Nodo *nodoDerecha,
 		NodoInterior *nodoPadreIzquierda, NodoInterior *nodoPadreDerecha, NodoInterior *nodoPadre, int posicionPadre) {
 	if (nodoCorriente->isNodoHoja()) {
 		sacarFrontCodingNodo(&nodoCorriente);
@@ -507,9 +492,35 @@ int ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nodoIzqui
 		if (posicion >= nodoHojaCorriente->cantidadClaves || clave.getClave() != nodoHojaCorriente->claves[posicion].getClave()) {
 			return NO_ENCONTRADO;
 		}
+        Solucion res = buscarSecuencialClave(nodoHojaCorriente->numero, elem, posicion);
+        posicion = res.getPosicion();
+        if (nodoHojaCorriente->numero != res.getNodo()){
+
+
+        	Nodo *auxNodoActual, *auxNodoIzquierda, *auxNodoDerecha;
+        	auxNodoActual = hidratarNodo(res.getNodo());
+        	NodoHoja* aux =  static_cast<NodoHoja*>(auxNodoActual);
+        	int anterior = nodoHojaCorriente->numero;
+			nodoHojaCorriente = aux;
+
+        	if ( aux->hojaSiguiente == 0){
+        		nodoHojaIzquierda = NULL;
+				auxNodoDerecha = hidratarNodo(anterior);
+				nodoHojaDerecha = static_cast<NodoHoja*>(auxNodoDerecha);
+        	}else{
+				auxNodoIzquierda = hidratarNodo(aux->hojaSiguiente);
+				nodoHojaIzquierda = static_cast<NodoHoja*>(auxNodoIzquierda);
+				auxNodoDerecha = hidratarNodo(anterior);
+				nodoHojaDerecha = static_cast<NodoHoja*>(auxNodoDerecha);
+        	}
+
+        }
 
 		nodoHojaCorriente->espacioOcupado -= (nodoHojaCorriente->datos[posicion].getTamanio() + nodoHojaCorriente->claves[posicion].getTamanio() + TAM_CONTROL_REGISTRO);
 		nodoHojaCorriente->cantidadClaves--;
+//		for (int i = 0 ; i <= nodoHojaCorriente->cantidadClaves; i++) {
+//			cout << "Clave" << i << ": " << nodoHojaCorriente->claves[i].getClave() << endl;
+//		}
 		for (int i = posicion; i < nodoHojaCorriente->cantidadClaves; i++) {
 			nodoHojaCorriente->claves[i] = nodoHojaCorriente->claves[i + 1];
 			nodoHojaCorriente->datos[i] = nodoHojaCorriente->datos[i + 1];
@@ -543,7 +554,7 @@ int ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nodoIzqui
 					liberarMemoriaNodo(raiz);
 				raiz = nodoHojaCorriente = NULL;
 				primeraHoja = 0;
-				string archivoConfiguracion = PATH_CONFIGURACION_AUTORES;
+				string archivoConfiguracion = this->path + "_Config.txt";
 				remove(archivoConfiguracion.c_str());
 				return RESULTADO_OK;
 
@@ -620,7 +631,7 @@ int ArbolBMas::borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nodoIzqui
 			auxPadreDerecha = nodoInteriorCorriente;
 		}
 		Nodo* auxNodoCorriente = hidratarNodo(nodoInteriorCorriente->hijos[posicion]);
-		int resultadoParcial = borrarRecursivo(clave, auxNodoCorriente, auxNodoIzquierda, auxNodoDerecha, auxPadreIzquierda, auxPadreDerecha, nodoInteriorCorriente, posicion);
+		int resultadoParcial = borrarRecursivo(elem, clave, auxNodoCorriente, auxNodoIzquierda, auxNodoDerecha, auxPadreIzquierda, auxPadreDerecha, nodoInteriorCorriente, posicion);
 		int resultado = RESULTADO_OK;
 
 		if (auxNodoIzquierda)
@@ -985,4 +996,33 @@ void ArbolBMas::pasarElementosNodoInteriorDerecho(NodoInterior *nodoIzquierda, N
 	}
 	persistirNodo(nodoIzquierda);
 	persistirNodo(nodoDerecha);
+}
+
+Solucion ArbolBMas::buscarSecuencialClave(int nodo, Elementos elemento, int posicion){
+	Solucion res;
+	bool encontrado = false;
+	int i = 0;
+	Nodo* auxNodo = hidratarNodo(nodo);
+	NodoHoja* hojaCorriente = static_cast<NodoHoja*>(auxNodo);
+	sacarFrontCodingNodoHoja(&hojaCorriente);
+	while (!encontrado && hojaCorriente->datos[posicion + i].getClave()->getClave() == elemento.getClave()->getClave() && ((posicion+i) < hojaCorriente->cantidadClaves)){
+		if (hojaCorriente->datos[posicion + i].getOffset() == elemento.getOffset()){
+			encontrado = true;
+		}
+		++i;
+	}
+	if (!encontrado){
+		if (hojaCorriente->datos[posicion + i -1].getClave()->getClave() == elemento.getClave()->getClave() && (posicion + i ) == hojaCorriente->cantidadClaves){
+			Nodo* nodoAux = hidratarNodo(hojaCorriente->hojaSiguiente);
+			NodoHoja *nodoHojaDerecha = static_cast<NodoHoja*> (nodoAux);
+			res = buscarSecuencialClave(nodoHojaDerecha->numero, elemento,0);
+		}else{
+			res.setNodo(hojaCorriente->numero);
+			res.setPosicion(ERROR);
+		}
+	}else{
+		res.setNodo(hojaCorriente->numero);
+		res.setPosicion(posicion + i -1);
+	}
+	return res;
 }

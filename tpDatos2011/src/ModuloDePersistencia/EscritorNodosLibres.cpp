@@ -10,11 +10,16 @@ EscritorNodosLibres::EscritorNodosLibres(std::string path) {
 }
 
 void EscritorNodosLibres::GrabarDatosConfig(int primeraHoja , vector<int> nodosLibres){
-	this->buffer = (char*)calloc (TAMANIO_BUFFER, sizeof(int));
+//	this->buffer = (char*)calloc (TAMANIO_BUFFER, sizeof(int));
+	char buffer[TAMANIO_BUFFER];
+	for (int i = 0 ; i < TAMANIO_BUFFER ; ++i){
+		buffer[i] = NULL;
+	}
 	unsigned int offset = 0;
-	serializarPrimeraHoja(primeraHoja, this->buffer, offset);
-	serializarNodosLibres(nodosLibres, this->buffer, offset);
-	this->handler->guardar_bloque_arbol(this->buffer, 0);
+	serializarPrimeraHoja(primeraHoja, buffer, offset);
+	serializarNodosLibres(nodosLibres, buffer, offset);
+	this->handler->guardar_bloque_arbol(buffer, 0);
+//	free(this->buffer);
 }
 
 void EscritorNodosLibres::serializarPrimeraHoja(int primeraHoja, char * buffer, unsigned int &offset){
@@ -27,6 +32,6 @@ void EscritorNodosLibres::serializarNodosLibres(vector<int> nodosLibres, char * 
 	}
 }
 EscritorNodosLibres::~EscritorNodosLibres() {
-	free(this->buffer);
+//	free(this->buffer);
 	delete this->handler;
 }

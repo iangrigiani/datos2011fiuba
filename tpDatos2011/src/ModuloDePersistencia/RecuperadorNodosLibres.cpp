@@ -10,11 +10,16 @@ RecuperadorNodosLibres::RecuperadorNodosLibres (std::string path){
 }
 
 void RecuperadorNodosLibres::obtenerDatos(int &primeraHoja, vector<int>& nodosLibres){
-	this->buffer = (char*)calloc(TAMANIO_BUFFER, sizeof(char));
-	this->buffer = this->handler->recuperar_bloque_arbol(0);
+//	this->buffer = (char*)calloc(TAMANIO_BUFFER, sizeof(char));
+	char buffer[TAMANIO_BUFFER];
+	for (int i = 0 ; i < TAMANIO_BUFFER ; ++i){
+		buffer[i] = NULL;
+	}
+	this->handler->recuperar_bloque_arbol(0, buffer);
 	unsigned int offset = 0;
-	hidratarPrimeraHoja(this->buffer,offset,primeraHoja);
-	hidratarNodosLibres(this->buffer,offset,nodosLibres);
+	hidratarPrimeraHoja(buffer,offset,primeraHoja);
+	hidratarNodosLibres(buffer,offset,nodosLibres);
+//	free(this->buffer);
 }
 
 void RecuperadorNodosLibres::hidratarPrimeraHoja(char* readData, unsigned int &offset, int& primeraHoja){
@@ -27,7 +32,7 @@ void RecuperadorNodosLibres::hidratarNodosLibres(char* readData, unsigned int &o
    }
 }
 RecuperadorNodosLibres::~RecuperadorNodosLibres(){
-	free(this->buffer);
+//	free(this->buffer);
 	delete this->handler;
 
 }

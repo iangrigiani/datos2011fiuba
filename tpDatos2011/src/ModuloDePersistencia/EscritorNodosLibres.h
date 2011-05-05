@@ -13,7 +13,7 @@ using namespace  std;
 
 class EscritorNodosLibres {
 private:
-	char * buffer;
+//	char * buffer;
 	std::string path;
 	HandlerBloques* handler;
 	void serializarPrimeraHoja(int primeraHoja, char * buffer, unsigned int &offset);
