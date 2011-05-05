@@ -35,7 +35,7 @@ void HandlerArchivoLog::insertarRegistro(int IDArchivo){
 int HandlerArchivoLog::buscarRegistro(int IDArchivo){
 
     bool registroEncontrado = false ;
-	char* cadena = (char*)calloc(100, sizeof(char));
+	char cadena[100];
     string cad;
     int puntero = 0 , IDActual= 0 ;
 
@@ -66,10 +66,14 @@ int HandlerArchivoLog::buscarRegistro(int IDArchivo){
     return puntero;
 }
 
-void HandlerArchivoLog::obtenerIDEstructuras(int IDArchivo, int& a,int& e,int& t,int& p){
+bool HandlerArchivoLog::obtenerIDEstructuras(int IDArchivo, int& a,int& e,int& t,int& p){
+
 	 int puntero = buscarRegistro(IDArchivo);
+	 if (puntero == ERROR){
+		 return false;
+	 }
 	 int ID = 0;
-	 char* cadena = (char*)calloc(100, sizeof(char));
+	 char cadena[100];
 	 string linea;
 
 	 ifstream archivoLog;
@@ -87,12 +91,14 @@ void HandlerArchivoLog::obtenerIDEstructuras(int IDArchivo, int& a,int& e,int& t
 	 e = atoi ( strtok(NULL,"|") );
 	 t = atoi ( strtok(NULL,"|") );
 	 p = atoi ( strtok(NULL,"\n") );
+	 archivoLog.close();
+	 return true;
 
 }
 void HandlerArchivoLog::setearIndexado(int IDArchivo, int parametro){
     int puntero = buscarRegistro(IDArchivo);
     int ID= 0, ind1=0 , ind2=0, ind3=0, ind4=0;
-    char* cadena = (char*)calloc(100, sizeof(char));
+	char cadena[100];
     string linea;
 
     fstream archivoLog;
@@ -132,7 +138,7 @@ void HandlerArchivoLog::setearIndexado(int IDArchivo, int parametro){
 void HandlerArchivoLog::obtenerListaIDs(list<int>& listaDeIds){
 	fstream archivoLog;
     int IDActual=0 , puntero=0;
-    char* cadena = (char*)calloc(100, sizeof(char));
+	char cadena[100];
     string cad;
 
 	archivoLog.open(PATH_ARCHIVO_LOG, std::ios_base::in | std::ios_base::out);
@@ -149,6 +155,7 @@ void HandlerArchivoLog::obtenerListaIDs(list<int>& listaDeIds){
 		IDActual = atoi(strtok(cadena,"|"));
 		listaDeIds.push_back(IDActual);
 	}
+	archivoLog.close();
 }
 
 
@@ -156,7 +163,7 @@ void HandlerArchivoLog::obtenerListaIDsAIndexar (int parametro,list<int>& listaD
 	fstream archivoLog;
     int IDActual = 0, ind1=0 , ind2=0, ind3=0, ind4=0;
     string cad;
-    char* cadena = (char*)calloc(100, sizeof(char));
+	char cadena[100];
 	bool indexado = false;
 	archivoLog.open(PATH_ARCHIVO_LOG, std::ios_base::in | std::ios_base::out);
 	if (!archivoLog.is_open()){
@@ -199,6 +206,7 @@ void HandlerArchivoLog::obtenerListaIDsAIndexar (int parametro,list<int>& listaD
 		}
 		indexado = false;
 	}
+	archivoLog.close();
 }
 
 string HandlerArchivoLog::crearStringAInsertar(int numero, int ind1, int ind2, int ind3, int ind4){
