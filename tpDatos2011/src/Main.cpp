@@ -11,18 +11,30 @@ int main (int argc , char *argv[]){
 
 /* TODO cambiar printfs por métodos de HandlerComandos*/
         HandlerComandos* handlerComandos = new HandlerComandos();
+string path;
 
     int opcion1, opcion2;
     if ((argc!= 2) && (argc!=3) ) {
-        printf("Bookerio: Cantidad errónea de parámetros. Sólo puede pasar un parámetro o ");
-        printf("dos en caso de -v(er) o de -i(ngresar). \n");
-        printf("Bookerio: Ingrese el parámetro -h(elp) para ver la referencia de parámetros. \n");
+    	stringstream ss;
+    	for ( int i = 2 ; i < argc; ++i){
+    		if (i == (argc - 1)){
+    			ss << argv[i];
+    		}else{
+				ss << argv[i] << " ";
+    		}
+    	}
+    	path = ss.str();
+//    	printf("Bookerio: Cantidad errónea de parámetros. Sólo puede pasar un parámetro o ");
+//        printf("dos en caso de -v(er) o de -i(ngresar). \n");
+//        printf("Bookerio: Ingrese el parámetro -h(elp) para ver la referencia de parámetros. \n");
     }else{
+    	path = argv[2];
+    }
         (opcion1 = getopt(argc,argv, "ieatploqvh?:")) ;
         switch ( opcion1 ) {
             case 'i':   {
                                                 if (argv[2]) {
-                                                        handlerComandos->guardarLibroEnArchivoMaestro(argv[2]);
+                                                		handlerComandos->guardarLibroEnArchivoMaestro(path);
                                                         printf("Bookerio: Libro guardado. \n");
                                                 }else{
                                                         printf("Bookerio: No se puede procesar la orden: falta ruta de archivo.\n");}
@@ -60,9 +72,9 @@ int main (int argc , char *argv[]){
 
             case 'o':   {
                                                 if (argv[2]) {
-                                                        printf("Bookerio: Obtener Libro %s \n", argv[2]);
+                                                        printf("Bookerio: Obtener Libro %s \n", path.c_str());
                                                         handlerComandos->obtenerLibro(atoi(argv[2]));
-                                                        printf("Bookerio: Obtener Libro %s \n", argv[2]);
+                                                        printf("Bookerio: Obtener Libro %s \n", path.c_str());
                                                 }else{
                                                         printf("Bookerio: No se puede procesar la orden: falta un parámetro.\n");}
                                                 break;}
@@ -70,7 +82,7 @@ int main (int argc , char *argv[]){
             case 'q':   {
                                                 if (argv[2]) {
                                                         printf("-q <ID> Quita un archivo por ID \n");
-                                                        handlerComandos->quitarLibro(atoi(argv[2]));
+                                                        handlerComandos->quitarLibro(atoi(path.c_str()));
                                                 }else{
                                                         printf("Bookerio: No se puede procesar la orden: falta un parámetro.\n");}
                                                 break;}
@@ -134,7 +146,6 @@ int main (int argc , char *argv[]){
             case '?':   printf("Bookerio: Parámetro inválido. \nBookerio: Ingrese el parámetro -h(help) para ver la referencia de parámetros. \n"); break;
         }
 
-    }
     delete handlerComandos;
 }
 
