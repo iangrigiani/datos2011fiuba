@@ -26,6 +26,7 @@ void HandlerComandos::guardarLibroEnArchivoMaestro(const string& path_nuevo_libr
 }
 
 void HandlerComandos::indexar(int parametro){
+
 	// Lista de IDs de libros a Indexar
 	list<int> listaDeIds;
 	this->log->obtenerListaIDsAIndexar(parametro,listaDeIds); // Obtengo todos los offsets
@@ -61,7 +62,6 @@ void HandlerComandos::indexar(int parametro){
 	}
 }
 
-//TODO Revisar
 void HandlerComandos::listarLibrosIngresados(){
 	list<int> listaDeIds;
 	this->log->obtenerListaIDs(listaDeIds);
@@ -81,58 +81,63 @@ void HandlerComandos::obtenerLibro(int IDArchivo){
 	printf("Bookerio: Fin de libro %d \n", IDArchivo);
 }
 
-//TODO Probar!
 void HandlerComandos::quitarLibro(int IDArchivo) {
 	//Borrar libro de todos los índices
 	int a = 0, e = 0, t= 0, p = 0;
-	this->log->obtenerIDEstructuras(IDArchivo, a,e,t,p);
-	if (a == 1){
-		eliminarEnArbol(1, IDArchivo);
+	if (this->log->obtenerIDEstructuras(IDArchivo, a,e,t,p)){
+		if (a == 1){
+			if (!eliminarEnArbol(1, IDArchivo)){
+				printf("Bookerio: Libro ID  %d : No pudo borrarse del indice por autor. \n", IDArchivo);;
+			}
+		}
+		if (e == 1){
+			if (!eliminarEnArbol(2, IDArchivo)){
+				printf("Bookerio: Libro ID  %d : No pudo borrarse del indice por editorial. \n", IDArchivo);;
+			}
+		}
+		if (t == 1){
+			if (this->eliminar_de_hash_titulo(IDArchivo) == false)
+				cout << "Error: no existe un archivo con ese ID" << endl;
+		}
+		if (p == 1){
+			this->eliminar_de_hash_palabra(IDArchivo);
+		}
+		//Borrar libro del archivo maestro
+		this->handler->quitarRegistro(IDArchivo);
+		printf("Bookerio: Libro ID  %d : Borrado procesado. \n", IDArchivo);
+	}else{
+		printf("Bookerio: Libro ID  %d : Error: No existe. \n", IDArchivo);
 	}
-	if (e == 1){
-		eliminarEnArbol(2, IDArchivo);
-	}
-	if (t == 1){
-		if (this->eliminar_de_hash_titulo(IDArchivo) == false)
-			cout << "Error: no existe un archivo con ese ID" << endl;
-	}
-	if (p == 1){
-		this->eliminar_de_hash_palabra(IDArchivo);
-	}
-	//Borrar libro del archivo maestro
-	this->handler->quitarRegistro(IDArchivo);
-	printf("Bookerio: Libro ID  %d : Borrado con éxito. \n", IDArchivo);
 }
 
-//TODO Probar
 void HandlerComandos::verEstructura(int parametro){
 	switch (parametro) {
 	case 'a': {
-			printf("Viendo estructura del árbol de autores. \n");
-			this->arbol = new ArbolBMas(PATH_AUTOR);
-			arbol->MostrarArbol();
-			/*TODO: ARREGLAR ESTO POR DIOS!!!!! */
-			//delete arbol;
-			break; }
+		printf("Viendo estructura del árbol de autores. \n");
+		this->arbol = new ArbolBMas(PATH_AUTOR);
+		arbol->MostrarArbol();
+		/*TODO: ARREGLAR ESTO POR DIOS!!!!! */
+		//delete arbol;
+		break; }
 	case 'e': {
-			printf("Viendo estructura del árbol de editoriales. \n");
-			this->arbol = new ArbolBMas(PATH_EDITORIAL);
-//			ArbolBMas* arbol = new ArbolBMas(2, PATH_NODOS);
-			arbol->MostrarArbol();
-			delete arbol;
-			break; }
+		printf("Viendo estructura del árbol de editoriales. \n");
+		this->arbol = new ArbolBMas(PATH_EDITORIAL);
+		//			ArbolBMas* arbol = new ArbolBMas(2, PATH_NODOS);
+		arbol->MostrarArbol();
+		delete arbol;
+		break; }
 	case 't': {
-			printf("Viendo estructura del hash de títulos. \n");
-			HashTitulo hash;
-			hash.crear_condiciones_iniciales();
-			hash.mostrar();
-			break; }
+		printf("Viendo estructura del hash de títulos. \n");
+		HashTitulo hash;
+		hash.crear_condiciones_iniciales();
+		hash.mostrar();
+		break; }
 	case 'p': {
-			printf("Viendo estructura del hash de palabras. \n");
-			HashPalabra hash;
-			hash.crear_condiciones_iniciales();
-			hash.mostrar();
-			break; }
+		printf("Viendo estructura del hash de palabras. \n");
+		HashPalabra hash;
+		hash.crear_condiciones_iniciales();
+		hash.mostrar();
+		break; }
 	}
 }
 
@@ -282,21 +287,21 @@ void HandlerComandos::insertarEnArbol (int tipoArbol, int offset){
 
 bool HandlerComandos::eliminarEnArbol(int tipoArbol, int offset) {
 	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
-
+	bool retorno = false;
 	if (tipoArbol == 1){
 		this->arbol = new ArbolBMas(PATH_AUTOR);
 		Elementos* e = new Elementos(new Clave (reg->getAutor()),offset);
-		arbol->borrar(*e);
+		retorno = arbol->borrar(*e);
 		delete e;
 		delete arbol;
 	}else{
 		this->arbol = new ArbolBMas(PATH_EDITORIAL);
 		Elementos* e = new Elementos(new Clave (reg->getEditorial()),offset);
-		arbol->borrar(*e);
+		retorno = arbol->borrar(*e);
 		delete e;
 		delete arbol;
 	}
 	delete reg;
+	return retorno;
 //	delete arbol;
-	return true; //TODO ver si es necesario retornar bool
 }

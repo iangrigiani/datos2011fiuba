@@ -28,6 +28,7 @@ string path;
 //        printf("dos en caso de -v(er) o de -i(ngresar). \n");
 //        printf("Bookerio: Ingrese el parámetro -h(elp) para ver la referencia de parámetros. \n");
     }else{
+    	if (argv[2])
     	path = argv[2];
     }
         (opcion1 = getopt(argc,argv, "ieatploqvh?:")) ;

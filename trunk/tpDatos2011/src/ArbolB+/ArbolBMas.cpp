@@ -404,11 +404,13 @@ void ArbolBMas::MostrarArbol (){
 	string ruta = this->path + ".txt";
 	fo.open(ruta.c_str(), ios_base::out);
 	fo << "********************************************************************************" << endl << endl;
-	fo << "		                     Arbol B+ de "; fo << this->path << "                    " << endl << endl;
+	fo << "		                   Arbol B+ de "; fo << this->path << "                    " << endl << endl;
 	fo << "********************************************************************************" << endl << endl;
-	fo << "Tamanio de Nodo:  " << TAM_TOTAL_NODO << endl;
-		fo << "Primer Hoja:  " << primeraHoja << endl;
-	fo << "--------------------------------------------------------------------------------" << endl << endl;
+	if (raiz){
+		fo << "Tamanio de Nodo:  " << TAM_TOTAL_NODO << endl;
+		fo << "	Primer Hoja:  " << primeraHoja << endl;
+		fo << "--------------------------------------------------------------------------------" << endl << endl;
+	}
 	if (this->raiz){
 		toString(this->raiz,1, fo);
 	}
@@ -494,6 +496,10 @@ int ArbolBMas::borrarRecursivo(Elementos elem, Clave clave, Nodo *nodoCorriente,
 		}
         Solucion res = buscarSecuencialClave(nodoHojaCorriente->numero, elem, posicion);
         posicion = res.getPosicion();
+
+        if ( posicion == ERROR){
+        	return NO_ENCONTRADO;
+        }
         if (nodoHojaCorriente->numero != res.getNodo()){
 
 
