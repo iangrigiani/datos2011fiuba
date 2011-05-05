@@ -12,7 +12,7 @@
 #include "../ModuloDePersistencia/EscritorNodo.h"
 #include "../ModuloDePersistencia/RecuperadorNodos.h"
 #include "../ModuloDePersistencia/RecuperadorNodosLibres.h"
-
+#include "Solucion.h"
 #include <fstream>
 #include <vector>
 #include <stdio.h>
@@ -34,8 +34,6 @@ private:
 	 * Si es un 1 guarda Autores,
 	 * si es un 2 guarda editoriales
 	 */
-
-	int tipo;
 	int primeraHoja;
 	RecuperadorNodos* recuperador_Nodos;
 	EscritorNodo* escritor_Nodos;
@@ -55,7 +53,7 @@ public:
 	 * maximo de clave que puede almacenar y el tipo de arbol.
 	 * tipo puede ser: 1 para árbol de autores, sino árbol de editoriales
 	 */
-	ArbolBMas(int tipo, std::string ruta_archivo);
+	ArbolBMas(std::string ruta_archivo);
 	~ArbolBMas();
 
 	/*
@@ -85,7 +83,7 @@ public:
 	 * el padre.
 	 * Puede devolver OK, NO_ENCONTRADO, ACTUALIZAR_ULTIMA_CLAVE o FUSION_NODOS segun sea el caso.
 	 */
-	int borrarRecursivo(Clave clave, Nodo *nodoCorriente, Nodo *nodoIzquierda, Nodo *nodoDerecha,
+	int borrarRecursivo(Elementos elem, Clave clave, Nodo *nodoCorriente, Nodo *nodoIzquierda, Nodo *nodoDerecha,
 			NodoInterior *nodoPadreIzquierda, NodoInterior *nodoPadreDerecha, NodoInterior *nodoPadre, int posicionPadre);
 
 
@@ -154,7 +152,7 @@ public:
 	 * Primitiva que elimina un registro de la estructura.
 	 * Pos: Devuelve TRUE si se pudo borrar correctamente y FALSE en caso contrario.
 	 */
-	bool borrar(Clave clave);
+	bool borrar(Elementos elem);
 
 	/*
 	 * Devuelve el nodo con número "numeroDeNodo".
@@ -168,9 +166,6 @@ public:
 	void MostrarArbol ();
 
 	int getCantidadBloques();
-
-	int getTipo(){
-		return this->tipo;}
 
 private:
 	void grabarDatosConfiguracion();
@@ -190,7 +185,8 @@ private:
 	void dividirNodoInterior(NodoInterior* unNodoInterior, Clave* clavePromocion, Nodo** nuevoNodoInterior, int nuevaPosicion);
 	void dividirNodoHoja(NodoHoja* unNodoHoja, Clave* clavePromocion, Nodo** nuevoNodoHoja);
 	void hidratarDatosConfiguracion();
-	void inicializarPersistores();
+	void inicializarPersistores(string ruta);
+	Solucion buscarSecuencialClave(int nodo, Elementos elemento, int posicion);
 };
 
 #endif // _ARBOLBMAS_H_

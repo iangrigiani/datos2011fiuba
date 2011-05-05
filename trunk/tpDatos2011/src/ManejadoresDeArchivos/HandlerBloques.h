@@ -66,7 +66,7 @@ public:
 	 * Pos: Devuelve en un buffer el bloque leído para su correcta hidratación luego por la estructura
 	 * que lo invocó.
 	 */
-	char* recuperar_bloque_arbol(int nro_bloque);
+	void recuperar_bloque_arbol(int nro_bloque, char* buffer);
 	/*
 	 * Guarda el bloque pasado por referencia en el archivo de bloques. Si hay algun espacio libre,
 	 * el bloque se almacena alli, de lo contrario, se almacena al final del archivo. En caso de que

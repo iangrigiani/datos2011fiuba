@@ -35,12 +35,12 @@ void HandlerComandos::indexar(int parametro){
 	while ( it != listaDeIds.end()){
 	    switch (parametro){
 	        case 'a':{
-	        	this->arbol = new ArbolBMas(1, PATH_NODOS_AUTORES);
+	        	this->arbol = new ArbolBMas(PATH_AUTOR);
 	        	insertarEnArbol (1, (*it));
 	        	this->log->setearIndexado(*it,'a');break;}
 
 	        case 'e':{
-	        	this->arbol = new ArbolBMas(2, PATH_NODOS_EDITORIAL);
+	        	this->arbol = new ArbolBMas(PATH_EDITORIAL);
 	        	insertarEnArbol (2, (*it));
 	        	this->log->setearIndexado(*it,'e'); break;}
 
@@ -84,7 +84,6 @@ void HandlerComandos::obtenerLibro(int IDArchivo){
 //TODO Probar!
 void HandlerComandos::quitarLibro(int IDArchivo) {
 	//Borrar libro de todos los índices
-	cout << "lalalal";
 	int a = 0, e = 0, t= 0, p = 0;
 	this->log->obtenerIDEstructuras(IDArchivo, a,e,t,p);
 	if (a == 1){
@@ -110,14 +109,14 @@ void HandlerComandos::verEstructura(int parametro){
 	switch (parametro) {
 	case 'a': {
 			printf("Viendo estructura del árbol de autores. \n");
-			this->arbol = new ArbolBMas(1, PATH_NODOS_AUTORES);
+			this->arbol = new ArbolBMas(PATH_AUTOR);
 			arbol->MostrarArbol();
 			/*TODO: ARREGLAR ESTO POR DIOS!!!!! */
 			//delete arbol;
 			break; }
 	case 'e': {
 			printf("Viendo estructura del árbol de editoriales. \n");
-			this->arbol = new ArbolBMas(2, PATH_NODOS_EDITORIAL);
+			this->arbol = new ArbolBMas(PATH_EDITORIAL);
 //			ArbolBMas* arbol = new ArbolBMas(2, PATH_NODOS);
 			arbol->MostrarArbol();
 			delete arbol;
@@ -282,17 +281,20 @@ void HandlerComandos::insertarEnArbol (int tipoArbol, int offset){
 }
 
 bool HandlerComandos::eliminarEnArbol(int tipoArbol, int offset) {
-//	ArbolBMas* arbol = new ArbolBMas(tipoArbol, PATH_NODOS);
 	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
 
 	if (tipoArbol == 1){
-		Clave* clave = new Clave (reg->getAutor());
-		arbol->borrar(*clave);
-		delete clave;
+		this->arbol = new ArbolBMas(PATH_AUTOR);
+		Elementos* e = new Elementos(new Clave (reg->getAutor()),offset);
+		arbol->borrar(*e);
+		delete e;
+		delete arbol;
 	}else{
-		Clave* clave = new Clave (reg->getEditorial());
-		arbol->borrar(*clave);
-		delete clave;
+		this->arbol = new ArbolBMas(PATH_EDITORIAL);
+		Elementos* e = new Elementos(new Clave (reg->getEditorial()),offset);
+		arbol->borrar(*e);
+		delete e;
+		delete arbol;
 	}
 	delete reg;
 //	delete arbol;

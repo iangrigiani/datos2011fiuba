@@ -62,7 +62,7 @@ void HandlerBloques::recuperar_bloque(char* buffer, int pos_arch_bloques) {
 	arch.close();
 }
 
-char* HandlerBloques::recuperar_bloque_arbol(int nro_bloque){
+void HandlerBloques::recuperar_bloque_arbol(int nro_bloque, char* Buffer){
 	fstream ff;
 	ff.open(this->ruta_arch_bloques.c_str(), fstream::in);
 	if (!ff.is_open()){
@@ -70,13 +70,15 @@ char* HandlerBloques::recuperar_bloque_arbol(int nro_bloque){
 		ff.close();
 		ff.open(this->ruta_arch_bloques.c_str(), fstream::in);
 	}
-		char * bloqueARetornoar = (char*)calloc(this->tam_bloque, sizeof(char));
+//		char bloqueARetornar[TAMANIO_BUFFER];
+//		char * bloqueARetornoar = (char*)calloc(this->tam_bloque, sizeof(char));
 		int offset_bloque = nro_bloque * this->tam_bloque;
 		// Me posiciono en el archivo de bloques
 		ff.seekg(offset_bloque);
-		ff.read(bloqueARetornoar, this->tam_bloque);
+		ff.read(Buffer, this->tam_bloque);
 		ff.close();
-		return bloqueARetornoar;
+//		free(bloqueARetornoar);
+//		return bloqueARetornoar;
 }
 
 
@@ -145,10 +147,11 @@ void HandlerBloques::eliminar_bloque_arbol(int nro_Bloque){
 	ff.open(this->ruta_arch_bloques.c_str(), fstream::in | fstream::out);
 	if (ff.is_open()){
 		int offset_bloque = nro_Bloque * this->tam_bloque;
-		char * bloqueABorrar = (char*)calloc(this->tam_bloque, sizeof(char));
+		char bloqueABorrar[TAMANIO_BUFFER];
+//		char * bloqueABorrar = (char*)calloc(this->tam_bloque, sizeof(char));
 		ff.seekg(offset_bloque);
 		ostringstream oss;
-		free(bloqueABorrar);
+//		free(bloqueABorrar);
 		oss << bloqueABorrar << "\n" ;
 		string borrar = oss.str();
 		ff.write(borrar.c_str(), borrar.length());

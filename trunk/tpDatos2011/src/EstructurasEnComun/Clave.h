@@ -27,7 +27,7 @@ public:
 	}
 	void toString();
 	int getTamanio()const{
-		return (this->clave.length());
+		return (strlen(this->clave.c_str()));
 	}
 	Clave * getClaveNula(){
 		return new Clave("0");

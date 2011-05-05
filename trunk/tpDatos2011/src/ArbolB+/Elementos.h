@@ -23,11 +23,11 @@ public:
 	Elementos(Clave* clave, unsigned int offset);
 	virtual ~Elementos();
 	int getTamanio() const{
-		return (sizeof(int) + this->clave->getTamanio() + sizeof(int));
+		return (sizeof(int) + this->clave->getTamanio() + sizeof(unsigned int));
 	}
 	void toString();
-	void transformarAFrontCoding(string primera, int tipo);
-	void sacarElFrontCoding(string palabra, int tipo);
+	void transformarAFrontCoding(string primera, string ruta);
+	void sacarElFrontCoding(string palabra, string ruta);
 	void serializar(char * buffer, unsigned int &offset);
 	void hidratar(char * buffer, unsigned int &offset);
     Clave *getClave() const{

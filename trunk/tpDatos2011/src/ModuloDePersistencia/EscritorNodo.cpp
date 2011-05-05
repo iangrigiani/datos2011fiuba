@@ -10,7 +10,11 @@ EscritorNodo::EscritorNodo(std::string path){
 }
 
 void EscritorNodo::ActualizarArchivoNodo(Nodo * nodo, int nro_bloque){
-	this->buffer = (char*)calloc(TAMANIO_BUFFER, sizeof(char));
+//	this->buffer = (char*)calloc(TAMANIO_BUFFER, sizeof(char));
+	char buffer[TAMANIO_BUFFER];
+	for (int i = 0 ; i < TAMANIO_BUFFER ; ++i){
+		buffer[i] = NULL;
+	}
 	unsigned int offset = 0;
 	if (nro_bloque > 0){
 		NodoInterior *nodoIntAGuardar = static_cast<NodoInterior*> (nodo);
@@ -19,10 +23,11 @@ void EscritorNodo::ActualizarArchivoNodo(Nodo * nodo, int nro_bloque){
 		NodoHoja *nodoHojaAGuardar = static_cast<NodoHoja*> (nodo);
 		nodoHojaAGuardar->serializar(buffer, offset);
 	}
-	this->handler->guardar_bloque_arbol(this->buffer, nro_bloque);
+	this->handler->guardar_bloque_arbol(buffer, nro_bloque);
+//	free(this->buffer);
 }
 
 EscritorNodo::~EscritorNodo() {
-	free(this->buffer);
+//	free(this->buffer);
 	delete this->handler;
 }

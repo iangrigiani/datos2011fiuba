@@ -11,10 +11,10 @@ Elementos::Elementos(Clave* clave, unsigned int offset){
 	this->transformada = 0;
 }
 
-void Elementos::transformarAFrontCoding(string primera, int tipo){
+void Elementos::transformarAFrontCoding(string primera, string ruta){
 	if (transformada == 0){
-		FrontCoding* fc = new FrontCoding();
-		string modificada = fc->pasarAFrontCoding(primera, this->clave->getClave(), tipo);
+		FrontCoding* fc = new FrontCoding(ruta);
+		string modificada = fc->pasarAFrontCoding(primera, this->clave->getClave());
 		this->clave->setValorClave(modificada);
 		this->transformada = 1;
 		modificada.clear();
@@ -22,10 +22,10 @@ void Elementos::transformarAFrontCoding(string primera, int tipo){
 	}
 }
 
-void Elementos::sacarElFrontCoding(string palabra, int tipo){
+void Elementos::sacarElFrontCoding(string palabra, string ruta){
 	if (transformada == 1){
-		FrontCoding* fc = new FrontCoding();
-		string modificada = fc->interpretarFrontCoding(palabra, tipo);
+		FrontCoding* fc = new FrontCoding(ruta);
+		string modificada = fc->interpretarFrontCoding(palabra);
 		this->clave->setValorClave(modificada);
 		this->transformada = 0;
 		modificada.clear();
