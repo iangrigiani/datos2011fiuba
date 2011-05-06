@@ -3,17 +3,17 @@
 
 class HandlerTabla;
 
-#include "Bloque.h"
-#include "RegPalabra.h"
+#include "RegIndice.h"
 #include "../EstructurasEnComun/Constantes.h"
 #include "../Hash/HandlerTabla.h"
 
-class Cubo : public Bloque {
+class Cubo {
 
 private:
 
+	int tam_disp;
 	int esp_libre;
-	list < RegPalabra > regs;
+	list < RegIndice > regs;
 
 public:
 
@@ -21,20 +21,23 @@ public:
 	virtual ~Cubo() {};
 
 	bool esta_vacio() const;
-	bool entra_en_bloque(const RegPalabra& reg) const;
-	bool entra_en_bloque(list < int > & offsets) const;
+	bool entra_en_bloque(RegIndice& reg) const;
+	bool entra_en_bloque(const string& cadena, const list < int > & offsets) const;
 
-	void aumentar_esp_libre(int diferencial);
-	void disminuir_esp_libre(int diferencial);
+	void duplicar_tam_disp();
+	void truncar_tam_disp();
+	int get_tam_disp() const { return this->tam_disp; }
 
-	void agregar_nuevo_reg(const RegPalabra& reg);
+	list < RegIndice > & get_regs() { return this->regs; }
+
+	void agregar_nuevo_reg(RegIndice& reg);
 	bool eliminar_reg(int clave);
-	bool existe_reg(int clave);
-	RegPalabra& buscar_reg(int clave);
-	list < RegPalabra > & get_regs() { return this->regs; }
 
-	void incorporar_regs(list < RegPalabra > & regs);
-	list < RegPalabra > actualizar_regs(int num_bloque, HandlerTabla& handler);
+	bool existe_reg(int clave);
+	RegIndice& buscar_reg(int clave);
+
+	void incorporar_regs(list < RegIndice > & regs);
+	list < RegIndice > actualizar_regs(int num_bloque, HandlerTabla& handler);
 
 	void vaciar();
 

@@ -41,7 +41,9 @@ public:
 
 	const string& get_ruta_arch_bloques() const { return this->ruta_arch_bloques; }
 
-	const HandlerEspLibre& get_handler_esp_libre() const { return this->handler_esp_libre; }
+	HandlerEspLibre& get_handler_esp_libre() { return this->handler_esp_libre; }
+
+	void crear_arch_vacio() const;
 
 	/*
 	 * Obtiene el tamanio del archivo de bloques.

@@ -14,6 +14,18 @@ void HandlerEspLibre::set_ruta_arch_esp_libre(const string& ruta_arch_esp_libre)
 	this->ruta_arch_esp_libre = ruta_arch_esp_libre;
 }
 
+void HandlerEspLibre::crear_arch_inicial() {
+	fstream arch;
+
+	arch.open(this->ruta_arch_esp_libre.c_str(), fstream::app);
+	if (arch.tellg() == 0) {
+		arch.close();
+		arch.open(this->ruta_arch_esp_libre.c_str(), fstream::out);
+		arch << "-1 ";
+	}
+	arch.close();
+}
+
 int HandlerEspLibre::get_pos_bloque_libre() const {
 	ifstream arch;
 	int pos_bloque_libre;

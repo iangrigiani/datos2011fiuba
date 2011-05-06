@@ -46,10 +46,9 @@ void HandlerComandos::indexar(int parametro){
 	        	this->log->setearIndexado(*it,'e'); break;}
 
 	        case 't': {
-	        	if (this->insertar_en_hash_titulo(*it) == false)
-	        			cout << "Coincidencia de claves" << endl;
-	        	else this->log->setearIndexado(*it,'t');
-	        	break;
+	        		this->insertar_en_hash_titulo(*it);
+	        		this->log->setearIndexado(*it,'t');
+	        		break;
 	        }
 
 	        case 'p': {
@@ -96,8 +95,7 @@ void HandlerComandos::quitarLibro(int IDArchivo) {
 			}
 		}
 		if (t == 1){
-			if (this->eliminar_de_hash_titulo(IDArchivo) == false)
-				cout << "Error: no existe un archivo con ese ID" << endl;
+			this->eliminar_de_hash_titulo(IDArchivo);
 		}
 		if (p == 1){
 			this->eliminar_de_hash_palabra(IDArchivo);
@@ -111,150 +109,160 @@ void HandlerComandos::quitarLibro(int IDArchivo) {
 }
 
 void HandlerComandos::verEstructura(int parametro){
+
 	switch (parametro) {
 	case 'a': {
-		printf("Viendo estructura del árbol de autores. \n");
-		this->arbol = new ArbolBMas(PATH_AUTOR);
-		arbol->MostrarArbol();
-		/*TODO: ARREGLAR ESTO POR DIOS!!!!! */
-		//delete arbol;
-		break; }
+				printf("Viendo estructura del árbol de autores. \n");
+				this->arbol = new ArbolBMas(PATH_AUTOR);
+				arbol->MostrarArbol();
+				/*TODO: ARREGLAR ESTO POR DIOS!!!!! */
+				//delete arbol;
+				break; }
 	case 'e': {
-		printf("Viendo estructura del árbol de editoriales. \n");
-		this->arbol = new ArbolBMas(PATH_EDITORIAL);
-		//			ArbolBMas* arbol = new ArbolBMas(2, PATH_NODOS);
-		arbol->MostrarArbol();
-		delete arbol;
-		break; }
+				printf("Viendo estructura del árbol de editoriales. \n");
+				this->arbol = new ArbolBMas(PATH_EDITORIAL);
+				//ArbolBMas* arbol = new ArbolBMas(2, PATH_NODOS);
+				arbol->MostrarArbol();
+				delete arbol;
+				break; }
+
 	case 't': {
-		printf("Viendo estructura del hash de títulos. \n");
-		HashTitulo hash;
-		hash.crear_condiciones_iniciales();
-		hash.mostrar();
-		break; }
-	case 'p': {
-		printf("Viendo estructura del hash de palabras. \n");
-		HashPalabra hash;
-		hash.crear_condiciones_iniciales();
-		hash.mostrar();
-		break; }
+				printf("Viendo estructura del hash de títulos. \n");
+				Hash hash(TAM_CUBO, PATH_BLOQUES_TITULO, PATH_ESP_LIBRE_TITULO, PATH_TABLA_TITULO, PATH_TMP_TITULO);
+				hash.crear_condiciones_iniciales();
+				hash.mostrar();
+				break; }
+		case 'p': {
+				printf("Viendo estructura del hash de palabras. \n");
+				Hash hash(TAM_CUBO, PATH_BLOQUES_PALABRA, PATH_ESP_LIBRE_PALABRA, PATH_TABLA_PALABRA, PATH_TMP_PALABRA);
+				hash.crear_condiciones_iniciales();
+				hash.mostrar();
+				break; }
+
 	}
 }
 
-int HandlerComandos::funcion_hash_titulo(const string& str) {
+int HandlerComandos::funcion_hash_titulo(string& str) {
+
 	int size = str.size();
 	char* cadena = (char*) malloc (sizeof(char) * (size + 1));
 	str.copy(cadena, size);
 	cadena[size] = '\0';
 
-	list < string >::iterator it;
+	list < string > ::iterator it;
+	stringstream ss;
 
 	list < string > palabras = this->parser->obtenerDatos(cadena);
+
 	int clave = 0;
-	for (it = palabras.begin(); it != palabras.end(); ++ it)
-		for (unsigned int i = 0; i < (*it).size(); ++ i)
-			clave += ((int)(*it)[i]) * i;
+	for (it = palabras.begin(); it != palabras.end(); ++ it) {
+		ss << *it << ' ';
+
+		clave += this->funcion_hash_palabra(*it);
+	}
 
 	free(cadena);
+	str = ss.str();
+
 	return clave;
+
 }
 
-bool HandlerComandos::insertar_en_hash_titulo(int offset) {
+void HandlerComandos::insertar_en_hash_titulo(int offset) {
 	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
 
-	HashTitulo hash;
+	Hash hash(TAM_CUBO, PATH_BLOQUES_TITULO, PATH_ESP_LIBRE_TITULO, PATH_TABLA_TITULO, PATH_TMP_TITULO);
 	hash.crear_condiciones_iniciales();
 
-	int clave = this->funcion_hash_palabra(reg->getTitulo());
+	string titulo = reg->getTitulo();
+	int clave = this->funcion_hash_titulo(titulo);
 
-	RegTitulo reg_indice(clave, offset);
-	bool r = hash.insertar_reg(reg_indice);
-	hash.mostrar();
-	return r;
+	list < int > offsets;
+	offsets.push_back(offset);
+	hash.alta(clave, titulo, offsets);
 }
 
-bool HandlerComandos::eliminar_de_hash_titulo(int offset) {
+void HandlerComandos::eliminar_de_hash_titulo(int offset) {
+
 	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
 
-	HashTitulo hash;
+	Hash hash(TAM_CUBO, PATH_BLOQUES_TITULO, PATH_ESP_LIBRE_TITULO, PATH_TABLA_TITULO, PATH_TMP_TITULO);
 	hash.crear_condiciones_iniciales();
 
-	int clave = this->funcion_hash_titulo(reg->getTitulo());
+	string titulo = reg->getTitulo();
+	int clave = this->funcion_hash_titulo(titulo);
 
-	bool r = hash.eliminar_reg(clave);
-	//hash.mostrar();
-	return r;
+	hash.baja(clave, titulo, offset);
 }
 
-list < int > HandlerComandos::eliminar_repeticion_y_falso_positivo(list < int > & elementos) {
-	list < int > filtrados;
-	list < int > ::iterator it_1;
-	list < int > ::iterator it_2;
+list < string > HandlerComandos::eliminar_repeticion(list < string > & palabras) {
+	list < string > filtrados;
+	list < string > ::iterator it_1;
+	list < string > ::iterator it_2;
 
-	for (it_1 = elementos.begin(); it_1 != elementos.end(); ++ it_1) {
+	for (it_1 = palabras.begin(); it_1 != palabras.end(); ++ it_1) {
 		it_2 = filtrados.begin();
-		while ((*it_2) != (*it_1) && it_2 != filtrados.end())
+		while ((*it_2).compare(*it_1) != 0 && it_2 != filtrados.end())
 			++ it_2;
-		if ((*it_2) != (*it_1) && it_2 == filtrados.end())
+		if ((*it_2).compare(*it_1) != 0 && it_2 == filtrados.end())
 			filtrados.push_back(*it_1);
 	}
+
 	return filtrados;
 }
 
+
+
 int HandlerComandos::funcion_hash_palabra(const string& str) {
+
 	int clave = 0;
 	for (unsigned int i = 0; i < str.size(); ++ i)
 		clave += ((int)str[i]) * i;
+		//clave += ((int)str[i]) * (2 ^ i);
 
-	//cout << str << " = " << clave;
 	return clave;
 }
 
 void HandlerComandos::insertar_en_hash_palabra(int offset) {
+
 	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
 
-	HashPalabra hash;
+	Hash hash(TAM_CUBO, PATH_BLOQUES_PALABRA, PATH_ESP_LIBRE_PALABRA, PATH_TABLA_PALABRA, PATH_TMP_PALABRA);
 	hash.crear_condiciones_iniciales();
 
-	string str;
 	int clave;
-	list < int > claves, offsets;
-	list < string > ::iterator it_1;
-	list < int > ::iterator it_2;
+	list < int > offsets;
+	list < string > ::iterator it;
 
 	list < string > palabras = reg->getPalabras();
+	list < string > filtradas = this->eliminar_repeticion(palabras);
 
-	for (it_1 = palabras.begin(); it_1 != palabras.end(); ++ it_1) {
-		str = *it_1;
-		clave = this->funcion_hash_palabra(str);
-		str.clear();
-		claves.push_back(clave);
-	}
-
-	list < int > filtrados = this->eliminar_repeticion_y_falso_positivo(claves);
-
-	for (it_2 = filtrados.begin(); it_2 != filtrados.end(); ++ it_2) {
+	for (it = filtradas.begin(); it != filtradas.end(); ++ it) {
+		clave = this->funcion_hash_palabra(*it);
 		offsets.push_back(offset);
-		hash.insercion((*it_2), offsets);
+		hash.alta(clave, *it, offsets);
 		offsets.clear();
 	}
-	//hash.mostrar();
+
 }
 
 void HandlerComandos::eliminar_de_hash_palabra(int offset) {
+
 	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
 
-	HashPalabra hash;
+	Hash hash(TAM_CUBO, PATH_BLOQUES_PALABRA, PATH_ESP_LIBRE_PALABRA, PATH_TABLA_PALABRA, PATH_TMP_PALABRA);
 	hash.crear_condiciones_iniciales();
 
 	int clave;
-	list < string > palabras = reg->getPalabras();
 	list < string > ::iterator it;
-	for (it = palabras.begin(); it != palabras.end(); ++ it) {
+
+	list < string > palabras = reg->getPalabras();
+	list < string > filtradas = this->eliminar_repeticion(palabras);
+
+	for (it = filtradas.begin(); it != filtradas.end(); ++ it) {
 		clave = this->funcion_hash_palabra(*it);
-		hash.eliminacion(clave, offset);
+		hash.baja(clave, *it, offset);
 	}
-	//hash.mostrar();
 }
 
 void HandlerComandos::insertarEnArbol (int tipoArbol, int offset){
