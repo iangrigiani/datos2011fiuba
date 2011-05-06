@@ -291,7 +291,7 @@ void Hash::baja(int clave, const string& cadena, int offset) {
 }
 
 void Hash::obtener_reg(RegIndice& reg, Cubo& bloque_sig ,list< int > & bloques_sigs, int clave) {
-	char buffer[this->handler_bloques.get_tam_bloque()];
+	char buffer[TAM_CUBO];
 	unsigned int offset_aux = 0;
 
 	this->handler_bloques.recuperar_bloque(buffer, reg.get_bloque_sig());
