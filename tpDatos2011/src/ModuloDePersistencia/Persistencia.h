@@ -23,7 +23,7 @@ public:
 		return cant;
 	}
 	static unsigned int getEnteroDesdeBuffer(char buffer[STRING_BUFFER], unsigned int &inicioOffset){
-		unsigned int tamanioCargado;
+		unsigned int tamanioCargado = 0;
 		sscanf(&buffer[inicioOffset], "%u ", &tamanioCargado);
 		inicioOffset += getTamanioEntero(tamanioCargado) + 1;
 		return tamanioCargado;
