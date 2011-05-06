@@ -1,30 +1,26 @@
-#ifndef TEST_TestHandlerArchivoLog
-#define TEST_TestHandlerArchivoLog
+#ifndef TESTHANDLERARCHIVOLOG_H
+#define TESTHANDLERARCHIVOLOG_H
+#include "../src/ManejadoresDeArchivos/HandlerArchivoLog.h"
+#include <cppunit/extensions/HelperMacros.h>
 
-#ifdef ECUT_MAIN
-
-#include "cppunit/extensions/HelperMacros.h"
-#include "../HandlerArchivoLog.h"
-
-
-class TestRoad : public CPPUNIT_NS::TestFixture {
+class TestHandlerArchivoLog : public CppUnit::TestFixture{
 public:
+	HandlerArchivoLog* handler;
+	void setUp();
 	void testInsertarRegistro();
 	void testBuscarRegistro();
 	void testSetearIndexado();
 	void testObtenerListaIDs();
 	void testObtenerListaIDsAIndexar();
+	void tearDown();
 	CPPUNIT_TEST_SUITE(TestHandlerArchivoLog);
 	CPPUNIT_TEST(testInsertarRegistro);
 	CPPUNIT_TEST(testBuscarRegistro);
 	CPPUNIT_TEST(testSetearIndexado);
 	CPPUNIT_TEST(testObtenerListaIDs);
 	CPPUNIT_TEST(testObtenerListaIDsAIndexar);
-	CPPUNIT_TEST_SUITE_END();*/
-private:
+	CPPUNIT_TEST_SUITE_END();
 
 };
 
-#endif /* ECUT_MAIN */
-
-#endif /*TestHandlerArchivoLog*/
+#endif /*TESTHANDLERARCHIVOLOG_H*/
