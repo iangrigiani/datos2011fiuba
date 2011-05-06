@@ -1,8 +1,7 @@
 #ifndef HANDLERARBOL_H_
 #define HANDLERARBOL_H_
 #include "../ArbolB+/ArbolBMas.h"
-#include "../Hash/HashTitulo.h"
-#include "../Hash/HashPalabra.h"
+#include "../Hash/Hash.h"
 #include "../ParserLibros/ParserDeLibros.h"
 #include "../ManejadoresDeArchivos/HandlerArchivoRLV.h"
 #include "../ManejadoresDeArchivos/HandlerArchivoLog.h"
@@ -22,13 +21,13 @@ private:
 	void insertarEnArbol (int tipoArbol, int offset);
 	bool eliminarEnArbol(int tipoArbol, int offset);
 
-	int funcion_hash_titulo(const string& str);
+	int funcion_hash_titulo(string& str);
 
-	bool insertar_en_hash_titulo(int offset);
+	void insertar_en_hash_titulo(int offset);
 
-	bool eliminar_de_hash_titulo(int offset);
+	void eliminar_de_hash_titulo(int offset);
 
-	list < int > eliminar_repeticion_y_falso_positivo(list < int > & elementos);
+	list < string > eliminar_repeticion(list < string > & palabras);
 
 	int funcion_hash_palabra(const string& str);
 

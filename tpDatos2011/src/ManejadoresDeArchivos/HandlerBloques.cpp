@@ -30,6 +30,13 @@ void HandlerBloques::set_handler_esp_libre(const HandlerEspLibre& handler_esp_li
 	this->handler_esp_libre = handler_esp_libre;
 }
 
+void HandlerBloques::crear_arch_vacio() const {
+	fstream arch;
+
+	arch.open(this->ruta_arch_bloques.c_str(), fstream::app);
+	arch.close();
+}
+
 int HandlerBloques::get_tam_arch_bloques() const {
 	fstream arch;
 	int tam;

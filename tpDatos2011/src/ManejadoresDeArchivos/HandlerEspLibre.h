@@ -49,6 +49,8 @@ public:
 
 	const string& get_ruta_arch_esp_libre() const { return this->ruta_arch_esp_libre; }
 
+	void crear_arch_inicial();
+
 	/*
 	* Obtiene el primer elemento del archivo de espacios libres(o bien es el numero -1 o bien
 	* es la posicion de un bloque libre).

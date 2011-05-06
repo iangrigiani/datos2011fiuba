@@ -1,42 +1,42 @@
 
 #include "Cubo.h"
 
-Cubo::Cubo(int tam_disp) : Bloque(tam_disp), esp_libre(TAM_CUBO - sizeof(int)) {}
+Cubo::Cubo(int tam_disp) : tam_disp(tam_disp), esp_libre(TAM_CUBO - sizeof(tam_disp)) {}
 
 bool Cubo::esta_vacio() const {
-	if (this->esp_libre == (TAM_CUBO - sizeof(int)))
+	if (this->esp_libre == (TAM_CUBO - sizeof(this->tam_disp)))
 		return true;
 	return false;
 }
 
-bool Cubo::entra_en_bloque(const RegPalabra& reg) const {
+bool Cubo::entra_en_bloque(RegIndice& reg) const {
 	if (this->esp_libre > reg.get_tam())
 		return true;
 	return false;
 }
 
-bool Cubo::entra_en_bloque(list < int > & offsets) const {
-	int tam = offsets.size() * sizeof(int);
+bool Cubo::entra_en_bloque(const string& cadena, const list < int > & offsets) const {
+	int tam = cadena.size() * sizeof(char) + offsets.size() * sizeof(int);
 	if (this->esp_libre > tam)
 		return true;
 	return false;
 }
 
-void Cubo::aumentar_esp_libre(int diferencial) {
-	this->esp_libre += diferencial;
+void Cubo::duplicar_tam_disp() {
+	this->tam_disp *= 2;
 }
 
-void Cubo::disminuir_esp_libre(int diferencial) {
-	this->esp_libre -= diferencial;
+void Cubo::truncar_tam_disp() {
+	this->tam_disp /= 2;
 }
 
-void Cubo::agregar_nuevo_reg(const RegPalabra& reg) {
+void Cubo::agregar_nuevo_reg(RegIndice& reg) {
 	this->regs.push_back(reg);
 	this->esp_libre -= reg.get_tam();
 }
 
 bool Cubo::eliminar_reg(int clave) {
-	list < RegPalabra > ::iterator it;
+	list < RegIndice > ::iterator it;
 
 	it = this->regs.begin();
 	while (it != this->regs.end() && (*it).get_clave() != clave)
@@ -51,20 +51,19 @@ bool Cubo::eliminar_reg(int clave) {
 }
 
 bool Cubo::existe_reg(int clave) {
-	list < RegPalabra > ::iterator it;
+	list < RegIndice > ::iterator it;
 
 	it = this->regs.begin();
 	while (it != this->regs.end() && (*it).get_clave() != clave)
 		++ it;
 
-	if ((*it).get_clave() == clave) {
+	if ((*it).get_clave() == clave)
 		return true;
-	}
 	return false;
 }
 
-RegPalabra& Cubo::buscar_reg(int clave) {
-	list < RegPalabra > ::iterator it;
+RegIndice& Cubo::buscar_reg(int clave) {
+	list < RegIndice > ::iterator it;
 
 	it = this->regs.begin();
 	while ((*it).get_clave() != clave)
@@ -74,21 +73,21 @@ RegPalabra& Cubo::buscar_reg(int clave) {
 }
 
 void Cubo::vaciar() {
-	this->set_tam_disp(1);
+	this->tam_disp = 1;
 	this->esp_libre = TAM_CUBO - sizeof(int);
 	this->regs.clear();
 }
 
-void Cubo::incorporar_regs(list < RegPalabra > & regs) {
-	list < RegPalabra > ::iterator it;
+void Cubo::incorporar_regs(list < RegIndice > & regs) {
+	list < RegIndice > ::iterator it;
 	for (it = regs.begin(); it != regs.end(); ++ it)
 		this->agregar_nuevo_reg(*it);
 }
 
-list < RegPalabra > Cubo::actualizar_regs(int num_bloque, HandlerTabla& handler) {
-	list < RegPalabra > ::iterator it;
-	list < RegPalabra > list_aux;
-	RegPalabra reg_desact;
+list < RegIndice > Cubo::actualizar_regs(int num_bloque, HandlerTabla& handler) {
+	list < RegIndice > ::iterator it;
+	list < RegIndice > list_aux;
+	RegIndice reg_desact;
 	unsigned int tam_regs;
 	unsigned int contador = 0;
 
@@ -110,10 +109,10 @@ list < RegPalabra > Cubo::actualizar_regs(int num_bloque, HandlerTabla& handler)
 }
 
 void Cubo::serializar(char* buffer, unsigned int& offset) {
-	Persistencia::PonerEnteroEnChar(buffer, offset, this->get_tam_disp());
+	Persistencia::PonerEnteroEnChar(buffer, offset, this->tam_disp);
 
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->regs.size());
-	list < RegPalabra > ::iterator it;
+	list < RegIndice > ::iterator it;
 	for (it = this->regs.begin(); it != this->regs.end(); ++ it)
 		(*it).serializar(buffer, offset);
 }
@@ -121,11 +120,11 @@ void Cubo::serializar(char* buffer, unsigned int& offset) {
 void Cubo::hidratar(char* buffer, unsigned int& offset) {
 	this->vaciar();
 
-	this->set_tam_disp(Persistencia::getEnteroDesdeBuffer(buffer, offset));
+	this->tam_disp = Persistencia::getEnteroDesdeBuffer(buffer, offset);
 
 	int tam_regs = Persistencia::getEnteroDesdeBuffer(buffer, offset);
 	for (int i = 0; i < tam_regs; ++ i) {
-		RegPalabra reg;
+		RegIndice reg;
 		reg.hidratar(buffer, offset);
 		this->agregar_nuevo_reg(reg);
 	}
@@ -133,11 +132,10 @@ void Cubo::hidratar(char* buffer, unsigned int& offset) {
 
 void Cubo::toString() {
 	cout << " Bloque --> " << endl;
-	cout << " Tamaño de dispersión:   " << this->get_tam_disp() << endl;
+	cout << " Tamaño de dispersión:   " << this->tam_disp << endl;
 	cout << " Cantidad de espacio libre:   " << this->esp_libre << endl;
 
-	list < RegPalabra > ::iterator it;
+	list < RegIndice > ::iterator it;
 	for (it = this->regs.begin(); it != this->regs.end(); ++ it)
 		(*it).toString();
-
 }

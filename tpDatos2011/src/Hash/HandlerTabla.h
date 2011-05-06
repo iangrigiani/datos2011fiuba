@@ -8,23 +8,20 @@
 #ifndef HANDLERTABLA_H_
 #define HANDLERTABLA_H_
 
+class Cubo;
+
 #include <cstdio>
 #include <string>
 #include <fstream>
 #include <sstream>
-#include "../EstructurasHash/Bloque.h"
 #include "../EstructurasHash/Cubo.h"
-#include "../EstructurasHash/Ranura.h"
-
 
 class HandlerTabla {
 
 private:
 
 	int tam_tabla;
-
 	string ruta_arch_tabla;
-
 	string ruta_arch_temporal;
 
 public:
@@ -39,7 +36,8 @@ public:
 	const string& get_ruta_arch_temporal() const { return this->ruta_arch_temporal; }
 
 	bool tabla_vacia();
-	void crear_tabla_inicial(int num_bloque);
+	void crear_tabla_inicial();
+	void insertar_primer_referencia(int num_bloque);
 
 	void duplicar_tabla();
 	void truncar_tabla();
@@ -53,11 +51,11 @@ public:
 	int get_pos_tabla(int clave) const;
 
 	void reemplazar_referencia(int num_bloque_a_reemplazar, int num_nuevo_bloque);
-	void reemplazar_referencias(int pos_inicial, int num_nuevo_bloque, const Bloque& nuevo_bloque);
+	void reemplazar_referencias(int pos_inicial, int num_nuevo_bloque, const Cubo& nuevo_bloque);
 
-	int puedo_liberar_bloque(const Bloque& bloque_a_liberar, int pos_actual) const;
+	int puedo_liberar_bloque(const Cubo& bloque_a_liberar, int pos_actual) const;
 	void liberar_referencias(int pos_inicial, int num_bloque_por_reemplazar,
-			const Bloque& bloque_por_reemplazar);
+			const Cubo& bloque_por_reemplazar);
 
 };
 
