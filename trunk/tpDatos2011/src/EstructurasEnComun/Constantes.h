@@ -11,15 +11,19 @@
 #define STRING_BUFFER_PALABRAS 2000000
 #define CUALQUIERA 33000
 #define BLOQUE_LLENO 1
-#define EDITORIAL "Grupo17"
 #define BLOQUE_NO_LLENO 0
 #define TIPO_CLAVE_NUMERICA 1
+
+/***********************Archivo Maestro*********************/
 #define PATH_REG_LONG_VARIABLE "ArchivoDeRLV.txt"
 #define PATH_ESPACIO_LIBRE_RLV "controlEspaciosLibresRLV.txt"
-#define PATH_STOPWORDS "stopWords.txt"
 #define PATH_ARCHIVO_LOG "logBookerio.txt"
 
-/**********************Arbol B+ ***********************/
+/***********************Parser******************************/
+#define EDITORIAL "Grupo17"
+#define PATH_STOPWORDS "stopWords.txt"
+
+/**********************Arbol B+ ***************************/
 #define PORC_TAMANIO_NODO 50
 #define TAM_TOTAL_NODO 4096
 #define TAM_CONTROL_NODO 13
@@ -31,7 +35,6 @@
 #define PATH_EDITORIAL "Editoriales"
 
 /************************ Hash ************************/
-
 #define PATH_TABLA_PALABRA "TablaPalabra"
 #define PATH_TABLA_TITULO "TablaTitulo"
 #define PATH_TMP_PALABRA "TempPalabra"
@@ -43,8 +46,14 @@
 #define TAM_CONTROL_HASH_PALABRAS 14
 #define TAM_CUBO 4096
 #define TAM_RANURA 16
-
 #define OCUPADA 1
 #define VACIA 0
+
+/*********************Testing ***************************/
+#define PATH_BLOQUES_TITULO_TEST "BloquesTituloTest"
+#define PATH_TMP_TITULO_TEST "TempTituloTest"
+#define PATH_TABLA_TITULO_TEST "TablaTituloTest"
+#define PATH_ESP_LIBRE_TITULO_TEST "EspLibreTituloTest"
+#define PATH_TEST_ARBOL "testArbol"
 
 #endif /* CONSTANTES_H_ */
