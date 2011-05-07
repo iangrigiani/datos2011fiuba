@@ -66,6 +66,7 @@ $(target): $(o_common_files)
 
 clean:
 	$(RM) $(o_common_files) $(o_common_files:.o=.deps)
+	$(RM) $(o_common_test_files) $(o_common_test_files:.o=.deps)
 
 test: $(o_common_files) $(o_common_test_files)
 #	$(LD) $(LDFLAGSTESTS) $(maintest) $(o_common_files) $(LOADLIBSTESTS) $(LDLIBSTESTS) -o $(targettests)
