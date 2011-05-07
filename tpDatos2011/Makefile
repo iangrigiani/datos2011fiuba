@@ -1,5 +1,5 @@
 
-target = TpDatos
+target = bookerio
 
 extension = cpp
 
@@ -59,7 +59,7 @@ o_common_test_files = $(patsubst %.$(extension),%.o,$(fuentes_tests))
 $(target): $(o_common_files)
 	@if [ -z "$(o_common_files)" ]; \
 	then \
-		echo "No hay archivos de entrada, recuerde que la extensiÃ³n debe ser '.$(extension)'."; \
+		echo "No hay archivos de entrada, recuerde que la extension debe ser '.$(extension)'."; \
 		false; \
 	fi >&2
 	$(LD) $(LDFLAGS) $(main) $(o_common_files) $(LOADLIBS) $(LDLIBS) -o $(target)
