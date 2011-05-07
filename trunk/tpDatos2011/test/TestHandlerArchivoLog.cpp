@@ -2,6 +2,8 @@
 #include "../src/ManejadoresDeArchivos/HandlerArchivoLog.h"
 #include <stdlib.h>
 #include <list>
+#include <stdlib.h>
+#include <string.h>
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION(TestHandlerArchivoLog);
