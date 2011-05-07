@@ -3,6 +3,7 @@
 
 #define ERROR -1
 #define OKEY 0
+#define BASURA_RLV 33
 #define TAMANIO_BUFFER 4096
 #define TAM_BLOQUE 4096
 #define TAM_BUFFER 4096
