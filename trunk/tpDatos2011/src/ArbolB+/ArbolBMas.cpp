@@ -560,8 +560,16 @@ int ArbolBMas::borrarRecursivo(Elementos elem, Clave clave, Nodo *nodoCorriente,
 					liberarMemoriaNodo(raiz);
 				raiz = nodoHojaCorriente = NULL;
 				primeraHoja = 0;
+
 				string archivoConfiguracion = this->path + "_Config.txt";
 				remove(archivoConfiguracion.c_str());
+
+				string archivoNodos = this->path + "_Nodos.txt";
+				remove(archivoNodos.c_str());
+
+				string archivoFrontCoding = this->path + "_FrontCoding.txt";
+				remove(archivoFrontCoding.c_str());
+
 				return RESULTADO_OK;
 
 			} else if (((nodoHojaIzquierda == NULL || !nodoHojaIzquierda->puedeCederElementos())

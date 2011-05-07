@@ -19,16 +19,36 @@ HandlerArchivoLog::~HandlerArchivoLog() {
 }
 
 void HandlerArchivoLog::insertarRegistro(int IDArchivo){
+
+	// Busco en el log si ya existe un registro con el mismo id
+	int puntero = buscarRegistro(IDArchivo);
 	string linea = crearStringAInsertar(IDArchivo, 0, 0, 0, 0);
+
 	ofstream archivoLog;
-	archivoLog.open(PATH_ARCHIVO_LOG,std::ios_base::app);
-	if (!archivoLog.is_open()){
-		archivoLog.open(PATH_ARCHIVO_LOG,std::ios_base::out);
-		archivoLog.close();
+
+	// Si no existe el ID, agrego el registro al final del archivo
+	if (puntero == ERROR){
 		archivoLog.open(PATH_ARCHIVO_LOG,std::ios_base::app);
+		if (!archivoLog.is_open()){
+			archivoLog.open(PATH_ARCHIVO_LOG,std::ios_base::out);
+			archivoLog.close();
+			archivoLog.open(PATH_ARCHIVO_LOG,std::ios_base::app);
+		}
+		archivoLog.write(linea.c_str(), linea.length());
+		archivoLog.close();
+	} else {
+		//En cambio si existe el ID, solamente limpio las estructuras
+		archivoLog.open(PATH_ARCHIVO_LOG, std::ios_base::in | std::ios_base::out);
+		if (!archivoLog.is_open()){
+			archivoLog.open(PATH_ARCHIVO_LOG,std::ios_base::out);
+			archivoLog.close();
+			archivoLog.open(PATH_ARCHIVO_LOG,std::ios_base::in | std::ios_base::out);
+		}
+		archivoLog.seekp(puntero);
+		archivoLog.write(linea.c_str(), linea.length());
+	    archivoLog.close();
 	}
-	archivoLog.write(linea.c_str(), linea.length());
-	archivoLog.close();
+
 }
 
 
