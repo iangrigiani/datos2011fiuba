@@ -18,7 +18,6 @@ class Nodo : public Serializable{
 private:
 	int numero;
 	int nivel;
-	int offset;
 	int espacioOcupado;
 	int cantidadClaves;
 	Clave* claves;
@@ -55,9 +54,6 @@ public:
     int getNumero() const
     {
         return numero;
-    }
-    int getOffset() const{
-    	return offset;
     }
 };
 

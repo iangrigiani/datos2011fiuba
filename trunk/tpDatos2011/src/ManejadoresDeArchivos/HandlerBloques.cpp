@@ -120,12 +120,12 @@ void HandlerBloques::guardar_bloque_arbol(char* buffer, int nro_bloque){
 	}
 		int offset_bloque = nro_bloque * this->tam_bloque;
 		// Manejo sobre el archivo de bloques
-		stringstream ss;
-		ss << buffer;
-		string str = ss.str();
+//		stringstream ss;
+//		ss << buffer;
+//		string str = ss.str();
 		// Escribo libro en el archivo de bloques
 		ff.seekg(offset_bloque);
-		ff.write(str.c_str(), str.length());
+		ff.write(buffer, this->tam_bloque);
 		ff.flush();
 		ff.close();
 }
@@ -161,7 +161,7 @@ void HandlerBloques::eliminar_bloque_arbol(int nro_Bloque){
 //		free(bloqueABorrar);
 		oss << bloqueABorrar << "\n" ;
 		string borrar = oss.str();
-		ff.write(borrar.c_str(), borrar.length());
+		ff.write(borrar.c_str(), this->tam_bloque);
 		ff.flush();
 		ff.close();
 	}else{
