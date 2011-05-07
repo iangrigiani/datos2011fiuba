@@ -31,7 +31,6 @@ void HandlerComandos::indexar(int parametro){
 	list<int> listaDeIds;
 	this->log->obtenerListaIDsAIndexar(parametro,listaDeIds); // Obtengo todos los offsets
 	list<int>::iterator it = listaDeIds.begin();
-
 	// Para cada offset segun que parametro recibi inserto.
 	while ( it != listaDeIds.end()){
 	    switch (parametro){
