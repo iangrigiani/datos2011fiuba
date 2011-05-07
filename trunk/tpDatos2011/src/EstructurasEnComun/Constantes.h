@@ -16,17 +16,16 @@
 #define PATH_REG_LONG_VARIABLE "ArchivoDeRLV.txt"
 #define PATH_ESPACIO_LIBRE_RLV "controlEspaciosLibresRLV.txt"
 #define PATH_STOPWORDS "stopWords.txt"
-#define PATH_FRONT_CODING "frontCoding.txt"
 #define PATH_ARCHIVO_LOG "logBookerio.txt"
 
 /**********************Arbol B+ ***********************/
 #define PORC_TAMANIO_NODO 50
 #define TAM_TOTAL_NODO 4096
-#define TAM_CONTROL_NODO 12
+#define TAM_CONTROL_NODO 13
 #define TAM_EFECTIVO_NODO (TAM_TOTAL_NODO - TAM_CONTROL_NODO)
 #define PORCENTAJE_NODO 50
 #define BUFFER_NODOS_LIBRES 4096
-#define TAM_CONTROL_REGISTRO 5
+#define TAM_CONTROL_REGISTRO 12
 #define PATH_AUTOR "Autores"
 #define PATH_EDITORIAL "Editoriales"
 
