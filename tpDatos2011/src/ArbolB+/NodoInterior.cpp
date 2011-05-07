@@ -3,13 +3,13 @@
 
 
 NodoInterior::NodoInterior(int nivel) : Nodo(nivel) {
-//	this->hijos = new int[(TAM_EFECTIVO_NODO/(TAM_CONTROL_REGISTRO)) + 2];
 	this->hijos = new int[TAM_EFECTIVO_NODO + 2];
+	this->espacioOcupado = TAM_CONTROL_NODO;
 }
 
 NodoInterior::NodoInterior() : Nodo(0){
-//	this->hijos = new int[(TAM_EFECTIVO_NODO/(TAM_CONTROL_REGISTRO)) + 2];
 	this->hijos = new int[TAM_EFECTIVO_NODO + 2];
+	this->espacioOcupado = TAM_CONTROL_NODO;
 }
 
 NodoInterior::~NodoInterior() {
@@ -19,7 +19,6 @@ NodoInterior::~NodoInterior() {
 void NodoInterior::serializar(char * buffer, unsigned int &offset){
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->nivel);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->numero);
-	Persistencia::PonerEnteroEnChar(buffer, offset, this->offset);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->espacioOcupado);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->cantidadClaves);
 	for (int i = 0; i < cantidadClaves; i++){
@@ -32,7 +31,6 @@ void NodoInterior::serializar(char * buffer, unsigned int &offset){
 void NodoInterior::hidratar(char * buffer, unsigned int &offset){
 	this->nivel = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	this->numero = Persistencia::getEnteroDesdeBuffer(buffer,offset);
-	this->offset = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	this->espacioOcupado = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	this->cantidadClaves = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	for (int i = 0; i < cantidadClaves ; i++){

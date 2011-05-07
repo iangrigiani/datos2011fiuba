@@ -4,6 +4,7 @@
 
 NodoHoja::NodoHoja() : Nodo(0) {
 	hojaSiguiente = 0;
+	this->espacioOcupado = TAM_CONTROL_NODO;
 //	this->datos = new Elementos[(TAM_EFECTIVO_NODO/(TAM_CONTROL_REGISTRO)) + 2];
 	this->datos = new Elementos[TAM_EFECTIVO_NODO + 2];
 }
@@ -15,7 +16,6 @@ NodoHoja::~NodoHoja() {
 void NodoHoja::serializar(char * buffer, unsigned int &offset) {
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->nivel);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->numero);
-	Persistencia::PonerEnteroEnChar(buffer, offset, this->offset);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->espacioOcupado);
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->cantidadClaves);
 	for (int i = 0; i < cantidadClaves; i++){
@@ -30,7 +30,6 @@ void NodoHoja::serializar(char * buffer, unsigned int &offset) {
 void NodoHoja::hidratar(char * buffer, unsigned int &offset) {
 	this->nivel = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	this->numero = Persistencia::getEnteroDesdeBuffer(buffer,offset);
-	this->offset = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	this->espacioOcupado = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	this->cantidadClaves = Persistencia::getEnteroDesdeBuffer(buffer,offset);
 	for (int i = 0; i < cantidadClaves ; i++){
