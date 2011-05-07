@@ -30,7 +30,7 @@ bool Cubo::entra_en_bloque(RegIndice& reg) const {
 }
 
 bool Cubo::entra_en_bloque(const string& cadena, const list < int > & offsets) const {
-	int tam = strlen(cadena.c_str()) * sizeof(char) + sizeof(char) + offsets.size() * (sizeof(int) + sizeof(' '));
+	int tam = cadena.size() * sizeof(char) + sizeof(char) + offsets.size() * (sizeof(int) + sizeof(char));
 	if (this->esp_libre > tam)
 		return true;
 	return false;

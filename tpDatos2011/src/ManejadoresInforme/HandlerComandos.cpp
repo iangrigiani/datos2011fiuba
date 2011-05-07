@@ -247,7 +247,7 @@ void HandlerComandos::insertar_en_hash_palabra(int offset) {
 			clave = this->funcion_hash_palabra(*it);
 			offsets.push_back(offset);
 			hash.alta(clave, *it, offsets);
-			cout << "Processando palabras Libro de ID " << offset << " ..." << (int) (t * 100 / filtradas.size()) << "%\r";
+			cout << "Processando palabras Libro de ID " << offset << " ..." << (int) ((t * 100 / filtradas.size())+1) << "%\r";
 			++t;
 			offsets.clear();
 
