@@ -1,7 +1,21 @@
 
 #include "Cubo.h"
 
-Cubo::Cubo(int tam_disp) : tam_disp(tam_disp), esp_libre(TAM_CUBO - sizeof(tam_disp)) {}
+Cubo::Cubo(int tam_disp) : tam_disp(tam_disp) {
+	this->esp_libre = TAM_CUBO - 6;
+
+//	stringstream ss1;
+//	ss1 << this->tam_disp << ' ';
+//	string s(ss1.str());
+//	this->esp_libre -= s.size();
+//	s.clear();
+//
+//	stringstream ss2;
+//	ss2 << this->regs.size() << ' ';
+//	s = ss2.str();
+//	this->esp_libre -= s.size();
+//	s.clear();
+}
 
 bool Cubo::esta_vacio() const {
 	if (this->esp_libre == (TAM_CUBO - sizeof(this->tam_disp)))
@@ -16,7 +30,7 @@ bool Cubo::entra_en_bloque(RegIndice& reg) const {
 }
 
 bool Cubo::entra_en_bloque(const string& cadena, const list < int > & offsets) const {
-	int tam = cadena.size() * sizeof(char) + offsets.size() * sizeof(int);
+	int tam = cadena.size() * sizeof(char) + sizeof(' ') + offsets.size() * (sizeof(int) + sizeof(' '));
 	if (this->esp_libre > tam)
 		return true;
 	return false;
@@ -57,17 +71,31 @@ bool Cubo::existe_reg(int clave) {
 	while (it != this->regs.end() && (*it).get_clave() != clave)
 		++ it;
 
-	if ((*it).get_clave() == clave)
-		return true;
+	if (it != this->regs.end())
+		if ((*it).get_clave() == clave)
+			return true;
 	return false;
 }
-
+/*
 RegIndice& Cubo::buscar_reg(int clave) {
 	list < RegIndice > ::iterator it;
 
 	it = this->regs.begin();
 	while ((*it).get_clave() != clave)
 		++ it;
+
+	return (*it);
+}
+*/
+RegIndice& Cubo::buscar_reg(int clave) {
+	list < RegIndice > ::iterator it;
+
+	it = this->regs.begin();
+	while ((*it).get_clave() != clave)
+		++ it;
+
+	if (it == this->regs.end())
+		return (*this->regs.begin());
 
 	return (*it);
 }

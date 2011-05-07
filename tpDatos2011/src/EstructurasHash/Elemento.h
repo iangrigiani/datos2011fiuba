@@ -10,6 +10,7 @@
 
 #include <list>
 #include <string>
+#include <sstream>
 #include "../ModuloDePersistencia/Serializable.h"
 #include "../ModuloDePersistencia/Persistencia.h"
 
@@ -34,7 +35,7 @@ public:
 	const string& get_cadena() const { return this->cadena; }
 	const list < int > & get_offsets() const { return this->offsets; }
 
-	int get_tam() const;
+	int get_tam();
 
 	void agregar_nuevos_offsets(list < int > & offsets);
 	bool eliminar_offset(int offset);

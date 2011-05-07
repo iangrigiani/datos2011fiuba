@@ -34,11 +34,36 @@ bool RegIndice::esta_vacio() {
 }
 
 int RegIndice::get_tam() {
-	int acum = sizeof(this->clave) + sizeof(this->bloque_sig);
+
+	int tam = 0;
+	tam += 2*sizeof(int);
+
+//
+//	stringstream ss1;
+//	ss1 << this->clave << ' ';
+//	string s(ss1.str());
+//	tam += s.size();
+//	s.clear();
+//
+//	stringstream ss2;
+//	ss2 << this->bloque_sig << ' ';
+//	s = ss2.str();
+//	tam += s.size();
+//	s.clear();
+//
+//	stringstream ss3;
+//	ss3 << this->elementos.size() << ' ';
+//	s = ss3.str();
+//	tam += s.size();
+//	s.clear();
+//
 	list < Elemento > ::iterator it;
 	for (it = this->elementos.begin(); it != this->elementos.end(); ++ it)
-		acum += (*it).get_tam();
-	return acum;
+		tam += ((*it).get_tam() + sizeof(char));
+
+	tam += TAM_CONTROL_HASH_PALABRAS;
+//
+	return tam;
 }
 
 void RegIndice::agregar_nuevo_elemento(const Elemento& elemento) {
@@ -58,7 +83,7 @@ int RegIndice::eliminar_elemento(const string& cadena) {
 	}
 	return false;
 }
-
+/*
 bool RegIndice::existe_elemento(const string& cadena) {
 	list < Elemento > ::iterator it;
 
@@ -70,13 +95,39 @@ bool RegIndice::existe_elemento(const string& cadena) {
 		return true;
 	return false;
 }
+*/
+bool RegIndice::existe_elemento(const string& cadena) {
+	list < Elemento > ::iterator it;
 
+	it = this->elementos.begin();
+	while (it != this->elementos.end() && cadena.compare((*it).get_cadena()) != 0)
+		++ it;
+
+	if (it != this->elementos.end())
+		if (cadena.compare((*it).get_cadena()) == 0)
+			return true;
+	return false;
+}
+/*
 Elemento& RegIndice::buscar_elemento(const string& cadena) {
 	list < Elemento > ::iterator it;
 
 	it = this->elementos.begin();
 	while (cadena.compare((*it).get_cadena()) != 0)
 		++ it;
+
+	return *it;
+}
+*/
+Elemento& RegIndice::buscar_elemento(const string& cadena) {
+	list < Elemento > ::iterator it;
+
+	it = this->elementos.begin();
+	while (cadena.compare((*it).get_cadena()) != 0)
+		++ it;
+
+	if (it == this->elementos.end())
+		return (*this->elementos.begin());
 
 	return *it;
 }
