@@ -242,13 +242,17 @@ void HandlerComandos::insertar_en_hash_palabra(int offset) {
 
 		list < string > palabras = reg->getPalabras();
 		list < string > filtradas = this->eliminar_repeticion(palabras);
-
+		int t = 0;
 		for (it = filtradas.begin(); it != filtradas.end(); ++ it) {
 			clave = this->funcion_hash_palabra(*it);
 			offsets.push_back(offset);
 			hash.alta(clave, *it, offsets);
+			cout << "Processando palabras Libro de ID " << offset << " ..." << (int) (t * 100 / filtradas.size()) << "%\r";
+			++t;
 			offsets.clear();
+
 		}
+		cout << endl;
 	}else{
 		cout<<"ID:"<<offset<<"No pudo ser insertado.\n"<<endl;
 	}

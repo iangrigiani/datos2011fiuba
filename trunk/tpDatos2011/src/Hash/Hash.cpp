@@ -155,6 +155,7 @@ void Hash::alta(int clave, const string& cadena, list < int > & offsets) {
 		reg.agregar_nuevo_elemento(elemento);
 		this->insertar_reg(reg);
 	}
+
 }
 
 bool Hash::eliminar_reg(int clave) {
