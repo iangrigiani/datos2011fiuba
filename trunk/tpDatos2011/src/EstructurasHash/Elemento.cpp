@@ -17,8 +17,26 @@ void Elemento::set_offsets(const list < int > & offsets) {
 	this->offsets = offsets;
 }
 
-int Elemento::get_tam() const {
-	return (this->cadena.size() + this->offsets.size() * sizeof(int));
+int Elemento::get_tam() {
+//	int tam = this->cadena.size() + sizeof(' ');
+	int tam = strlen(this->cadena.c_str());
+//	stringstream ss;
+//	ss << this->offsets.size() << ' ';
+//	string s(ss.str());
+//	tam += s.size();
+//	s.clear();
+
+//	list < int > ::iterator it;
+//	for (it = this->offsets.begin(); it != this->offsets.end(); ++ it) {
+//		stringstream ss;
+//		ss << *it << ' ';
+//		s = ss.str();
+//		tam += s.size();
+//		s.clear();
+//		tam += sizeof(int);
+//	}
+	tam += (this->offsets.size()*sizeof(int) + this->offsets.size()*sizeof(char));
+	return tam;
 }
 
 void Elemento::agregar_nuevos_offsets(list < int > & offsets) {
@@ -42,12 +60,12 @@ bool Elemento::eliminar_offset(int offset) {
 }
 
 void Elemento::serializar(char* buffer, unsigned int& offset) {
-	int size = this->cadena.size();
-	char* aux = (char*) malloc (sizeof(char) * (size + 1));
-	this->cadena.copy(aux, size);
-	aux[size] = '\0';
-	Persistencia::PonerStringEnChar(buffer, offset, aux);
-	free(aux);
+//	int size = this->cadena.size();
+//	char* aux = (char*) malloc (sizeof(char) * (size + 1));
+//	this->cadena.copy(aux, size);
+//	aux[size] = '\0';
+	Persistencia::PonerStringEnChar(buffer, offset,(char*)this->cadena.c_str());
+//	free(aux);
 
 	Persistencia::PonerEnteroEnChar(buffer, offset, this->offsets.size());
 	list < int > ::iterator it;
