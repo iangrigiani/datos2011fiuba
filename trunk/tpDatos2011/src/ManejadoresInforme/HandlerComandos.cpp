@@ -65,6 +65,7 @@ void HandlerComandos::listarLibrosIngresados(){
 	list<int> listaDeIds;
 	this->log->obtenerListaIDs(listaDeIds);
 	list<int>::iterator it = listaDeIds.begin();
+	printf("Bookerio: Total Libros Ingresados: %d \n" , listaDeIds.size());
 	printf("Bookerio: Libros Ingresados:\n");
 	while ( it != listaDeIds.end()){
 		printf("%d \n", *it);

@@ -152,8 +152,10 @@ void HandlerArchivoLog::obtenerListaIDs(list<int>& listaDeIds){
         puntero = archivoLog.tellg();
 		archivoLog.getline (cadena, 100);
 		cad = cadena;
-		IDActual = atoi(strtok(cadena,"|"));
-		listaDeIds.push_back(IDActual);
+		if (cad.length() > 0){
+			IDActual = atoi(strtok(cadena,"|"));
+			listaDeIds.push_back(IDActual);
+		}
 	}
 	archivoLog.close();
 }
