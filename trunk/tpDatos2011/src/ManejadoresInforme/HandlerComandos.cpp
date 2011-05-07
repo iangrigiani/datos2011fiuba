@@ -164,29 +164,34 @@ int HandlerComandos::funcion_hash_titulo(const string& str) {
 void HandlerComandos::insertar_en_hash_titulo(int offset) {
 
 	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
+	if (reg){
+		HashTitulo hash;
+		hash.crear_condiciones_iniciales();
 
-	HashTitulo hash;
-	hash.crear_condiciones_iniciales();
+		int clave = this->funcion_hash_titulo(reg->getTitulo());
 
-	int clave = this->funcion_hash_titulo(reg->getTitulo());
-
-	RegTitulo reg_indice(clave, offset);
-	hash.insertar_reg(reg_indice);
-	hash.mostrar();
-
+		RegTitulo reg_indice(clave, offset);
+		hash.insertar_reg(reg_indice);
+		hash.mostrar();
+	}else{
+		cout<<"ID:"<<offset<<"No pudo ser insertado en el hash de titulo.\n"<<endl;
+	}
 }
 
 void HandlerComandos::eliminar_de_hash_titulo(int offset) {
 
 	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
+	if (reg){
+		HashTitulo hash;
+		hash.crear_condiciones_iniciales();
 
-	HashTitulo hash;
-	hash.crear_condiciones_iniciales();
+		int clave = this->funcion_hash_titulo(reg->getTitulo());
 
-	int clave = this->funcion_hash_titulo(reg->getTitulo());
-
-	hash.eliminar_reg(clave);
-	hash.mostrar();
+		hash.eliminar_reg(clave);
+	}else{
+		cout<<"ID:"<<offset<<"No pudo ser insertado en el hash de titulo.\n"<<endl;
+	}
+//	hash.mostrar();
 }
 
 list < int > HandlerComandos::eliminar_repeticion(list < int > & palabras) {
@@ -220,50 +225,57 @@ int HandlerComandos::funcion_hash_palabra(const string& str) {
 void HandlerComandos::insertar_en_hash_palabra(int offset) {
 
 	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
+	if (reg){
+		HashPalabra hash;
+		hash.crear_condiciones_iniciales();
 
-	HashPalabra hash;
-	hash.crear_condiciones_iniciales();
+		string str;
+		int clave;
+		list < int > claves, offsets;
+		list < string > ::iterator it_1;
+		list < int > ::iterator it_2;
 
-	string str;
-	int clave;
-	list < int > claves, offsets;
-	list < string > ::iterator it_1;
-	list < int > ::iterator it_2;
+		list < string > palabras = reg->getPalabras();
 
-	list < string > palabras = reg->getPalabras();
+		for (it_1 = palabras.begin(); it_1 != palabras.end(); ++ it_1) {
+			str = *it_1;
+			clave = this->funcion_hash_palabra(str);
+			str.clear();
+			claves.push_back(clave);
+		}
 
-	for (it_1 = palabras.begin(); it_1 != palabras.end(); ++ it_1) {
-		str = *it_1;
-		clave = this->funcion_hash_palabra(str);
-		str.clear();
-		claves.push_back(clave);
+		list < int > filtrados = this->eliminar_repeticion(claves);
+		int t = 0;
+		for (it_2 = filtrados.begin(); it_2 != filtrados.end(); ++ it_2) {
+			offsets.push_back(offset);
+			hash.insercion((*it_2), offsets);
+			offsets.clear();
+			cout << "Processando palabras Libro de ID " << offset << " ..." << (int) ((t * 100 / filtrados.size())+1) << "%\r";
+			++t;
+		}
+	}else{
+		cout<<"ID:"<<offset<<"No pudo ser insertado en el hash de palabra.\n"<<endl;
 	}
-
-	list < int > filtrados = this->eliminar_repeticion(claves);
-
-	for (it_2 = filtrados.begin(); it_2 != filtrados.end(); ++ it_2) {
-		offsets.push_back(offset);
-		hash.insercion((*it_2), offsets);
-		offsets.clear();
-	}
-
-	hash.mostrar();
+	//	hash.mostrar();
 
 }
 
 void HandlerComandos::eliminar_de_hash_palabra(int offset) {
 
 	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
+	if (reg){
+		HashPalabra hash;
+		hash.crear_condiciones_iniciales();
 
-	HashPalabra hash;
-	hash.crear_condiciones_iniciales();
-
-	int clave;
-	list < string > palabras = reg->getPalabras();
-	list < string > ::iterator it;
-	for (it = palabras.begin(); it != palabras.end(); ++ it) {
-		clave = this->funcion_hash_palabra(*it);
-		hash.eliminacion(clave, offset);
+		int clave;
+		list < string > palabras = reg->getPalabras();
+		list < string > ::iterator it;
+		for (it = palabras.begin(); it != palabras.end(); ++ it) {
+			clave = this->funcion_hash_palabra(*it);
+			hash.eliminacion(clave, offset);
+		}
+	}else{
+		cout<<"ID:"<<offset<<"No pudo ser borrado en el hash de palabra.\n"<<endl;
 	}
 }
 
@@ -295,7 +307,7 @@ void HandlerComandos::insertarEnArbol (int tipoArbol, int offset){
 		}
 		delete reg;
 	}else{
-		cout<<"ID:"<<offset<<"No pudo ser indexado.\n"<<endl;
+		cout<<"ID:"<<offset<<"No pudo ser indexado como autor.\n"<<endl;
 	}
 }
 

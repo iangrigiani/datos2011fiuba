@@ -16,7 +16,7 @@ void HashTitulo::crear_condiciones_iniciales() {
 	if (this->handler_tabla.tabla_vacia() == true) {
 		Ranura bloque;
 		unsigned int offset = 0;
-		char buffer[this->handler_bloques.get_tam_bloque()];
+		char buffer[TAM_RANURA];
 
 		bloque.serializar(buffer, offset);
 		int num_bloque = this->handler_bloques.guardar_bloque(buffer);
@@ -27,7 +27,7 @@ void HashTitulo::crear_condiciones_iniciales() {
 bool HashTitulo::insertar_reg(const RegTitulo& reg) {
 	Ranura bloque;
 	unsigned int offset = 0;
-	char buffer[this->handler_bloques.get_tam_bloque()];
+	char buffer[TAM_RANURA];
 
 	int pos_tabla_bloque = this->handler_tabla.get_pos_tabla(reg.get_clave());
 	int num_bloque = this->handler_tabla.get_num_bloque(reg.get_clave());
@@ -79,7 +79,7 @@ bool HashTitulo::insertar_reg(const RegTitulo& reg) {
 bool HashTitulo::eliminar_reg(int clave) {
 	Ranura bloque;
 	unsigned int offset = 0;
-	char buffer[this->handler_bloques.get_tam_bloque()];
+	char buffer[TAM_RANURA];
 
 	int pos_tabla_bloque = this->handler_tabla.get_pos_tabla(clave);
 	int num_bloque = this->handler_tabla.get_num_bloque(clave);

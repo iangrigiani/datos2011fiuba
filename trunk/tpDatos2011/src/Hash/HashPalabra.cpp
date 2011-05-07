@@ -9,7 +9,7 @@ void HashPalabra::crear_condiciones_iniciales() {
 	if (this->handler_tabla.tabla_vacia() == true) {
 		Cubo bloque;
 		unsigned int offset = 0;
-		char buffer[this->handler_bloques.get_tam_bloque()];
+		char buffer[TAM_CUBO];
 
 		bloque.serializar(buffer, offset);
 		int num_bloque = this->handler_bloques.guardar_bloque(buffer);
@@ -20,7 +20,7 @@ void HashPalabra::crear_condiciones_iniciales() {
 void HashPalabra::insertar_reg(RegPalabra& reg) {
 	Cubo bloque;
 	unsigned int offset = 0;
-	char buffer[this->handler_bloques.get_tam_bloque()];
+	char buffer[TAM_CUBO];
 
 	int pos_tabla_bloque = this->handler_tabla.get_pos_tabla(reg.get_clave());
 	int num_bloque = this->handler_tabla.get_num_bloque(reg.get_clave());
@@ -67,7 +67,7 @@ void HashPalabra::insertar_reg(RegPalabra& reg) {
 
 void HashPalabra::agregar_nuevos_offsets(Cubo& bloque, int num_bloque, RegPalabra& reg, list < int > & offsets) {
 	unsigned int offset;
-	char buffer[this->handler_bloques.get_tam_bloque()];
+	char buffer[TAM_CUBO];
 
 	if (bloque.entra_en_bloque(offsets) == true) {
 		reg.agregar_nuevos_offsets(offsets);
@@ -105,7 +105,7 @@ void HashPalabra::agregar_nuevos_offsets(Cubo& bloque, int num_bloque, RegPalabr
 void HashPalabra::insercion(int clave, list < int > & offsets) {
 	Cubo bloque;
 	unsigned int offset = 0;
-	char buffer[this->handler_bloques.get_tam_bloque()];
+	char buffer[TAM_CUBO];
 
 	int num_bloque = this->handler_tabla.get_num_bloque(clave);
 	this->handler_bloques.recuperar_bloque(buffer, num_bloque);
@@ -122,7 +122,7 @@ void HashPalabra::insercion(int clave, list < int > & offsets) {
 
 void HashPalabra::eliminar_offset(Cubo& bloque, int num_bloque, int clave, int offset) {
 	unsigned int offset_aux;
-	char buffer[this->handler_bloques.get_tam_bloque()];
+	char buffer[TAM_CUBO];
 
 	if (bloque.existe_reg(clave) == true) {
 		RegPalabra& reg = bloque.buscar_reg(clave);
@@ -149,7 +149,7 @@ void HashPalabra::eliminar_offset(Cubo& bloque, int num_bloque, int clave, int o
 void HashPalabra::eliminacion(int clave, int offset) {
 	Cubo bloque;
 	unsigned int offset_aux = 0;
-	char buffer[this->handler_bloques.get_tam_bloque()];
+	char buffer[TAM_CUBO];
 
 	int num_bloque = this->handler_tabla.get_num_bloque(clave);
 	this->handler_bloques.recuperar_bloque(buffer, num_bloque);
@@ -184,7 +184,7 @@ void HashPalabra::eliminacion(int clave, int offset) {
 }
 
 void HashPalabra::obtener_reg(RegPalabra& reg, Cubo& bloque_sig ,list< int > & bloques_sigs, int clave) {
-	char buffer[this->handler_bloques.get_tam_bloque()];
+	char buffer[TAM_CUBO];
 	unsigned int offset_aux = 0;
 
 	this->handler_bloques.recuperar_bloque(buffer, reg.get_bloque_sig());
@@ -196,7 +196,7 @@ void HashPalabra::obtener_reg(RegPalabra& reg, Cubo& bloque_sig ,list< int > & b
 bool HashPalabra::eliminar_reg(int clave) {
 	Cubo bloque;
 	unsigned int offset = 0;
-	char buffer[this->handler_bloques.get_tam_bloque()];
+	char buffer[TAM_CUBO];
 
 	int pos_tabla_bloque = this->handler_tabla.get_pos_tabla(clave);
 	int num_bloque = this->handler_tabla.get_num_bloque(clave);
