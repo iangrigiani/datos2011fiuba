@@ -9,8 +9,12 @@ int HandlerArchivoRLV::obtenerTamanioLibro(char * cadenaDeDatos)
 
 	//Busco donde se que se encuentra el campo asociado al tamanio del libro
 	caracterProcesado = strtok(NULL,"|");
-	tamanioLibro = atoi(caracterProcesado);
-	return tamanioLibro;
+	if (caracterProcesado){
+		tamanioLibro = atoi(caracterProcesado);
+		return tamanioLibro;
+	}else{
+		return 0;
+	}
 }
 
 HandlerArchivoRLV::HandlerArchivoRLV() {
@@ -86,23 +90,29 @@ char* HandlerArchivoRLV::buscarRegistro(int offset)
 		string cad = cadenaDeDatos;
 		int longitudCadena = cad.length();
 		longitudCadena += offset;
-		//Obtengo el tamanio del libro a leer
-		int espacioOcupado = obtenerTamanioLibro(cadenaDeDatos);
-
-		/*Le sumo a la longitud de la cadena de datos el offset para posicionarme nuevamente
-		 en el archivo*/
-		archivoMaestro.seekg(longitudCadena);
-		// obtengo el libro
-		char * libroLeido = (char*)calloc (espacioOcupado, sizeof(char));
-		archivoMaestro.read(libroLeido, espacioOcupado);
-		archivoMaestro.close();
-
-		return libroLeido;
+		int tamanioArchivo = obtenerTamanioMaestro();
+		if (tamanioArchivo > BASURA_RLV){
+			//Obtengo el tamanio del libro a leer
+			int espacioOcupado = obtenerTamanioLibro(cadenaDeDatos);
+			if (espacioOcupado > 0){
+				/*Le sumo a la longitud de la cadena de datos el offset para posicionarme nuevamente
+				 en el archivo*/
+				archivoMaestro.seekg(longitudCadena);
+				// obtengo el libro
+				char * libroLeido = (char*)calloc (espacioOcupado, sizeof(char));
+				archivoMaestro.read(libroLeido, espacioOcupado);
+				archivoMaestro.close();
+				return libroLeido;
+			}
+		}else{
+			return NULL;
+		}
 	}else{
 		archivoMaestro.open(PATH_REG_LONG_VARIABLE, std::ios_base::out);
 		archivoMaestro.close();
 		return NULL;
 	}
+	return NULL;
 }
 
 int HandlerArchivoRLV::obtenerTamanioMaestro(){
@@ -120,7 +130,7 @@ int HandlerArchivoRLV::obtenerTamanioMaestro(){
 }
 
 void HandlerArchivoRLV::quitarRegistro(int offset){
-// Abro el archivo y me posiciono para obtener los datos
+	// Abro el archivo y me posiciono para obtener los datos
 	std::fstream fh;
 	char  cadenaDeDatos[100];
 	fh.open(PATH_REG_LONG_VARIABLE, std::ios_base::in | std::ios_base::out);
@@ -129,18 +139,23 @@ void HandlerArchivoRLV::quitarRegistro(int offset){
 
 	string cad = cadenaDeDatos;
 	int longitudCadena = cad.length();
-	int espacioOcupado = obtenerTamanioLibro(cadenaDeDatos);
-	espacioOcupado += longitudCadena;
-	fh.seekg(offset); //No tendría que ser un seekp?
+	int tamanioArchivo = obtenerTamanioMaestro();
+	if (tamanioArchivo > BASURA_RLV){
+		int espacioOcupado = obtenerTamanioLibro(cadenaDeDatos);
+		if (espacioOcupado > 0){
+			espacioOcupado += longitudCadena;
+			fh.seekg(offset); //No tendría que ser un seekp?
 
-	char * libroLeido = (char*)calloc (espacioOcupado, sizeof(char));
-	free(libroLeido);
-	fh.write(libroLeido, espacioOcupado);
-	fh.flush();
-	fh.close();
+			char * libroLeido = (char*)calloc (espacioOcupado, sizeof(char));
+			free(libroLeido);
+			fh.write(libroLeido, espacioOcupado);
+			fh.flush();
+			fh.close();
 
-// Agrego los datos en el archivo de espacios libres.
-	actualizarEspaciosLibres(offset,espacioOcupado);
+			// Agrego los datos en el archivo de espacios libres.
+			actualizarEspaciosLibres(offset,espacioOcupado);
+		}
+	}
 }
 
 

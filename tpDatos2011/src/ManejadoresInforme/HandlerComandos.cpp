@@ -33,29 +33,29 @@ void HandlerComandos::indexar(int parametro){
 	list<int>::iterator it = listaDeIds.begin();
 	// Para cada offset segun que parametro recibi inserto.
 	while ( it != listaDeIds.end()){
-	    switch (parametro){
-	        case 'a':{
-	        	this->arbol = new ArbolBMas(PATH_AUTOR);
-	        	insertarEnArbol (1, (*it));
-	        	this->log->setearIndexado(*it,'a');break;}
+		switch (parametro){
+		case 'a':{
+			this->arbol = new ArbolBMas(PATH_AUTOR);
+			insertarEnArbol (1, (*it));
+			this->log->setearIndexado(*it,'a');break;}
 
-	        case 'e':{
-	        	this->arbol = new ArbolBMas(PATH_EDITORIAL);
-	        	insertarEnArbol (2, (*it));
-	        	this->log->setearIndexado(*it,'e'); break;}
+		case 'e':{
+			this->arbol = new ArbolBMas(PATH_EDITORIAL);
+			insertarEnArbol (2, (*it));
+			this->log->setearIndexado(*it,'e'); break;}
 
-	        case 't': {
-	        		this->insertar_en_hash_titulo(*it);
-	        		this->log->setearIndexado(*it,'t');
-	        		break;
-	        }
+		case 't': {
+			this->insertar_en_hash_titulo(*it);
+			this->log->setearIndexado(*it,'t');
+			break;
+		}
 
-	        case 'p': {
-	        	this->insertar_en_hash_palabra(*it);
-	        	this->log->setearIndexado(*it,'p');
-	        	break;
-	        }
-	    }
+		case 'p': {
+			this->insertar_en_hash_palabra(*it);
+			this->log->setearIndexado(*it,'p');
+			break;
+		}
+		}
 		++ it;
 	}
 }
@@ -112,32 +112,32 @@ void HandlerComandos::verEstructura(int parametro){
 
 	switch (parametro) {
 	case 'a': {
-				printf("Viendo estructura del árbol de autores. \n");
-				this->arbol = new ArbolBMas(PATH_AUTOR);
-				arbol->MostrarArbol();
-				/*TODO: ARREGLAR ESTO POR DIOS!!!!! */
-				//delete arbol;
-				break; }
+		printf("Viendo estructura del árbol de autores. \n");
+		this->arbol = new ArbolBMas(PATH_AUTOR);
+		arbol->MostrarArbol();
+		/*TODO: ARREGLAR ESTO POR DIOS!!!!! */
+		//delete arbol;
+		break; }
 	case 'e': {
-				printf("Viendo estructura del árbol de editoriales. \n");
-				this->arbol = new ArbolBMas(PATH_EDITORIAL);
-				//ArbolBMas* arbol = new ArbolBMas(2, PATH_NODOS);
-				arbol->MostrarArbol();
-				delete arbol;
-				break; }
+		printf("Viendo estructura del árbol de editoriales. \n");
+		this->arbol = new ArbolBMas(PATH_EDITORIAL);
+		//ArbolBMas* arbol = new ArbolBMas(2, PATH_NODOS);
+		arbol->MostrarArbol();
+		delete arbol;
+		break; }
 
 	case 't': {
-				printf("Viendo estructura del hash de títulos. \n");
-				Hash hash(TAM_CUBO, PATH_BLOQUES_TITULO, PATH_ESP_LIBRE_TITULO, PATH_TABLA_TITULO, PATH_TMP_TITULO);
-				hash.crear_condiciones_iniciales();
-				hash.mostrar();
-				break; }
-		case 'p': {
-				printf("Viendo estructura del hash de palabras. \n");
-				Hash hash(TAM_CUBO, PATH_BLOQUES_PALABRA, PATH_ESP_LIBRE_PALABRA, PATH_TABLA_PALABRA, PATH_TMP_PALABRA);
-				hash.crear_condiciones_iniciales();
-				hash.mostrar();
-				break; }
+		printf("Viendo estructura del hash de títulos. \n");
+		Hash hash(TAM_CUBO, PATH_BLOQUES_TITULO, PATH_ESP_LIBRE_TITULO, PATH_TABLA_TITULO, PATH_TMP_TITULO);
+		hash.crear_condiciones_iniciales();
+		hash.mostrar();
+		break; }
+	case 'p': {
+		printf("Viendo estructura del hash de palabras. \n");
+		Hash hash(TAM_CUBO, PATH_BLOQUES_PALABRA, PATH_ESP_LIBRE_PALABRA, PATH_TABLA_PALABRA, PATH_TMP_PALABRA);
+		hash.crear_condiciones_iniciales();
+		hash.mostrar();
+		break; }
 
 	}
 }
@@ -170,29 +170,35 @@ int HandlerComandos::funcion_hash_titulo(string& str) {
 
 void HandlerComandos::insertar_en_hash_titulo(int offset) {
 	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
+	if (reg){
+		Hash hash(TAM_CUBO, PATH_BLOQUES_TITULO, PATH_ESP_LIBRE_TITULO, PATH_TABLA_TITULO, PATH_TMP_TITULO);
+		hash.crear_condiciones_iniciales();
 
-	Hash hash(TAM_CUBO, PATH_BLOQUES_TITULO, PATH_ESP_LIBRE_TITULO, PATH_TABLA_TITULO, PATH_TMP_TITULO);
-	hash.crear_condiciones_iniciales();
+		string titulo = reg->getTitulo();
+		int clave = this->funcion_hash_titulo(titulo);
 
-	string titulo = reg->getTitulo();
-	int clave = this->funcion_hash_titulo(titulo);
-
-	list < int > offsets;
-	offsets.push_back(offset);
-	hash.alta(clave, titulo, offsets);
+		list < int > offsets;
+		offsets.push_back(offset);
+		hash.alta(clave, titulo, offsets);
+	}else{
+		cout<<"ID:"<<offset<<"No pudo ser Insertado.\n"<<endl;
+	}
 }
 
 void HandlerComandos::eliminar_de_hash_titulo(int offset) {
 
 	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
+	if (reg){
+		Hash hash(TAM_CUBO, PATH_BLOQUES_TITULO, PATH_ESP_LIBRE_TITULO, PATH_TABLA_TITULO, PATH_TMP_TITULO);
+		hash.crear_condiciones_iniciales();
 
-	Hash hash(TAM_CUBO, PATH_BLOQUES_TITULO, PATH_ESP_LIBRE_TITULO, PATH_TABLA_TITULO, PATH_TMP_TITULO);
-	hash.crear_condiciones_iniciales();
+		string titulo = reg->getTitulo();
+		int clave = this->funcion_hash_titulo(titulo);
 
-	string titulo = reg->getTitulo();
-	int clave = this->funcion_hash_titulo(titulo);
-
-	hash.baja(clave, titulo, offset);
+		hash.baja(clave, titulo, offset);
+	}else{
+		cout<<"ID:"<<offset<<"No pudo ser borrado.\n"<<endl;
+	}
 }
 
 list < string > HandlerComandos::eliminar_repeticion(list < string > & palabras) {
@@ -218,7 +224,7 @@ int HandlerComandos::funcion_hash_palabra(const string& str) {
 	int clave = 0;
 	for (unsigned int i = 0; i < str.size(); ++ i)
 		clave += ((int)str[i]) * i;
-		//clave += ((int)str[i]) * (2 ^ i);
+	//clave += ((int)str[i]) * (2 ^ i);
 
 	return clave;
 }
@@ -226,90 +232,103 @@ int HandlerComandos::funcion_hash_palabra(const string& str) {
 void HandlerComandos::insertar_en_hash_palabra(int offset) {
 
 	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
+	if (reg){
+		Hash hash(TAM_CUBO, PATH_BLOQUES_PALABRA, PATH_ESP_LIBRE_PALABRA, PATH_TABLA_PALABRA, PATH_TMP_PALABRA);
+		hash.crear_condiciones_iniciales();
 
-	Hash hash(TAM_CUBO, PATH_BLOQUES_PALABRA, PATH_ESP_LIBRE_PALABRA, PATH_TABLA_PALABRA, PATH_TMP_PALABRA);
-	hash.crear_condiciones_iniciales();
+		int clave;
+		list < int > offsets;
+		list < string > ::iterator it;
 
-	int clave;
-	list < int > offsets;
-	list < string > ::iterator it;
+		list < string > palabras = reg->getPalabras();
+		list < string > filtradas = this->eliminar_repeticion(palabras);
 
-	list < string > palabras = reg->getPalabras();
-	list < string > filtradas = this->eliminar_repeticion(palabras);
-
-	for (it = filtradas.begin(); it != filtradas.end(); ++ it) {
-		clave = this->funcion_hash_palabra(*it);
-		offsets.push_back(offset);
-		hash.alta(clave, *it, offsets);
-		offsets.clear();
+		for (it = filtradas.begin(); it != filtradas.end(); ++ it) {
+			clave = this->funcion_hash_palabra(*it);
+			offsets.push_back(offset);
+			hash.alta(clave, *it, offsets);
+			offsets.clear();
+		}
+	}else{
+		cout<<"ID:"<<offset<<"No pudo ser insertado.\n"<<endl;
 	}
-
 }
 
 void HandlerComandos::eliminar_de_hash_palabra(int offset) {
 
 	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
+	if (reg){
+		Hash hash(TAM_CUBO, PATH_BLOQUES_PALABRA, PATH_ESP_LIBRE_PALABRA, PATH_TABLA_PALABRA, PATH_TMP_PALABRA);
+		hash.crear_condiciones_iniciales();
 
-	Hash hash(TAM_CUBO, PATH_BLOQUES_PALABRA, PATH_ESP_LIBRE_PALABRA, PATH_TABLA_PALABRA, PATH_TMP_PALABRA);
-	hash.crear_condiciones_iniciales();
+		int clave;
+		list < string > ::iterator it;
 
-	int clave;
-	list < string > ::iterator it;
+		list < string > palabras = reg->getPalabras();
+		list < string > filtradas = this->eliminar_repeticion(palabras);
 
-	list < string > palabras = reg->getPalabras();
-	list < string > filtradas = this->eliminar_repeticion(palabras);
-
-	for (it = filtradas.begin(); it != filtradas.end(); ++ it) {
-		clave = this->funcion_hash_palabra(*it);
-		hash.baja(clave, *it, offset);
+		for (it = filtradas.begin(); it != filtradas.end(); ++ it) {
+			clave = this->funcion_hash_palabra(*it);
+			hash.baja(clave, *it, offset);
+		}
+	}else{
+		cout<<"ID:"<<offset<<"No pudo ser borrado.\n"<<endl;
 	}
 }
 
 void HandlerComandos::insertarEnArbol (int tipoArbol, int offset){
-//	ArbolBMas* arbol = new ArbolBMas(tipoArbol, PATH_NODOS);
+	//	ArbolBMas* arbol = new ArbolBMas(tipoArbol, PATH_NODOS);
 	char * puntero = this->handler->buscarRegistro(offset);
-	Registro* reg = this->parser->obtenerRegistroDeLibro(puntero);
+	if (puntero){
+		Registro* reg = this->parser->obtenerRegistroDeLibro(puntero);
 
-	if (tipoArbol == 1){
-		Elementos* elemento = new Elementos(new Clave(reg->getAutor()), offset);
-		if(elemento->getTamanio() > (TAM_EFECTIVO_NODO * PORC_TAMANIO_NODO / 100) ){
-			cout<<"Elemento demasiado grande.\n"<<endl;
+		if (tipoArbol == 1){
+			Elementos* elemento = new Elementos(new Clave(reg->getAutor()), offset);
+			if(elemento->getTamanio() > (TAM_EFECTIVO_NODO * PORC_TAMANIO_NODO / 100) ){
+				cout<<"Elemento demasiado grande.\n"<<endl;
+			}else{
+				if(arbol->insertar(elemento))
+					cout<<"ID:"<<offset<<".Libro indexado por autor.\n"<<endl;
+			}
+			delete elemento;
 		}else{
-			if(arbol->insertar(elemento))
-				cout<<"ID:"<<offset<<".Libro indexado por autor.\n"<<endl;
+			Elementos* elemento2 = new Elementos(new Clave(reg->getEditorial()), offset);
+			if(elemento2->getTamanio() > (TAM_EFECTIVO_NODO * PORC_TAMANIO_NODO / 100) ){
+				cout<<"Elemento demasiado grande.\n"<<endl;
+			}else{
+				if(arbol->insertar(elemento2))
+					cout<<"ID:"<<offset<<".Libro indexado por editorial.\n"<<endl;
+				delete elemento2;
+			}
+			//	delete arbol;
 		}
-		delete elemento;
+		delete reg;
 	}else{
-		Elementos* elemento2 = new Elementos(new Clave(reg->getEditorial()), offset);
-		if(elemento2->getTamanio() > (TAM_EFECTIVO_NODO * PORC_TAMANIO_NODO / 100) ){
-			cout<<"Elemento demasiado grande.\n"<<endl;
-		}else{
-			if(arbol->insertar(elemento2))
-				cout<<"ID:"<<offset<<".Libro indexado por editorial.\n"<<endl;
-		delete elemento2;
-		}
+		cout<<"ID:"<<offset<<"No pudo ser indexado.\n"<<endl;
 	}
-	delete reg;
-//	delete arbol;
 }
 
 bool HandlerComandos::eliminarEnArbol(int tipoArbol, int offset) {
 	Registro* reg = this->parser->obtenerRegistroDeLibro(this->handler->buscarRegistro(offset));
 	bool retorno = false;
-	if (tipoArbol == 1){
-		this->arbol = new ArbolBMas(PATH_AUTOR);
-		Elementos* e = new Elementos(new Clave (reg->getAutor()),offset);
-		retorno = arbol->borrar(*e);
-		delete e;
-		delete arbol;
+	if (reg){
+		if (tipoArbol == 1){
+			this->arbol = new ArbolBMas(PATH_AUTOR);
+			Elementos* e = new Elementos(new Clave (reg->getAutor()),offset);
+			retorno = arbol->borrar(*e);
+			delete e;
+			delete arbol;
+		}else{
+			this->arbol = new ArbolBMas(PATH_EDITORIAL);
+			Elementos* e = new Elementos(new Clave (reg->getEditorial()),offset);
+			retorno = arbol->borrar(*e);
+			delete e;
+			delete arbol;
+		}
 	}else{
-		this->arbol = new ArbolBMas(PATH_EDITORIAL);
-		Elementos* e = new Elementos(new Clave (reg->getEditorial()),offset);
-		retorno = arbol->borrar(*e);
-		delete e;
-		delete arbol;
+		retorno = false;
 	}
 	delete reg;
 	return retorno;
-//	delete arbol;
+	//	delete arbol;
 }
