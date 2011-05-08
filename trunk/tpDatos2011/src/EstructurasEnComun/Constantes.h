@@ -45,7 +45,7 @@
 #define PATH_BLOQUES_TITULO "BloquesTitulo"
 #define TAM_CONTROL_HASH_PALABRAS 14
 #define TAM_CUBO 4096
-#define TAM_RANURA 16
+#define TAM_RANURA 64
 #define OCUPADA 1
 #define VACIA 0
 
